@@ -21,6 +21,6 @@ int main() {
 
   // Trying to print the value
   printf("My string: %s\n", s1.myString);
-
+  
   return 0;
 }
