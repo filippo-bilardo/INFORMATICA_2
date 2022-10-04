@@ -1,3 +1,6 @@
+/**
+ * c++ array1.c 
+ */
 #include <iostream>
 using namespace std;
 
