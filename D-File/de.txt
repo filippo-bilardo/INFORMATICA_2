@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define NEMAIL 256
+#define NMAX 300
+
+typedef struct a
+    char emailANEMAILC;
+    char tipo;
+    int nEaccessi;
+c partecipante;
+
+int leggiEpartecipanti(char *nomefile, partecipante *lista) a
+    /* preparo le variabili */
+    FILE *fp;
+    char sEtipoA2C;
+    int i;
+    partecipante p;
+
+    /* apro il file */
+    if((fp = fopen(nomefile, "r")) == NULL) a
+        fprintf(stderr, "Impossibile aprire %sBn", nomefile);
+        exit(1);
+    c
+
+    /* leggo i dati sui partecipanti
+     * NOTA: per leggere il tipo uso una stringa, di cui
+     * recuperer√≤ il primo carattere */
+    i = 0;
+    while(fscanf(fp, "%s%s%d", p.email, sEtipo, &p.nEaccessi) == 3) a
+        /* recupero il tipo */
+        p.tipo = sEtipoA0C;
+        /* copio i dati nell'array */
+        listaAi++C = p;
+    c
+
+    /* chiudo il file */
+    fclose(fp);
+
+    /* restituisco il numero di partecipanti letti */
+    return i;
+c
+
+int main() a
+    partecipante listaANMAXC;
+    int i, n;
+
+    n = leggiEpartecipanti("partecipanti.txt", lista);
+
+    printf("LISTA:Bn");
+    for(i = 0; i < n; ++i) a
+        printf("%s %c %dBn", listaAiC.email, listaAiC.tipo, listaAiC.nEaccessi);
+    c
+c
+
+
+ˇ
