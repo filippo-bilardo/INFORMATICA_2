@@ -36,7 +36,7 @@ public:
 	void stampa() {  // Metodo che stampa a video la frazione
 		/* quando l'invocazione di un metodo è all'interno della  
 		classe non usiamo la dot notation (spiegata in seguito) */
-		semplifica();
+		//semplifica();
 		cout << numeratore << "/" << denominatore << endl;
 	}
 
@@ -48,26 +48,16 @@ public:
 	}
 
 	int MCD(int a, int b) { // Metodo che calcola il MCD (algoritmo di Euclide)
-		int c, resto;
-		if (b > a) {
-			c = a;
-			a = b;
-			b = c;
-		}
-		do {
-			resto = a % b;
-			a = b;
-			b = resto;
-		} while (resto != 0);
-		return a;
+	
+		return 0;
 	}
 };
 
 int main() { // Funzione principale
 	Frazione f1; 			// Definizione di un oggetto di classe Frazione
 	//f1.numeratore=5;   	// ERRATA perché numeratore è private
-	f1.setNumeratore(12); 	// Chiamata del metodo setNumeratore sull'oggetto
-	f1.setDenominatore(3);
+	f1.setNumeratore(15); 	// Chiamata del metodo setNumeratore sull'oggetto
+	f1.setDenominatore(5);
 	f1.stampa(); 	// Semplificazione automatica (stampa chiama semplifica: f1 vale 4)
 	return 0;
 }
