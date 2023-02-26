@@ -2,18 +2,34 @@
 #include "Pulsante.h"
 
 Pulsante::Pulsante(int pin) {
-  pin_ = pin;
+  Pulsante(pin, true);
+}
+Pulsante::Pulsante(int pin, bool activeLow) {
+  _pin = pin;
   statoPrecedente_ = LOW;
   statoAttuale_ = LOW;
+  ultimoPress_ = 0;
   ultimoClick_ = 0;
-  ultimoDoppioClick_ = 0;
-  pinMode(pin_, INPUT_PULLUP);
+  _activeLow = activeLow;
+  _pressState = false;
+  pinMode(_pin, activeLow ? INPUT_PULLUP : INPUT);
+  activeLow ? Serial.print("INPUT_PULLUP") : Serial.print("INPUT");
 }
 
 bool Pulsante::press() {
   statoAttuale_ = !digitalRead(pin_);
-  if (statoAttuale_ == LOW && statoPrecedente_ == HIGH) {
+  if (statoAttuale_ && (millis() - ultimoPress_ < 5)) {
+    ultimoPress_ = millis();
+    return false;
+  }
+  statoPrecedente_ = true;
+  return true;
+}
+bool Pulsante::onePress() {
+  statoAttuale_ = press();
+  if (statoAttuale_ == HIGH && statoPrecedente_ == LOW) {
     statoPrecedente_ = statoAttuale_;
+    Serial.print(statoAttuale_);
     return true;
   }
   statoPrecedente_ = statoAttuale_;
@@ -22,7 +38,7 @@ bool Pulsante::press() {
 
 bool Pulsante::click() {
   //se il task non è in esecuzione usare il codice bloccante 
-  if (press() && (millis() - ultimoClick_ > 50)) {
+  if (onePress() && (millis() - ultimoClick_ > 50)) {
     ultimoClick_ = millis();
     return true;
   }
@@ -42,7 +58,7 @@ void Pulsante::test(int numero_test) {
   switch (numero_test) {
     case 1: 
       // Test press
-      if(press()){
+      if(onePress()){
         Serial.println("Pulsante premuto");
       }
       break;
