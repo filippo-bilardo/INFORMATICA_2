@@ -1,3 +1,14 @@
+/** ****************************************************************************************
+* @file LED.H
+* @brief <inserire una breve descrizione del modulo>
+* <specifiche del progetto>
+* <specifiche del collaudo>
+* 
+* @author Filippo Bilardo
+* @date 26/02/23
+* @version 1.0 26/02/23 Versione iniziale
+*/
+
 #ifndef LED_H
 #define LED_H
 
@@ -53,7 +64,7 @@ class LED {
    private:
       int _pin;
       bool _stato;
-      int _luminosita;
+      int _luminosita; //0-255 0-spento, 255-max luminosità
    
 };
 

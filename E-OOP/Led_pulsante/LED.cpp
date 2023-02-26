@@ -43,7 +43,8 @@ void LED::lampeggia(int nr, int ritardo) {
 }
 
 void LED::setLuminosita(int luminosita) {
-  _luminosita = map(luminosita, 0, 1023, 0, 255);
+  _luminosita = luminosita > 255 ? 255 : luminosita;
+  _luminosita = luminosita < 0 ? 0 : luminosita;
   analogWrite(_pin, _luminosita);
 }
 
