@@ -1,9 +1,9 @@
 /** ****************************************************************************************
 * \mainpage 
 *
-* @brief Classe led e pulsanti 
+* @brief Classe led e pulsanti Versione base 2 aggiunto anti bounce per la pressione e 
+* implementato il task per la lettura dello stato (tolto il codice bloccante)
 * https://wokwi.com/projects/357736086306366465
-* <specifiche del collaudo>
 * 
 * @author Filippo Bilardo
 * @date 26/02/23
@@ -50,15 +50,16 @@ void loop(void) {
   P2->task();
   P1->test(4);
   P2->test(4);
-  //P2->test(1);
-   
-  if(P2->press()) {
+    
+  if(P1->press()) {
     led1.accendi();
   } else {
     led1.spegni();
   }
   
-  if(P1->click()) {
+  if(P2->click()) {
     led2.inverti();
   }
+
+  delay(10);
 }

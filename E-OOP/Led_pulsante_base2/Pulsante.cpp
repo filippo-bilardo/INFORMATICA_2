@@ -15,15 +15,15 @@ void Pulsante::task() {
   static unsigned long startReleaseTime=0;
   static unsigned long startClickTime=0;
   static unsigned long startLPressTime=0;
-  static int stato=0; //S0=START_UP, 1=DWN, 2=PRESS_DWN, 3=COUNT_UP, 4=LP_DWN, 5=LPREL_UP
-
+  static int stato=0; //S0=START_UP, S1=DWN, S2=PRESS_DWN, S3=COUNT_UP, S4=LP_DWN, S5=LPREL_UP
   //if(startTime == 0) {startTime = now; return false;}
+
   unsigned long now = millis();
-  unsigned long releaseTime = (now - startReleaseTime);
   unsigned long pressTime = (now - startPressTime);
+  unsigned long releaseTime = (now - startReleaseTime);
   unsigned long lPressTime = (now - startLPressTime);
   unsigned long clickTime = (now - startClickTime);
-  int pulsLevel = press();
+  //int pulsLevel = press();
 
   //------ S0 = START_UP ------
   if(stato==0) {
@@ -56,6 +56,7 @@ void Pulsante::task() {
 
     if(lPressTime>T2_LPRESS_TIMEOUT) {
       isLPressed=true;
+      startPressTime=now;
       stato=4;
     }
   //------ S2 = PRESS_DWN ------
@@ -94,6 +95,16 @@ void Pulsante::task() {
       startPressTime=now;
       stato=1;
     } 
+  //------ S4=LP_DWN ------
+  } else if(stato==4) {
+    if(press()) {
+      //continua la pressione. attendo
+    } else { //if(!press())
+      //rilascio;
+      startPressTime=now;
+      stato=5;
+      //TODO implementare
+    } 
   }
 }
 
@@ -106,16 +117,24 @@ bool Pulsante::pressedStart() {
   return val;
 }
 bool Pulsante::pressedStop() {
-  return isPressedStop;
+  bool val = isPressedStop;
+  isPressedStop = false;
+  return val;
 }
 bool Pulsante::pressed() {
-  return isPressed;
+  bool val = isPressed;
+  isPressed = false;
+  return val;
 }
 bool Pulsante::longPress() {
-  return isLPressed;
+  bool val = isLPressed;
+  isLPressed = false;
+  return val;
 }
 bool Pulsante::click() {
-  return isClicked;
+  bool val = isClicked;
+  isClicked = false;
+  return val;
 }
 
 void Pulsante::test(int numero_test) {
