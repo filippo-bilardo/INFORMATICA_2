@@ -12,8 +12,6 @@
 #ifndef PULSANTE_H
 #define PULSANTE_H
 
-#define LONG_PRESS_THRESHOLD_MS 1500
-
 class Pulsante {
   public:
     /**
@@ -38,6 +36,9 @@ class Pulsante {
     * Se lo stato attuale è LOW e quello precedente è HIGH, il pulsante è stato premuto.
     */
     bool press();
+    bool pressedStart();
+    bool pressedStop();
+    bool pressed();
     bool longPress();
     /**
     * @brief Metodo per verificare se è stato effettuato un click
@@ -62,7 +63,12 @@ class Pulsante {
     int _pin;
     unsigned long _pressStartTime;
     bool isPressedStart;
+    bool isPressed;
     bool isPressedStop;
+    bool isLPressed;
+    bool isClicked;
+    bool isDClicked;
+    int nClick;
 };
 
 #endif

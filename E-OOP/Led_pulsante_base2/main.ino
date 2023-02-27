@@ -46,16 +46,19 @@ void setup(void) {
 //=== MAIN LOOP ============================================================================
 //------------------------------------------------------------------------------------------
 void loop(void) {
-  P1->test(3);
+  P1->task();
+  P2->task();
+  P1->test(4);
+  P2->test(4);
   //P2->test(1);
    
-  if(P1->press()) {
+  if(P2->press()) {
     led1.accendi();
   } else {
     led1.spegni();
   }
   
-  if(P2->longPress()) {
+  if(P1->click()) {
     led2.inverti();
   }
 }
