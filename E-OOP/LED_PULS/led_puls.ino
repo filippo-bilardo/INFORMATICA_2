@@ -62,6 +62,13 @@ class LED {
       }
     }
 };
+    /*
+      if (press() && (millis() - ultimoClick_ > 50)) {
+        ultimoClick_ = millis();
+        return true;
+      }
+      return false;
+      */
 
 class Pulsante {
   private:
@@ -85,17 +92,9 @@ class Pulsante {
     * @brief Metodo click
     * @return true se il pulsante è stato cliccato, false altrimenti
     *
-    * Utilizza il metodo press() per verificare se il pulsante è stato premuto e controlla che sia trascorso un tempo sufficientemente lungo dall'ultimo click.
-    * Aggiorna l'ultimo click.
+    * Utilizza il metodo press() per verificare se il pulsante è stato premuto
     */
     bool click() {
-      /*
-      if (press() && (millis() - ultimoClick_ > 50)) {
-        ultimoClick_ = millis();
-        return true;
-      }
-      return false;
-      */
       if(press()) {
         if(pressed==0) pressed=1;
         return 0;
@@ -108,8 +107,38 @@ class Pulsante {
         }
       }
     } 
-  
+/**
+ * @brief Metodo doppioClick
+ * @return true se il pulsante è stato cliccato due volte in successione, false altrimenti
+ *
+ * Utilizza il metodo press() per verificare se il pulsante è stato premuto e controlla se sia trascorso un tempo sufficientemente breve dall'ultimo click.
+ * Aggiorna l'ultimo click.
+ */
+  bool doppioClick() {
+    if(press()) {
+        if(pressed==0) {
+            if(ultimoClick_ + 500 > millis()) {
+                ultimoClick_ = 0;
+                return true;
+            } else {
+                pressed=1;
+                ultimoClick_ = millis();
+                return false;
+            }
+        }
+        return false;
+    } else {
+        if(pressed==1) {
+            pressed=0;
+            return false;
+        } else {
+            return false;	
+        }
+    }
+  } 
 };
+
+
 // Crea un oggetto LED sulla porta 13
 LED ledGreen(12);
 LED ledBlu(13);
@@ -126,10 +155,14 @@ void loop() {
     ledGreen.inverti();
   }
   
-  if(p2.press()) {
-    ledBlu.accendi();
-  } else {
-    ledBlu.spegni();
+  if(p2.doppioClick()) {
+    ledBlu.inverti();
   }
+  
+  //if(p2.press()) {
+  //  ledBlu.accendi();
+  //} else {
+  //  ledBlu.spegni();
+  //}
 }
 
