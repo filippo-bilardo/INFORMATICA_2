@@ -73,7 +73,7 @@ void Pulsante::task() {
       nClick++;
       startPressTime=now;
       startClickTime=now;
-      isPressedStop=true;
+      isPressedStop=true; 
       stato=3;
     } 
   //------ S3 = COUNT_UP ------
