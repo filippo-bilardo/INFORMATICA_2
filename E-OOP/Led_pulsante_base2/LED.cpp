@@ -25,20 +25,21 @@ void LED::inverti() {
   }
 }
 
-void LED::lampeggia(int nr) {
-  for(int i=0; i<nr; i++) {
-    accendi();
-    delay(500);
-    spegni();
-    delay(500);
-  }
-}
 void LED::lampeggia(int nr, int ritardo) {
   for(int i=0; i<nr; i++) {
     accendi();
     delay(ritardo);
     spegni();
     delay(ritardo);
+  }
+}
+void LED::lampeggia(int durata) {
+  static unsigned long prima = 0;
+  unsigned long adesso = millis();
+  int tempoTrascorso = adesso - prima; 
+  if (tempoTrascorso >= durata) {
+    prima = adesso;
+    inverti();
   }
 }
 

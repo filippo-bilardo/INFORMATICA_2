@@ -106,6 +106,10 @@ void Pulsante::task() {
       //TODO implementare
     } 
   }
+  } else if(stato==5) {
+    stato=0;
+    //TODO implementare 
+  }
 }
 
 bool Pulsante::press() {

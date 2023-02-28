@@ -44,7 +44,7 @@ class LED {
       * @brief esegue nr lampeggi
       * @version 1.0 26/02/23 Versione iniziale
       */
-      void lampeggia(int nr);
+      void lampeggia(int durata);
       void lampeggia(int nr, int ritardo);
       /** ****************************************************************************************
       * @todo Da testare
