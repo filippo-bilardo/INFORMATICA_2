@@ -1,5 +1,0 @@
-michele.lombardi2@unibo.it A 32
-tizio@studio.unibo.it S 28
-caio@studio.unibo.it S 27
-andrea.acquaviva@unibo.it A 32
-sempronio@studio.unibo.it S 29
