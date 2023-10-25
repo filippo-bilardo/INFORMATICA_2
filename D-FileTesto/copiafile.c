@@ -5,6 +5,7 @@ copiafile.c
 NOTA: il carattere letto è un char ma lo definiamo int per 
 poter riconoscere la costante EOF
 vedi https://en.cppreference.com/w/c/io/fgetc 
+https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2310.pdf 
 */
 #include <stdio.h>
 
