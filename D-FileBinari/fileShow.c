@@ -1,3 +1,14 @@
+/**
+ * @file fileShow.c
+ * @date 15/10/2023
+ * 
+ * @brief Stampa il contenuto di un file in esadecimale e ASCII.
+ * 
+ * Il programma prende in input il nome di un file e stampa il suo contenuto
+ * in esadecimale e ASCII.
+ * 
+ * @versione 1.0
+ */
 #include <stdio.h>
 
 void printHexAndAscii(FILE *file);
