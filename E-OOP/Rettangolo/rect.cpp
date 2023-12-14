@@ -1,5 +1,5 @@
 /**************************************************************************************************************
-* @brief GESTIONE DEI FILE BINARI                                                                             *
+* @brief                                                                  *
 * <specifiche del progetto>                                                                                   *
 * <specifiche del collaudo>                                                                                   *
 * @author SIMONE ACCONCIA 4^H                                                                                 *

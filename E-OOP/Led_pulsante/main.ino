@@ -15,22 +15,47 @@
 #include "LED.h"
 #include "Pulsante.h"
 
+//------------------------------------------------------------------------------------------
+//=== CONSTANTS ============================================================================
+//------------------------------------------------------------------------------------------
 #define LED1_PIN 27
 #define LED2_PIN 26
 
+//------------------------------------------------------------------------------------------
+//=== LOCAL VARIABLES ======================================================================
+//------------------------------------------------------------------------------------------
 LED led1(LED1_PIN); // creiamo un'istanza della classe LED su pin 27
 LED led2(LED2_PIN); // creiamo un'istanza della classe LED su pin 26
-Pulsante P1(25);
-Pulsante P2(33);
+//Pulsante P1(25);
+//Pulsante P2(33);
+Pulsante *P2, *P1;
 
+//------------------------------------------------------------------------------------------
+//=== SETUP ================================================================================
+//------------------------------------------------------------------------------------------
 void setup(void) {
   Serial.begin(115200); // Inizializza la comunicazione seriale
+  P1 = new Pulsante(25);
+  P2 = new Pulsante(33);
   led1.accendi();
   led2.test(0);
   led1.spegni();
 }
 
+//------------------------------------------------------------------------------------------
+//=== MAIN LOOP ============================================================================
+//------------------------------------------------------------------------------------------
 void loop(void) {
-  P1.test(1); // Esegue il test per verificare se è stato effettuata una pressiones
-  P2.test(2); // Esegue il test per verificare se è stato effettuato un click
+  P1->test(1); // Esegue il test per verificare se è stato effettuata una pressiones
+  P2->test(2); // Esegue il test per verificare se è stato effettuato un click
+   
+  if(P1->press()) {
+    led1.accendi();
+  } else {
+    led1.spegni();
+  }
+  
+  if(P2->click()) {
+    led2.inverti();
+  }
 }

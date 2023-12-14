@@ -2,40 +2,21 @@
 #include "Pulsante.h"
 
 Pulsante::Pulsante(int pin) {
-  pin_ = pin;
-  statoPrecedente_ = LOW;
-  statoAttuale_ = LOW;
-  ultimoClick_ = 0;
-  ultimoDoppioClick_ = 0;
-  pinMode(pin_, INPUT_PULLUP);
+  _pin = pin;
+  pinMode(_pin, INPUT_PULLUP);
 }
 
 bool Pulsante::press() {
-  statoAttuale_ = !digitalRead(pin_);
-  if (statoAttuale_ == LOW && statoPrecedente_ == HIGH) {
-    statoPrecedente_ = statoAttuale_;
-    return true;
-  }
-  statoPrecedente_ = statoAttuale_;
-  return false;
+  return !digitalRead(_pin);
 }
 
 bool Pulsante::click() {
-  //se il task non è in esecuzione usare il codice bloccante 
-  if (press() && (millis() - ultimoClick_ > 50)) {
-    ultimoClick_ = millis();
-    return true;
+  if(press()) {
+    while(press()) {;}
+    return 1;
+  } else {
+    return 0;
   }
-  return false;
-}
-
-bool Pulsante::doppio_click() {
-  if (click() && (millis() - ultimoDoppioClick_ < 500)) {
-    ultimoDoppioClick_ = millis();
-    return true;
-  }
-  ultimoDoppioClick_ = millis();
-  return false;
 }
 
 void Pulsante::test(int numero_test) {
@@ -50,12 +31,6 @@ void Pulsante::test(int numero_test) {
       // Test click
       if(click()){
         Serial.println("Click");
-      }
-      break;
-    case 3:
-      // Test doppio_click
-      if(doppio_click()){
-        Serial.println("Doppio click");
       }
       break;
     default:
