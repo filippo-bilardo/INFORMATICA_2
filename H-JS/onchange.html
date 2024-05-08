@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/style.css">
+</head>
+
+<body>
+    <h1 style="color:blue; " id="header">Esempio </h1>
+    <button id="myButton">Cliccami</button>
+    <input id="CF"></input>
+    <script>
+        <!-- Click su un elemento -->
+        function handleButtonClick() {
+            console.log('Il bottone è stato cliccato!');
+        }
+        const myButton = document.getElementById('myButton');
+        myButton.addEventListener('click', handleButtonClick);
+        myButton.mouseover = function () {
+            myButton.style = "background-color: red";
+        }
+        myButton.addEventListener('mouseout', function () {
+            myButton.style = "background-color: orange";
+        });
+
+        mycf = document.getElementById('CF');
+        mycf.addEventListener('change', function () {
+            mycf.style = "background-color: yellow";
+        });
+
+        mycf.addEventListener('input', function () {
+            console.log('Il codice fiscale è stato modificato!');
+            mycf.value = mycf.value.toUpperCase();
+        });
+
+
+
+
+
+    </script>
+</body>
+
+</html>
