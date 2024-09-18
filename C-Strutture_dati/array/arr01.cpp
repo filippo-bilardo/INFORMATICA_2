@@ -14,7 +14,7 @@ int main()
       a[i]=i;
   }
   
-  //per scrivere quanto memorizzato
+  //per stampare quanto memorizzato
   for(int i=0;i<10;i++)
   {
       cout<<a[i]<<" ";
