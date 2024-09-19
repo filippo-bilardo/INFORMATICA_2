@@ -11,7 +11,7 @@ void stampaStudente(struct Studente s) {
     printf("Nome: %s, Età: %d, Media: %.2f\n", s.nome, s.eta, s.media);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     struct Studente s1 = {"Mario Rossi", 20, 27.5};
     struct Studente s2;
 

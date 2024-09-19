@@ -6,7 +6,7 @@ struct Persona {
     float altezza;
 };
 
-int main() {
+int main(int argc, char *argv[]) {
     // Dichiarazione e inizializzazione di una struttura
     struct Persona persona1;
 
