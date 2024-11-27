@@ -1,12 +1,12 @@
 ## INFORMATICA2 - G-Programmazione Web (Javascript) 
 
-- [text](<01. Introduzione a JavaScript/README.md>) 
-- [text](<02. Ambiente di sviluppo/README.md>) 
-- [text](<03. Fondamenti di JavaScript/README.md>) 
-- [text](<04. Lavorare con i Dati/README.md>) 
-- [text](<05. Funzioni - concetti di base/README.md>) 
-- [text](<06. Il Document Object Model (DOM)/README.md>) 
-- [text](<07. Disegni e animazioni con Canvas/README.md>) 
+- [01. Introduzione a JavaScript](<01. Introduzione a JavaScript/README.md>) 
+- [02. Ambiente di sviluppo](<02. Ambiente di sviluppo/README.md>) 
+- [03. Fondamenti di JavaScript](<03. Fondamenti di JavaScript/README.md>) 
+- [04. Lavorare con i Dati](<04. Lavorare con i Dati/README.md>) 
+- [05. Funzioni - concetti di base](<05. Funzioni - concetti di base/README.md>) 
+- [06. Il Document Object Model (DOM)](<06. Il Document Object Model (DOM)/README.md>) 
+- [07. Disegni e animazioni con Canvas](<07. Disegni e animazioni con Canvas/README.md>) 
 
 --- 
 [INDICE](../README.md) 
