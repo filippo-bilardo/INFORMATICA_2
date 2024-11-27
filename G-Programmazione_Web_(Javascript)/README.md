@@ -1,4 +1,4 @@
-## INFORMATICA2 - G-Programmazione Web (Javascript) 
+### G - Programmazione Web (Javascript) 
 
 - [01. Introduzione a JavaScript](<01. Introduzione a JavaScript/README.md>) 
 - [02. Ambiente di sviluppo](<02. Ambiente di sviluppo/README.md>) 
