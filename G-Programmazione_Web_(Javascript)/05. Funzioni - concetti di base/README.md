@@ -1,14 +1,12 @@
 ### Esercitazioni
-- [ES01 - Hello JS](<https://docs.google.com/presentation/d/18gXT-bq2jzWWYPEupr1jgQFO1h9PIrrtz1QpZPwstRQ/edit?usp=sharing>)
-- [ES02 - Ambiente di sviluppo per Javascript](<https://docs.google.com/presentation/d/1gwqt17xd6w2l9Br-Rm6q8op7966boCsf8iGahRLazBg/edit?usp=sharing>)
-- [ES03 - Le basi del linguaggio Javascript - Variabili e tipi di dati](<https://docs.google.com/presentation/d/133SMaVdPIU7vgPKsTgUtbzvWQpFiO9P6E8h86xL9iOY/edit?usp=sharing>)
-- [ES04 - Istruzioni decisionali e iterative in Javascript](<https://docs.google.com/presentation/d/133SMaVdPIU7vgPKsTgUtbzvWQpFiO9P6E8h86xL9iOY/edit?usp=sharing>)
-- [ES05 - il tipo dato Oggetto](<https://docs.google.com/presentation/d/1bYmh2qZSC2-gd8J22FeR9aRquMfGaKjPxsCAd2M6jYk/edit#slide=id.p>)
-- [ES06 - Le funzioni, concetti di base (A.S. 2023-24)](<>)
-- [ES07 - Introduzione al DOM e gestione dei nodi (A.S. 2023-24)](<>)
-- [ES08 - Interazione con le pagine web, eventi e callback (A.S. 2023-24)](<>)
+- [ES06 - Le funzioni, concetti di base (A.S. 2023-24)](<https://docs.google.com/presentation/d/15zyQuF8ONwm0vMEUXAgpgIBCgbRqWQTsL9IIXiVcdY0/edit?usp=sharing>)
 
 ### Teoria
-
+[5.1 - Dichiarazione e invocazione](<05.1 - Dichiarazione e invocazione.md>) 
+[5.2 - Tipologia di funzioni](<05.2 - Tipologia di funzioni.md>) 
+[5.3 - Le funzioni come valori (first class function)](<05.3 - Le funzioni come valori (first class function).md>) 
+[5.4 - Funzioni anonime](<05.4 - Funzioni anonime.md>) 
+[5.5 - arrow functions](<05.5 - arrow functions.md>) 
+[5.6 - Scope e contesto (`this`)](<05.6 - Scope e contesto (`this`).md>)
 --- 
 [INDICE](../README.md) 
