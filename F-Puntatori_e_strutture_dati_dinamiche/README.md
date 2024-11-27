@@ -1,4 +1,4 @@
-## INFORMATICA2 -  
+## F - Puntatori e strutture dati dinamiche 
 ### Esercitazioni
 ### Teoria
 - Puntatori

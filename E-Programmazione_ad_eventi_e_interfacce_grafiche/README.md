@@ -1,4 +1,4 @@
-## INFORMATICA2 -  
+## E - Programmazione ad eventi e interfacce grafiche 
 ### Esercitazioni
 ### Teoria
 
