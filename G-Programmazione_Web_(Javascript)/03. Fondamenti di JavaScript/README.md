@@ -1,14 +1,15 @@
 ### Esercitazioni
-- [ES01 - Hello JS](<https://docs.google.com/presentation/d/18gXT-bq2jzWWYPEupr1jgQFO1h9PIrrtz1QpZPwstRQ/edit?usp=sharing>)
-- [ES02 - Ambiente di sviluppo per Javascript](<https://docs.google.com/presentation/d/1gwqt17xd6w2l9Br-Rm6q8op7966boCsf8iGahRLazBg/edit?usp=sharing>)
 - [ES03 - Le basi del linguaggio Javascript - Variabili e tipi di dati](<https://docs.google.com/presentation/d/133SMaVdPIU7vgPKsTgUtbzvWQpFiO9P6E8h86xL9iOY/edit?usp=sharing>)
 - [ES04 - Istruzioni decisionali e iterative in Javascript](<https://docs.google.com/presentation/d/133SMaVdPIU7vgPKsTgUtbzvWQpFiO9P6E8h86xL9iOY/edit?usp=sharing>)
-- [ES05 - il tipo dato Oggetto](<https://docs.google.com/presentation/d/1bYmh2qZSC2-gd8J22FeR9aRquMfGaKjPxsCAd2M6jYk/edit#slide=id.p>)
-- [ES06 - Le funzioni, concetti di base (A.S. 2023-24)](<>)
-- [ES07 - Introduzione al DOM e gestione dei nodi (A.S. 2023-24)](<>)
-- [ES08 - Interazione con le pagine web, eventi e callback (A.S. 2023-24)](<>)
 
 ### Teoria
+[3.1 - Tipi di dati primitivi](<03.1 - Tipi di dati primitivi.md>) 
+[3.2 - Tipi di dati di riferimento](<03.2 - Tipi di dati di riferimento.md>) 
+[3.3 - L’operatore typeof](<03.3 - L’operatore typeof.md>) 
+[3.4 - Variabili e costanti](<03.4 - Variabili e costanti.md>) 
+[3.5 - Operatori e loro utilizzo](<03.5 - Operatori e loro utilizzo.md>) 
+[3.6 - Controllo del flusso: if, else, switch](<03.6 - Controllo del flusso - if, else, switch.md>) 
+[3.7 - Loop: for, while, do-while](<03.7 - Loop - for, while, do-while.md>)
 
 --- 
 [INDICE](../README.md) 
