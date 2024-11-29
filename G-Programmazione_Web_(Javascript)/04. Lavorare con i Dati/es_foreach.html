@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Introduzione a JavaScript</title>
+</head>
+<body>
+    <h1>Esempio ciclo foreach</h1>
+    <p>Premi F12 oppure Ctrl+Shift+I per aprire la console del browser.</p>
+
+    <script>
+    //Esempio con forEach su un Array:
+    const numeri = [1, 2, 3, 4, 5];
+    numeri.forEach(function(numero) {
+        console.log(numero);
+    });
+
+    //Esempio con forEach su una Map:
+    const mappa = new Map();
+    mappa.set('a', 1); mappa.set('b', 2);
+    mappa.forEach(function(valore, chiave) {
+        console.log(chiave, valore);
+    });
+
+    //Esempio con forEach su una NodeList:
+    const nodi = document.querySelectorAll('p');
+    nodi.forEach(function(nodo) {
+        console.log(nodo.textContent);
+    });
+    </script>
+</body>
+</html>

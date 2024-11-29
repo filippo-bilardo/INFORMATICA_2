@@ -1,3 +1,5 @@
+## 3. **Fondamenti di JavaScript**
+
 ### Esercitazioni
 - [ES03 - Le basi del linguaggio Javascript - Variabili e tipi di dati](<https://docs.google.com/presentation/d/159LXcSmINlacQe8es6HroPeP_POYEyNL6kBjlANcizw>) 
 - [ES04 - Istruzioni decisionali e iterative in Javascript](<https://docs.google.com/presentation/d/133SMaVdPIU7vgPKsTgUtbzvWQpFiO9P6E8h86xL9iOY/edit?usp=sharing>)
