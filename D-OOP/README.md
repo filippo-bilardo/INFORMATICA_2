@@ -22,10 +22,10 @@
     - [02.5 Metodi statici e attributi statici](<02.5 Metodi statici e attributi statici.md>)
     - [02.3 Creazione e uso degli oggetti](<02.3 Creazione e uso degli oggetti.md>)
     - [02.4 Scope e durata degli oggetti](<02.4 Scope e durata degli oggetti.md>)
+    - [02.5 Dichiarazioni e definizioni in file separati](<02.5 Dichiarazioni e definizioni in file separati.md>)
 
 3. **Modularità e Organizzazione del Codice**
-    - [02.5 Dichiarazioni e definizioni in file separati](<02.5 Dichiarazioni e definizioni in file separati.md>)
-    - [03.1 Separazione tra dichiarazione e implementazione](<04.1 Separazione tra dichiarazione e implementazione.md>)
+    - [03.1 Separazione tra dichiarazione e implementazione](<03.1 Separazione tra dichiarazione e implementazione.md>)
     - [03.2 Namespace in C++](<03.2 Namespace in C++.md>)
 
 4. **Incapsulamento e gestione dei dati**
