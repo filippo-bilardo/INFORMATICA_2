@@ -12,15 +12,19 @@
     - [01.2 Paradigma OOP vs procedurale](<01.2 Paradigma OOP vs procedurale.md>)
     - [01.3 Programmazione modulare e OOP](<01.3 Programmazione modulare e OOP.md>)
     - [01.4 Vantaggi e sfide della programmazione ad oggetti](<01.4 Vantaggi e sfide della programmazione ad oggetti.md>)
+    - Ambienti di sviluppo consigliati
 
 2. **Classi e oggetti**
     - [02.1 Dichiarazione e definizione di classi](<02.1 Dichiarazione e definizione di classi.md>)
-    - [02.2 Costruttori e distruttori](<02.2 Costruttori e distruttori.md>)
+    - [02.2 Membri dati e metodi](<02.2 Membri dati e metodi.md>)  
+    - [02.3 Costruttori](<02.2 Costruttori.md>)
+    - [02.4 Distruttori](<02.3 Distruttori.md>)
+    - [02.5 Metodi statici e attributi statici](<02.5 Metodi statici e attributi statici.md>)
     - [02.3 Creazione e uso degli oggetti](<02.3 Creazione e uso degli oggetti.md>)
     - [02.4 Scope e durata degli oggetti](<02.4 Scope e durata degli oggetti.md>)
-    - [02.5 Dichiarazioni e definizioni in file separati](<02.5 Dichiarazioni e definizioni in file separati.md>)
 
 3. **Modularità e Organizzazione del Codice**
+    - [02.5 Dichiarazioni e definizioni in file separati](<02.5 Dichiarazioni e definizioni in file separati.md>)
     - [03.1 Separazione tra dichiarazione e implementazione](<04.1 Separazione tra dichiarazione e implementazione.md>)
     - [03.2 Namespace in C++](<03.2 Namespace in C++.md>)
 
