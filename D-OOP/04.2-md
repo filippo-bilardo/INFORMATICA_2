@@ -1,0 +1,141 @@
+## 4.2 Namespace in C++
+
+I namespace in C++ sono una funzionalità fondamentale per organizzare e strutturare il codice, evitando conflitti di nome tra variabili, funzioni, classi o altri identificatori in programmi complessi o in progetti con librerie di terze parti.
+
+### Che cos'è un namespace?
+
+Un namespace è uno spazio logico che permette di raggruppare identificatori correlati sotto un nome comune. Gli identificatori all'interno di un namespace possono essere referenziati utilizzando il nome del namespace come prefisso.
+
+Esempio di dichiarazione di un namespace:
+
+```cpp
+namespace MioNamespace {
+    void stampaMessaggio() {
+        std::cout << "Ciao dal namespace MioNamespace!" << std::endl;
+    }
+}
+```
+
+In questo esempio, la funzione `stampaMessaggio` appartiene al namespace `MioNamespace`.
+
+### Utilizzo dei namespace
+
+Per accedere agli identificatori definiti in un namespace, si utilizza l'operatore di risoluzione dell'ambito (`::`).
+
+Esempio:
+
+```cpp
+#include <iostream>
+
+namespace MioNamespace {
+    void stampaMessaggio() {
+        std::cout << "Ciao dal namespace MioNamespace!" << std::endl;
+    }
+}
+
+int main() {
+    MioNamespace::stampaMessaggio();
+    return 0;
+}
+```
+
+### L'istruzione `using`
+
+Per semplificare l'uso degli identificatori di un namespace, è possibile utilizzare l'istruzione `using`.
+
+Esempio:
+
+```cpp
+#include <iostream>
+
+namespace MioNamespace {
+    void stampaMessaggio() {
+        std::cout << "Ciao dal namespace MioNamespace!" << std::endl;
+    }
+}
+
+int main() {
+    using MioNamespace::stampaMessaggio;
+
+    stampaMessaggio(); // Non è più necessario specificare MioNamespace::
+    return 0;
+}
+```
+
+In alternativa, è possibile utilizzare l'intero namespace:
+
+```cpp
+using namespace MioNamespace;
+```
+
+Questa pratica è utile per semplificare il codice, ma va usata con cautela per evitare conflitti di nome.
+
+### Namespace annidati
+
+I namespace possono essere annidati per organizzare ulteriormente il codice.
+
+Esempio:
+
+```cpp
+namespace PrimoLivello {
+    namespace SecondoLivello {
+        void stampaMessaggio() {
+            std::cout << "Ciao dal namespace annidato!" << std::endl;
+        }
+    }
+}
+
+int main() {
+    PrimoLivello::SecondoLivello::stampaMessaggio();
+    return 0;
+}
+```
+
+### Il namespace `std`
+
+Il namespace `std` (abbreviazione di "standard") è un namespace predefinito che contiene tutti gli identificatori della libreria standard di C++.
+
+Esempio:
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Ciao dal namespace std!" << std::endl;
+    return 0;
+}
+```
+
+È possibile evitare di specificare `std::` utilizzando l'istruzione:
+
+```cpp
+using namespace std;
+```
+
+Tuttavia, in progetti complessi è consigliabile evitare questa pratica per ridurre il rischio di conflitti.
+
+### Namespace anonimi
+
+I namespace anonimi sono utili per limitare la visibilità degli identificatori all'interno di un singolo file. Gli identificatori definiti in un namespace anonimo non possono essere utilizzati al di fuori di quel file.
+
+Esempio:
+
+```cpp
+#include <iostream>
+
+namespace {
+    void stampaMessaggio() {
+        std::cout << "Ciao dal namespace anonimo!" << std::endl;
+    }
+}
+
+int main() {
+    stampaMessaggio();
+    return 0;
+}
+```
+
+### Conclusione
+
+L'uso dei namespace in C++ è essenziale per organizzare il codice, migliorare la modularità e prevenire conflitti di nome. Comprendere come sfruttarli efficacemente è una competenza fondamentale per scrivere software scalabile e ben strutturato.
+
