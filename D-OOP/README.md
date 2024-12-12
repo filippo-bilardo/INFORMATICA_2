@@ -29,18 +29,18 @@
     - [03.2 Namespace in C++](<03.2 Namespace in C++.md>)
 
 4. **Incapsulamento e gestione dei dati**
-    - [04.1. Incapsulamento e accesso ai dati](<>)
-    - [04.2. Visibilità e accesso ai membri](<>)
-    - [04.2 Metodi getter e setter](<04.2 Metodi getter e setter.md>)
+    - [04.1 Incapsulamento e accesso ai dati](<>)
+    - [04.2 Visibilità e accesso ai membri](<>)
+    - [04.3 Metodi getter e setter](<04.2 Metodi getter e setter.md>)
 
 5. **Ereditarietà e polimorfismo**
-   - 5.1 Tipi di ereditarietà
-   - 5.2 Overriding di metodi
-   - 5.3 Costruttori e distruttori nelle classi derivate
-   - 5.4 Classi astratte e interfacce
+   - [05.1 Tipi di ereditarietà](<05.1 Tipi di ereditarietà.md>)
+   - [05.2 Overriding di metodi](<05.2 Overriding di metodi.md>)
+   - 05.3 Costruttori e distruttori nelle classi derivate
+   - [05.4 Classi astratte e interfacce](<05.4 Classi astratte e interfacce.md>)
    - 5.5 Classi astratte e metodi puri
    - 5.6 Ereditarietà multipla e problemi legati a essa
-   - 5.7 Polimorfismo statico vs dinamico
+   - [05.7 Polimorfismo](<05.7 Polimorfismo.md>)
    - 5.8 Funzioni virtuali
    - 5.9 V-table e il meccanismo di dispatch dinamico
 
