@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <style>
+        #reader {
+            width: 300px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">QR Code Scanner</h1>
+    <div id="reader"></div>
+    <div id="result">Scansiona un codice QR o un codice a barre</div>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script>
+        // Inizializza il lettore QR code
+        const reader = new Html5Qrcode("reader");
+        const onScanSuccess = (decodedText, decodedResult) => {
+            // Mostra il risultato della scansione
+            document.getElementById("result").innerText = `Risultato: ${decodedText}`;
+            // Ferma la scansione una volta trovato un codice
+            reader.stop();
+        };
+
+        const onScanFailure = (error) => {
+            // Opzionale: puoi loggare gli errori se necessario
+            console.warn(`Errore di scansione: ${error}`);
+        };
+
+        // Configura le opzioni per il lettore
+        reader.start(
+            { facingMode: "environment" }, // Usa la fotocamera posteriore
+            { fps: 10, qrbox: { width: 250, height: 250 } }, // Imposta la frequenza e l'area di scansione
+            onScanSuccess,
+            onScanFailure
+        ).catch(err => {
+            console.error(`Errore nell'inizializzazione: ${err}`);
+        });
+    </script>
+</body>
+</html>

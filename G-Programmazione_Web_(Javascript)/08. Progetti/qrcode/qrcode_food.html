@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner with Manual Input</title>
+    <style>
+        #reader {
+            width: 300px;
+            margin: 20px auto;
+            display: none; /* Nascondi il lettore finché la scansione non viene avviata */
+            border: 1px solid #ccc;
+        }
+        #result, #product-info {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        #controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #manual-input {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+            border: none;
+            color: white;
+        }
+        #start-button {
+            background-color: #4CAF50;
+        }
+        #start-button:hover {
+            background-color: #45a049;
+        }
+        #stop-button {
+            background-color: #f44336;
+        }
+        #stop-button:hover {
+            background-color: #e53935;
+        }
+        #search-button {
+            background-color: #2196F3;
+        }
+        #search-button:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">QR Code Scanner with Manual Input</h1>
+    <div id="controls">
+        <button id="start-button">Avvia Scansione</button>
+        <button id="stop-button" disabled>Stop Scansione</button>
+    </div>
+    <div id="reader"></div>
+    <div id="manual-input">
+        <label for="barcode-input">Inserisci codice a barre manualmente:</label>
+        <input type="text" id="barcode-input" placeholder="Inserisci codice a barre">
+        <button id="search-button">Cerca Prodotto</button>
+    </div>
+    <div id="result">Scansiona un codice QR o un codice a barre</div>
+    <div id="product-info"></div>
+    <script src="https://unpkg.com/html5-qrcode/"></script>
+    <script>
+        let reader;
+
+        // Funzione per avviare la scansione
+        function startScan() {
+            // Mostra il lettore
+            document.getElementById("reader").style.display = "block";
+            document.getElementById("start-button").disabled = true; // Disabilita il pulsante di avvio
+            document.getElementById("stop-button").disabled = false; // Abilita il pulsante di stop
+
+            // Inizializza il lettore QR code
+            reader = new Html5Qrcode("reader");
+            reader.start(
+                { facingMode: "environment" }, // Usa la fotocamera posteriore
+                { fps: 10, qrbox: { width: 250, height: 250 } }, // Configurazioni
+                async (decodedText) => {
+                    // Mostra il risultato
+                    document.getElementById("result").innerText = `Risultato: ${decodedText}`;
+                    
+                    // Recupera informazioni da OpenFoodFacts
+                    await fetchProductInfo(decodedText);
+                    
+                    // Ferma la scansione automaticamente
+                    stopScan();
+                },
+                (error) => {
+                    // Log degli errori (opzionale)
+                    console.warn(`Errore di scansione: ${error}`);
+                }
+            ).catch(err => {
+                console.error(`Errore nell'inizializzazione: ${err}`);
+            });
+        }
+
+        // Funzione per fermare la scansione
+        function stopScan() {
+            if (reader) {
+                reader.stop().then(() => {
+                    document.getElementById("reader").style.display = "none"; // Nascondi il lettore
+                    document.getElementById("start-button").disabled = false; // Riabilita il pulsante di avvio
+                    document.getElementById("stop-button").disabled = true; // Disabilita il pulsante di stop
+                    console.log("Scansione interrotta.");
+                }).catch(err => {
+                    console.error("Errore durante l'arresto della scansione:", err);
+                });
+            }
+        }
+
+        // Funzione per recuperare informazioni dal prodotto con OpenFoodFacts
+        async function fetchProductInfo(barcode) {
+            const apiUrl = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
+            const productInfoDiv = document.getElementById("product-info");
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error(`Errore API: ${response.statusText}`);
+
+                const data = await response.json();
+                if (data.status === 1) {
+                    const product = data.product;
+                    productInfoDiv.innerHTML = `
+                        <h3>Informazioni sul prodotto</h3>
+                        <p><strong>Nome:</strong> ${product.product_name || 'Non disponibile'}</p>
+                        <p><strong>Marca:</strong> ${product.brands || 'Non disponibile'}</p>
+                        <p><strong>Categoria:</strong> ${product.categories || 'Non disponibile'}</p>
+                        <p><strong>Paese di origine:</strong> ${product.countries || 'Non disponibile'}</p>
+                        <p><strong>Ingredienti:</strong> ${product.ingredients_text || 'Non disponibile'}</p>
+                    `;
+                } else {
+                    productInfoDiv.innerHTML = `<p>Prodotto non trovato.</p>`;
+                }
+            } catch (error) {
+                console.error("Errore nel recupero del prodotto:", error);
+                productInfoDiv.innerHTML = `<p>Errore durante il recupero del prodotto.</p>`;
+            }
+        }
+
+        // Eventi per i pulsanti
+        document.getElementById("start-button").addEventListener("click", startScan);
+        document.getElementById("stop-button").addEventListener("click", stopScan);
+        document.getElementById("search-button").addEventListener("click", () => {
+            const barcode = document.getElementById("barcode-input").value.trim();
+            if (barcode) {
+                document.getElementById("result").innerText = `Codice inserito manualmente: ${barcode}`;
+                fetchProductInfo(barcode);
+            } else {
+                alert("Inserisci un codice a barre valido.");
+            }
+        });
+    </script>
+</body>
+</html>

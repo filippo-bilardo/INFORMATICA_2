@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <style>
+        #reader {
+            width: 300px;
+            margin: 20px auto;
+            display: none; /* Nascondi il lettore finché la scansione non viene avviata */
+            border: 1px solid #ccc;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        #controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+            border: none;
+            color: white;
+        }
+        #start-button {
+            background-color: #4CAF50;
+        }
+        #start-button:hover {
+            background-color: #45a049;
+        }
+        #stop-button {
+            background-color: #f44336;
+        }
+        #stop-button:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">QR Code Scanner</h1>
+    <div id="controls">
+        <button id="start-button">Avvia Scansione</button>
+        <button id="stop-button" disabled>Stop Scansione</button>
+    </div>
+    <div id="reader"></div>
+    <div id="result">Scansiona un codice QR o un codice a barre</div>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+        let reader;
+
+        // Funzione per avviare la scansione
+        function startScan() {
+            // Mostra il lettore
+            document.getElementById("reader").style.display = "block";
+            document.getElementById("start-button").disabled = true; // Disabilita il pulsante di avvio
+            document.getElementById("stop-button").disabled = false; // Abilita il pulsante di stop
+
+            // Inizializza il lettore QR code
+            reader = new Html5Qrcode("reader");
+            reader.start(
+                { facingMode: "environment" }, // Usa la fotocamera posteriore
+                { fps: 10, qrbox: { width: 250, height: 250 } }, // Configurazioni
+                (decodedText) => {
+                    // Mostra il risultato
+                    document.getElementById("result").innerText = `Risultato: ${decodedText}`;
+                    // Ferma la scansione automaticamente
+                    stopScan();
+                },
+                (error) => {
+                    // Log degli errori (opzionale)
+                    console.warn(`Errore di scansione: ${error}`);
+                }
+            ).catch(err => {
+                console.error(`Errore nell'inizializzazione: ${err}`);
+            });
+        }
+
+        // Funzione per fermare la scansione
+        function stopScan() {
+            if (reader) {
+                reader.stop().then(() => {
+                    document.getElementById("reader").style.display = "none"; // Nascondi il lettore
+                    document.getElementById("start-button").disabled = false; // Riabilita il pulsante di avvio
+                    document.getElementById("stop-button").disabled = true; // Disabilita il pulsante di stop
+                    console.log("Scansione interrotta.");
+                }).catch(err => {
+                    console.error("Errore durante l'arresto della scansione:", err);
+                });
+            }
+        }
+
+        // Aggiungi eventi ai pulsanti
+        document.getElementById("start-button").addEventListener("click", startScan);
+        document.getElementById("stop-button").addEventListener("click", stopScan);
+    </script>
+</body>
+</html>
