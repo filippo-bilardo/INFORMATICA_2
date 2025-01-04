@@ -1,2 +1,0 @@
-Ecco il mockup per l'interfaccia utente dell'applicazione. Può essere utilizzato come punto di riferimento per lo sviluppo del design e l'implementazione dell'interfaccia. Se hai bisogno di ulteriori modifiche o dettagli, fammi sapere!
-![alt text](image.png)
