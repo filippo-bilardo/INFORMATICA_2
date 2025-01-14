@@ -23,6 +23,7 @@
     - [02.3 Creazione e uso degli oggetti](<02.3 Creazione e uso degli oggetti.md>)
     - [02.4 Scope e durata degli oggetti](<02.4 Scope e durata degli oggetti.md>)
     - [02.5 Dichiarazioni e definizioni in file separati](<02.5 Dichiarazioni e definizioni in file separati.md>)
+    - [02.6 Overloading dei metodi](<02.6 Overloading dei metodi.md>)
 
 3. **Modularità e Organizzazione del Codice**
     - [03.1 Separazione tra dichiarazione e implementazione](<03.1 Separazione tra dichiarazione e implementazione.md>)
