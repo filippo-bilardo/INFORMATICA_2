@@ -2,8 +2,7 @@
 
 ### Esercitazioni
 - [ES01 - Creazione della classe Led e Pulsante](<https://docs.google.com/presentation/d/1RUn2r8tAz_i94ZXaaMuwl6FeOWLaSI_gyfLwiM7jtnw>)
-- ES02 - Separazione del codice su più file
-- ES02 - Overloading dei metodi, Pulsanti con Arduino (A.S. 2023-24)
+- [ES02 - Overloading dei metodi, Pulsanti con Arduino](<https://docs.google.com/presentation/d/13HiQHvaa1GNG24DIoQ8DEMGygBsTNAbFN5ccn7S8lM0>)
 - ES03 - Task per ottimizzare l'esecuzione del codice (A.S. 2023-24)
 
 ### Teoria
