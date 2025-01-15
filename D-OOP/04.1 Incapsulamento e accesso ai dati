@@ -1,0 +1,117 @@
+## 4.1 Incapsulamento e accesso ai dati
+
+L’**incapsulamento** è uno dei principi fondamentali della programmazione orientata agli oggetti (OOP) e consiste nel nascondere i dettagli dell'implementazione di una classe e nel fornire un'interfaccia chiara e controllata per l'accesso e la manipolazione dei dati.
+
+### Definizione
+
+L’incapsulamento permette di:
+1. **Nascondere i dettagli dell'implementazione interna**: i dati membri di una classe sono generalmente dichiarati come `private` o `protected`.
+2. **Proteggere i dati**: si evitano modifiche indesiderate o inconsapevoli da parte di codice esterno.
+3. **Offrire un'interfaccia pubblica**: tramite metodi `public` (getter e setter), si controlla come i dati vengono letti o modificati.
+
+---
+
+### Accesso ai dati
+
+Per implementare l'incapsulamento, i membri di una classe possono essere dichiarati con i seguenti **livelli di accesso**:
+
+1. **`private`**: Accessibile solo dalla classe stessa.
+2. **`protected`**: Accessibile dalla classe stessa e dalle sue classi derivate.
+3. **`public`**: Accessibile da qualsiasi parte del programma.
+
+---
+
+### Esempio pratico
+
+Consideriamo una classe `ContoBancario` che rappresenta un conto corrente:
+
+```cpp
+#include <iostream>
+#include <string>
+
+class ContoBancario {
+private:
+    std::string intestatario;
+    double saldo;
+
+public:
+    // Costruttore
+    ContoBancario(const std::string& nome, double importoIniziale)
+        : intestatario(nome), saldo(importoIniziale) {}
+
+    // Getter per l'intestatario
+    std::string getIntestatario() const {
+        return intestatario;
+    }
+
+    // Getter per il saldo
+    double getSaldo() const {
+        return saldo;
+    }
+
+    // Metodo per depositare denaro
+    void deposita(double importo) {
+        if (importo > 0) {
+            saldo += importo;
+            std::cout << "Deposito di " << importo << " effettuato con successo." << std::endl;
+        } else {
+            std::cout << "Importo non valido per il deposito." << std::endl;
+        }
+    }
+
+    // Metodo per prelevare denaro
+    void preleva(double importo) {
+        if (importo > 0 && importo <= saldo) {
+            saldo -= importo;
+            std::cout << "Prelievo di " << importo << " effettuato con successo." << std::endl;
+        } else {
+            std::cout << "Importo non valido o saldo insufficiente." << std::endl;
+        }
+    }
+};
+```
+
+**Programma principale (main):**
+
+```cpp
+int main() {
+    // Creazione di un conto bancario
+    ContoBancario conto("Mario Rossi", 1000.0);
+
+    // Accesso ai dati tramite metodi pubblici
+    std::cout << "Intestatario: " << conto.getIntestatario() << std::endl;
+    std::cout << "Saldo iniziale: " << conto.getSaldo() << " euro" << std::endl;
+
+    // Operazioni sul conto
+    conto.deposita(200.0);
+    std::cout << "Saldo dopo deposito: " << conto.getSaldo() << " euro" << std::endl;
+
+    conto.preleva(150.0);
+    std::cout << "Saldo dopo prelievo: " << conto.getSaldo() << " euro" << std::endl;
+
+    return 0;
+}
+```
+
+---
+
+### Output del programma
+
+```plaintext
+Intestatario: Mario Rossi
+Saldo iniziale: 1000 euro
+Deposito di 200 effettuato con successo.
+Saldo dopo deposito: 1200 euro
+Prelievo di 150 effettuato con successo.
+Saldo dopo prelievo: 1050 euro
+```
+
+---
+
+### Vantaggi dell'incapsulamento
+
+1. **Manutenzione semplificata**: Il codice interno può essere modificato senza influire sul codice che utilizza la classe.
+2. **Sicurezza dei dati**: Evita l'accesso non controllato ai dati sensibili.
+3. **Modularità**: Favorisce la separazione tra l'interfaccia (cosa può fare la classe) e l'implementazione (come lo fa).
+
+L'incapsulamento è un pilastro per costruire codice affidabile, riutilizzabile e facile da gestire.
