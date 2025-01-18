@@ -15,4 +15,4 @@ Appunti ed esempi per gli studenti del corso **INFORMATICA2** del 4° anno
 ## Corsi collegati
 - [INFORMATICA_1](https://github.com/filippo-bilardo/INFORMATICA_1)
 - [INFORMATICA_2](https://github.com/filippo-bilardo/INFORMATICA_2)
-- [INFORMATICA_3](https://github.com/filippo-bilardo/INFORMATICA_3)
+- [INFORMATICA_3](https://github.com/filippo-bilardo/INFORMATICA_3_PHP)
