@@ -27,7 +27,9 @@
 
 4. Compilazione e collegamento di moduli
    - [04.1 Compilazione e collegamento di moduli](<04.1 Compilazione e collegamento di moduli.md>) 
-  
+   - [04.2 Translation unit](<04.2 Translation unit.md>)
+   - [04.3 Compilazione e linking](<04.3 Compilazione e linking.md>)
+
 5. Best practices per il codice modulare
    - [05.1 Mantenere basso il livello di dipendenze](<05.1 Mantenere basso il livello di dipendenze.md>)
    - [05.2 Separare le responsabilità](<05.2 Separare le responsabilità.md>)
