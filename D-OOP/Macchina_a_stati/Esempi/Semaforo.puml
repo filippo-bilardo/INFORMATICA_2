@@ -1,0 +1,19 @@
+@startuml
+
+[*] --> VERDE
+
+state VERDE {
+  VERDE --> GIALLO : tempo_verde_scaduto
+  VERDE --> GIALLO : pulsante_prenotazione_premuto
+}
+
+state GIALLO {
+  GIALLO --> ROSSO : tempo_giallo_scaduto
+}
+
+state ROSSO {
+  ROSSO --> VERDE : tempo_rosso_scaduto
+  ROSSO --> GIALLO : pulsante_prenotazione_premuto
+}
+
+@enduml

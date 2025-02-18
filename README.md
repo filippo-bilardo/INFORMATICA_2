@@ -10,6 +10,7 @@ Appunti ed esempi per gli studenti del corso **INFORMATICA2** del 4° anno
 - [E - Programmazione ad eventi e interfacce grafiche](E-Programmazione_ad_eventi_e_interfacce_grafiche/README.md) 
 - [F - Puntatori e strutture dati dinamiche](F-Puntatori_e_strutture_dati_dinamiche/README.md)  
 - [G - Programmazione Web (Javascript)](G-Programmazione_Web_(Javascript)/README.md) 
+- [H - Altri argomenti](H-Misc/README.md) 
 
 ---
 ## Corsi collegati
