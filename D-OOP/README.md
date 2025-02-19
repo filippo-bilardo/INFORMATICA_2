@@ -41,6 +41,7 @@
    - [05.3 Costruttori e distruttori nelle classi derivate](<05.3 Costruttori e distruttori nelle classi derivate.md>)
    - [05.4 Classi astratte e interfacce](<05.4 Classi astratte e interfacce.md>)
    - [05.5 Classi astratte e metodi puri](<05.5 Classi astratte e metodi puri.md>)
+   - [05.5 Polimorfismo e casting](<05.5 Polimorfismo e casting.md>)
    - [05.6 Ereditarietà multipla e problemi legati a essa](<05.6 Ereditarietà multipla e problemi legati a essa.md>)
    - [05.7 Polimorfismo](<05.7 Polimorfismo.md>)
    - [05.8 Funzioni virtuali](<05.8 Funzioni virtuali.md>)
