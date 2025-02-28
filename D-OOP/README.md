@@ -36,15 +36,13 @@
     - [04.3 Metodi getter e setter](<04.3 Metodi getter e setter.md>)
 
 5. **Ereditarietà e polimorfismo**
-   - [05.1 Tipi di ereditarietà](<05.1 Tipi di ereditarietà.md>)
+   - [05.1 Ereditarietà concetti base](<05.1 Ereditarietà concetti base.md>)
+   - [05.6 Ereditarietà multipla](<05.6 Ereditarietà multipla.md>)
    - [05.2 Overriding di metodi](<05.2 Overriding di metodi.md>)
    - [05.3 Costruttori e distruttori nelle classi derivate](<05.3 Costruttori e distruttori nelle classi derivate.md>)
    - [05.4 Classi astratte e interfacce](<05.4 Classi astratte e interfacce.md>)
-   - [05.5 Classi astratte e metodi puri](<05.5 Classi astratte e metodi puri.md>)
    - [05.5 Polimorfismo e casting](<05.5 Polimorfismo e casting.md>)
-   - [05.6 Ereditarietà multipla e problemi legati a essa](<05.6 Ereditarietà multipla e problemi legati a essa.md>)
    - [05.7 Polimorfismo](<05.7 Polimorfismo.md>)
-   - [05.8 Funzioni virtuali](<05.8 Funzioni virtuali.md>)
    - [05.9 V-table e il meccanismo di dispatch dinamico](<05.9 V-table e il meccanismo di dispatch dinamico.md>)
 
 6. **Gestione delle eccezioni e sicurezza del codice**
