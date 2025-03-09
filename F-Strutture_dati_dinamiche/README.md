@@ -11,6 +11,7 @@
 - [02.2 Liste concatenate in C++](<02.2 Liste concatenate in C++.md>)
 - [02.2 Liste Doppiamente concatenate](<02.2 Liste Doppiamente concatenate.md>)
 - [02.3 Liste circolari](<02.3 Liste circolari.md>)
+- [02.4 Esercitazioni pratiche](<02.4 Esercitazsioni pratiche.md>)
 - Pile
 - Code
 - Alberi
