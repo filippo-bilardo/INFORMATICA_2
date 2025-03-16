@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrow Functions</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .example-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            background-color: #eef8ff;
+            border: 1px solid #cce5ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 8px 15px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .nav a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Arrow Functions</h1>
+    
+    <div class="example-section">
+        <h2>Sintassi delle Arrow Functions</h2>
+        <p>Le arrow functions offrono una sintassi più compatta rispetto alle funzioni tradizionali.</p>
+        <pre><code>// Funzione tradizionale
+function somma(a, b) {
+    return a + b;
+}
+
+// Arrow function equivalente
+const somma = (a, b) => a + b;</code></pre>
+        
+        <button onclick="mostraEsempioSintassi()">Confronta sintassi</button>
+        <div class="output" id="output-sintassi"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Sintassi con un solo parametro</h2>
+        <p>Se l'arrow function ha un solo parametro, le parentesi possono essere omesse.</p>
+        <pre><code>// Con parentesi
+const quadrato = (x) => x * x;
+
+// Senza parentesi
+const quadrato = x => x * x;</code></pre>
+        
+        <button onclick="mostraEsempioParametroSingolo()">Prova la funzione</button>
+        <div class="output" id="output-parametro-singolo"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Sintassi con più istruzioni</h2>
+        <p>Se il corpo della funzione contiene più istruzioni, è necessario utilizzare le parentesi graffe e il return esplicito.</p>
+        <pre><code>const calcolaArea = (base, altezza) => {
+    const area = base * altezza;
+    return area;
+};</code></pre>
+        
+        <button onclick="mostraEsempioMultilinea()">Calcola area</button>
+        <div class="output" id="output-multilinea"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Arrow Functions e il valore di 'this'</h2>
+        <p>Le arrow functions non hanno un proprio 'this', ma ereditano il 'this' dal contesto circostante.</p>
+        <pre><code>// Funzione tradizionale
+const persona1 = {
+    nome: "Mario",
+    saluta: function() {
+        setTimeout(function() {
+            console.log("Ciao, " + this.nome); // this.nome è undefined
+        }, 100);
+    }
+};
+
+// Arrow function
+const persona2 = {
+    nome: "Luigi",
+    saluta: function() {
+        setTimeout(() => {
+            console.log("Ciao, " + this.nome); // this.nome è "Luigi"
+        }, 100);
+    }
+};</code></pre>
+        
+        <button onclick="mostraEsempioThis()">Confronta comportamento di 'this'</button>
+        <div class="output" id="output-this"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Arrow Functions nei metodi degli array</h2>
+        <p>Le arrow functions sono particolarmente utili nei metodi degli array come map, filter e reduce.</p>
+        <pre><code>const numeri = [1, 2, 3, 4, 5];
+
+// Con funzione tradizionale
+const doppi1 = numeri.map(function(n) { return n * 2; });
+
+// Con arrow function
+const doppi2 = numeri.map(n => n * 2);</code></pre>
+        
+        <button onclick="mostraEsempioArray()">Confronta sintassi nei metodi degli array</button>
+        <div class="output" id="output-array"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Limitazioni delle Arrow Functions</h2>
+        <p>Le arrow functions non possono essere usate come costruttori e non hanno l'oggetto arguments.</p>
+        <pre><code>// Errore: le arrow functions non possono essere usate come costruttori
+const Persona = (nome) => {
+    this.nome = nome;
+};
+
+// Errore: new Persona("Mario");</code></pre>
+        
+        <button onclick="mostraEsempioLimitazioni()">Mostra limitazioni</button>
+        <div class="output" id="output-limitazioni"></div>
+    </div>
+    
+    <div class="nav">
+        <a href="../05.5 - arrow functions.md">Torna alla teoria</a>
+        <a href="06_scope_e_contesto.html">Prossimo esempio: Scope e contesto (this)</a>
+    </div>
+
+    <script>
+        // Esempio di sintassi
+        function mostraEsempioSintassi() {
+            const output = document.getElementById('output-sintassi');
+            
+            // Funzione tradizionale
+            function sommaTraditional(a, b) {
+                return a + b;
+            }
+            
+            // Arrow function
+            const sommaArrow = (a, b) => a + b;
+            
+            output.innerHTML = `Funzione tradizionale: 5 + 3 = ${sommaTraditional(5, 3)}<br>
+                               Arrow function: 5 + 3 = ${sommaArrow(5, 3)}`;
+        }
+        
+        // Esempio con un solo parametro
+        function mostraEsempioParametroSingolo() {
+            const output = document.getElementById('output-parametro-singolo');
+            
+            const quadratoConParentesi = (x) => x * x;
+            const quadratoSenzaParentesi = x => x * x;
+            
+            output.innerHTML = `Con parentesi: quadrato(4) = ${quadratoConParentesi(4)}<br>
+                               Senza parentesi: quadrato(4) = ${quadratoSenzaParentesi(4)}`;
+        }
+        
+        // Esempio con più istruzioni
+        function mostraEsempioMultilinea() {
+            const output = document.getElementById('output-multilinea');
+            
+            const calcolaArea = (base, altezza) => {
+                const area = base * altezza;
+                return area;
+            };
+            
+            output.textContent = `L'area di un rettangolo 5×3 è: ${calcolaArea(5, 3)}`;
+        }
+        
+        // Esempio con this
+        function mostraEsempioThis() {
+            const output = document.getElementById('output-this');
+            
+            // Oggetto con funzione tradizionale
+            const persona1 = {
+                nome: "Mario",
+                salutaTraditional: function() {
+                    // Utilizziamo una variabile per memorizzare il valore di this
+                    const self = this;
+                    
+                    // Simuliamo un'operazione asincrona
+                    setTimeout(function() {
+                        output.innerHTML = `Funzione tradizionale: this.nome è ${this.nome || 'undefined'} (this si riferisce all'oggetto globale)<br>`;
+                        output.innerHTML += `Con self: self.nome è ${self.nome} (self mantiene il riferimento corretto)`;
+                    }, 0);
+                }
+            };
+            
+            // Oggetto con arrow function
+            const persona2 = {
+                nome: "Luigi",
+                salutaArrow: function() {
+                    // Simuliamo un'operazione asincrona con arrow function
+                    setTimeout(() => {
+                        output.innerHTML += `<br><br>Arrow function: this.nome è ${this.nome} (this mantiene il riferimento al contesto esterno)`;
+                    }, 0);
+                }
+            };
+            
+            // Eseguiamo entrambi i metodi
+            persona1.salutaTraditional();
+            setTimeout(() => persona2.salutaArrow(), 100); // Piccolo ritardo per vedere i risultati in sequenza
+        }
+        
+        // Esempio con metodi degli array
+        function mostraEsempioArray() {
+            const output = document.getElementById('output-array');
+            
+            const numeri = [1, 2, 3, 4, 5];
+            
+            // Con funzione tradizionale
+            const doppiTradizionale = numeri.map(function(n) { 
+                return n * 2; 
+            });
+            
+            // Con arrow function
+            const doppiArrow = numeri.map(n => n * 2);
+            
+            // Filtro con funzione tradizionale
+            const pariTradizionale = numeri.filter(function(n) {
+                return n % 2 === 0;
+            });
+            
+            // Filtro con arrow function
+            const pariArrow = numeri.filter(n => n % 2 === 0);
+            
+            output.innerHTML = `Map con funzione tradizionale: [${doppiTradizionale}]<br>
+                               Map con arrow function: [${doppiArrow}]<br><br>
+                               Filter con funzione tradizionale: [${pariTradizionale}]<br>
+                               Filter con arrow function: [${pariArrow}]`;
+        }
+        
+        // Esempio di limitazioni
+        function mostraEsempioLimitazioni() {
+            const output = document.getElementById('output-limitazioni');
+            
+            // Funzione costruttore tradizionale (funziona)
+            function PersonaTraditional(nome) {
+                this.nome = nome;
+                this.saluta = function() {
+                    return "Ciao, sono " + this.nome;
+                };
+            }
+            
+            // Arrow function come costruttore (non funziona)
+            const PersonaArrow = (nome) => {
+                this.nome = nome;
+            };
+            
+            try {
+                const p1 = new PersonaTraditional("Mario");
+                output.innerHTML = `Costruttore tradizionale: ${p1.saluta()}<br><br>`;
+                
+                const p2 = new PersonaArrow("Luigi");
+                output.innerHTML += `Costruttore arrow function: ${p2.nome}`;
+            } catch (error) {
+                output.innerHTML += `Errore con arrow function: ${error.message}<br><br>`;
+                output.innerHTML += "Le arrow functions non possono essere usate come costruttori!";
+            }
+        }
+    </script>
+</body>
+</html>

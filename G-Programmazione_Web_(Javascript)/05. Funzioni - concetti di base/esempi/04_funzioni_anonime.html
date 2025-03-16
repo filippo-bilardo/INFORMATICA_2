@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funzioni Anonime</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .example-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            background-color: #eef8ff;
+            border: 1px solid #cce5ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 8px 15px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .nav a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Funzioni Anonime</h1>
+    
+    <div class="example-section">
+        <h2>Dichiarare una funzione anonima</h2>
+        <p>Le funzioni anonime sono funzioni senza nome, spesso assegnate a variabili o passate come callback.</p>
+        <pre><code>const somma = function(a, b) {
+  return a + b;
+};</code></pre>
+        
+        <button onclick="mostraEsempioDichiarazione()">Prova la funzione</button>
+        <div class="output" id="output-dichiarazione"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni anonime come callback</h2>
+        <p>Le funzioni anonime sono spesso utilizzate come callback, ad esempio nei metodi degli array.</p>
+        <pre><code>const numeri = [1, 2, 3, 4, 5];
+const doppi = numeri.map(function(numero) {
+  return numero * 2;
+});</code></pre>
+        
+        <button onclick="mostraEsempioCallback()">Esegui map con callback</button>
+        <div class="output" id="output-callback"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni anonime e arrow functions</h2>
+        <p>Le arrow functions offrono una sintassi più compatta per le funzioni anonime.</p>
+        <pre><code>const numeri = [1, 2, 3, 4, 5];
+const doppi = numeri.map(numero => numero * 2);</code></pre>
+        
+        <button onclick="mostraEsempioArrow()">Confronta sintassi</button>
+        <div class="output" id="output-arrow"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni autoinvocate anonime (IIFE)</h2>
+        <p>Le IIFE sono funzioni anonime che vengono dichiarate e immediatamente invocate. Sono utili per creare un ambito privato.</p>
+        <pre><code>(function() {
+  console.log("Questa funzione si esegue subito!");
+})();</code></pre>
+        
+        <button onclick="mostraEsempioIIFE()">Esegui IIFE</button>
+        <div class="output" id="output-iife"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni anonime in eventi</h2>
+        <p>Le funzioni anonime sono spesso utilizzate come gestori di eventi.</p>
+        <pre><code>document.getElementById("bottone").addEventListener("click", function() {
+  console.log("Bottone cliccato!");
+});</code></pre>
+        
+        <button id="bottone-evento">Clicca qui</button>
+        <div class="output" id="output-evento"></div>
+    </div>
+    
+    <div class="nav">
+        <a href="../05.4 - Funzioni anonime.md">Torna alla teoria</a>
+        <a href="05_arrow_functions.html">Prossimo esempio: Arrow Functions</a>
+    </div>
+
+    <script>
+        // Dichiarazione di funzione anonima
+        const somma = function(a, b) {
+            return a + b;
+        };
+        
+        function mostraEsempioDichiarazione() {
+            const output = document.getElementById('output-dichiarazione');
+            output.textContent = "Risultato: " + somma(5, 3);
+        }
+        
+        // Funzione anonima come callback
+        function mostraEsempioCallback() {
+            const output = document.getElementById('output-callback');
+            
+            const numeri = [1, 2, 3, 4, 5];
+            const doppi = numeri.map(function(numero) {
+                return numero * 2;
+            });
+            
+            output.textContent = `Array originale: [${numeri}], Dopo map: [${doppi}]`;
+        }
+        
+        // Confronto con arrow function
+        function mostraEsempioArrow() {
+            const output = document.getElementById('output-arrow');
+            
+            const numeri = [1, 2, 3, 4, 5];
+            
+            // Con funzione anonima tradizionale
+            const doppiTradizionale = numeri.map(function(numero) {
+                return numero * 2;
+            });
+            
+            // Con arrow function
+            const doppiArrow = numeri.map(numero => numero * 2);
+            
+            output.textContent = `Funzione anonima: [${doppiTradizionale}]\nArrow function: [${doppiArrow}]`;
+        }
+        
+        // IIFE
+        function mostraEsempioIIFE() {
+            const output = document.getElementById('output-iife');
+            
+            // Variabile definita all'esterno
+            let messaggio = "Valore esterno";
+            
+            // IIFE che crea un ambito privato
+            const risultato = (function() {
+                // Questa variabile è locale all'IIFE
+                let messaggio = "Valore interno all'IIFE";
+                return messaggio;
+            })();
+            
+            output.textContent = `Valore esterno: ${messaggio}\nValore dall'IIFE: ${risultato}`;
+        }
+        
+        // Evento con funzione anonima
+        document.getElementById('bottone-evento').addEventListener('click', function() {
+            const output = document.getElementById('output-evento');
+            output.textContent = "Evento gestito da una funzione anonima!";
+        });
+    </script>
+</body>
+</html>

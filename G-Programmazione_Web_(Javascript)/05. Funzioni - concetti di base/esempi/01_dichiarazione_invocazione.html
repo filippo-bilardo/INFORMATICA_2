@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dichiarazione e Invocazione di Funzioni</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .example-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            background-color: #eef8ff;
+            border: 1px solid #cce5ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 8px 15px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .nav a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dichiarazione e Invocazione di Funzioni</h1>
+    
+    <div class="example-section">
+        <h2>Dichiarazione di una funzione</h2>
+        <p>Una funzione può essere dichiarata in JavaScript utilizzando la parola chiave <code>function</code>, seguita dal nome della funzione, un insieme di parametri racchiusi tra parentesi e il corpo della funzione racchiuso tra parentesi graffe.</p>
+        <pre><code>function nomeFunzione(parametro1, parametro2) {
+  // Corpo della funzione
+}</code></pre>
+        
+        <h3>Esempio: Funzione di saluto</h3>
+        <pre><code>function saluta(nome) {
+  return "Ciao, " + nome + "!";
+}</code></pre>
+        
+        <button onclick="mostraEsempioSaluto()">Prova la funzione</button>
+        <div class="output" id="output-saluto"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Parametri e argomenti</h2>
+        <p>I parametri sono variabili definite nella dichiarazione di una funzione. Gli argomenti sono i valori specifici passati alla funzione quando viene invocata.</p>
+        
+        <h3>Esempio: Funzione con più parametri</h3>
+        <pre><code>function somma(a, b) {
+  return a + b;
+}</code></pre>
+        
+        <button onclick="mostraEsempioSomma()">Calcola 5 + 3</button>
+        <div class="output" id="output-somma"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Valore di ritorno</h2>
+        <p>Le funzioni possono restituire un valore usando la parola chiave <code>return</code>. Una volta eseguito il <code>return</code>, la funzione si interrompe.</p>
+        
+        <h3>Esempio: Calcolo del quadrato</h3>
+        <pre><code>function quadrato(num) {
+  return num * num;
+}</code></pre>
+        
+        <button onclick="mostraEsempioQuadrato()">Calcola il quadrato di 4</button>
+        <div class="output" id="output-quadrato"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni senza valore di ritorno</h2>
+        <p>Non tutte le funzioni devono restituire un valore. Se non viene specificato un <code>return</code>, la funzione restituisce implicitamente <code>undefined</code>.</p>
+        
+        <h3>Esempio: Stampa messaggio</h3>
+        <pre><code>function stampaMessaggio() {
+  console.log("Questo è un messaggio.");
+  // Nessun return esplicito
+}</code></pre>
+        
+        <button onclick="mostraEsempioStampa()">Esegui la funzione</button>
+        <div class="output" id="output-stampa"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni pure e impure</h2>
+        <p>Le funzioni pure restituiscono sempre lo stesso output per gli stessi input e non producono effetti collaterali. Le funzioni impure possono dipendere da variabili esterne o modificarle.</p>
+        
+        <h3>Esempio: Funzione pura</h3>
+        <pre><code>function sommaPura(a, b) {
+  return a + b;
+}</code></pre>
+        
+        <h3>Esempio: Funzione impura</h3>
+        <pre><code>let contatore = 0;
+
+function incrementaContatore() {
+  contatore++;
+  return contatore;
+}</code></pre>
+        
+        <button onclick="mostraEsempioPura()">Esegui funzione pura</button>
+        <div class="output" id="output-pura"></div>
+        
+        <button onclick="mostraEsempioImpura()">Esegui funzione impura</button>
+        <div class="output" id="output-impura"></div>
+    </div>
+    
+    <div class="nav">
+        <a href="../05.1 - Dichiarazione e invocazione.md">Torna alla teoria</a>
+        <a href="02_tipologia_funzioni.html">Prossimo esempio: Tipologia di funzioni</a>
+    </div>
+
+    <script>
+        // Funzione di saluto
+        function saluta(nome) {
+            return "Ciao, " + nome + "!";
+        }
+        
+        function mostraEsempioSaluto() {
+            const output = document.getElementById('output-saluto');
+            output.textContent = saluta("Mario");
+        }
+        
+        // Funzione somma
+        function somma(a, b) {
+            return a + b;
+        }
+        
+        function mostraEsempioSomma() {
+            const output = document.getElementById('output-somma');
+            output.textContent = "Risultato: " + somma(5, 3);
+        }
+        
+        // Funzione quadrato
+        function quadrato(num) {
+            return num * num;
+        }
+        
+        function mostraEsempioQuadrato() {
+            const output = document.getElementById('output-quadrato');
+            output.textContent = "Il quadrato di 4 è: " + quadrato(4);
+        }
+        
+        // Funzione senza return
+        function stampaMessaggio() {
+            console.log("Questo è un messaggio.");
+            // Nessun return esplicito
+        }
+        
+        function mostraEsempioStampa() {
+            const output = document.getElementById('output-stampa');
+            const risultato = stampaMessaggio();
+            output.textContent = "La funzione ha restituito: " + risultato + " (undefined)";
+            console.log("Controlla anche la console per vedere il messaggio!");
+        }
+        
+        // Funzione pura
+        function sommaPura(a, b) {
+            return a + b;
+        }
+        
+        function mostraEsempioPura() {
+            const output = document.getElementById('output-pura');
+            output.textContent = "Risultato: " + sommaPura(3, 4) + " (sempre lo stesso per gli stessi input)";
+        }
+        
+        // Funzione impura
+        let contatore = 0;
+        
+        function incrementaContatore() {
+            contatore++;
+            return contatore;
+        }
+        
+        function mostraEsempioImpura() {
+            const output = document.getElementById('output-impura');
+            output.textContent = "Contatore: " + incrementaContatore() + " (cambia ad ogni chiamata)";
+        }
+    </script>
+</body>
+</html>

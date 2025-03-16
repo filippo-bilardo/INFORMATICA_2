@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipologia di Funzioni</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .example-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            background-color: #eef8ff;
+            border: 1px solid #cce5ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 8px 15px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .nav a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tipologia di Funzioni</h1>
+    
+    <div class="example-section">
+        <h2>Funzioni dichiarate (function declaration)</h2>
+        <p>Le funzioni dichiarate sono definite con la parola chiave <code>function</code> seguita dal nome. Possono essere invocate anche prima della loro dichiarazione grazie all'hoisting.</p>
+        <pre><code>function saluta(nome) {
+  return "Ciao, " + nome + "!";
+}</code></pre>
+        
+        <button onclick="mostraEsempioFunzioneDichiarata()">Prova la funzione</button>
+        <div class="output" id="output-funzione-dichiarata"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni assegnate a variabili (function expressions)</h2>
+        <p>Le function expressions sono funzioni assegnate a variabili. Non vengono sottoposte a hoisting, quindi devono essere definite prima dell'invocazione.</p>
+        <pre><code>const moltiplica = function(a, b) {
+  return a * b;
+};</code></pre>
+        
+        <button onclick="mostraEsempioFunctionExpression()">Calcola 4 × 5</button>
+        <div class="output" id="output-function-expression"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni anonime</h2>
+        <p>Le funzioni anonime sono funzioni senza nome, spesso utilizzate come callback.</p>
+        <pre><code>setTimeout(function() {
+  console.log("Messaggio ritardato");
+}, 1000);</code></pre>
+        
+        <button onclick="mostraEsempioFunzioneAnonima()">Esegui funzione anonima</button>
+        <div class="output" id="output-funzione-anonima"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni freccia (arrow functions)</h2>
+        <p>Le arrow functions sono una sintassi compatta per dichiarare funzioni, introdotta in ES6.</p>
+        <pre><code>const somma = (a, b) => a + b;</code></pre>
+        
+        <button onclick="mostraEsempioArrowFunction()">Calcola 3 + 7</button>
+        <div class="output" id="output-arrow-function"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni di callback</h2>
+        <p>Una funzione di callback è una funzione passata come argomento a un'altra funzione.</p>
+        <pre><code>function esegui(funzione) {
+  funzione();
+}</code></pre>
+        
+        <button onclick="mostraEsempioCallback()">Esegui callback</button>
+        <div class="output" id="output-callback"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni di ordine superiore</h2>
+        <p>Le funzioni di ordine superiore sono funzioni che accettano altre funzioni come argomenti o restituiscono funzioni.</p>
+        <pre><code>function applicaOperazione(arr, operazione) {
+  return arr.map(operazione);
+}</code></pre>
+        
+        <button onclick="mostraEsempioHigherOrder()">Applica operazione</button>
+        <div class="output" id="output-higher-order"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni autoinvocate (IIFE)</h2>
+        <p>Le IIFE (Immediately Invoked Function Expressions) sono funzioni che vengono dichiarate e immediatamente invocate.</p>
+        <pre><code>(function() {
+  console.log("Questa funzione si esegue subito!");
+})();</code></pre>
+        
+        <button onclick="mostraEsempioIIFE()">Esegui IIFE</button>
+        <div class="output" id="output-iife"></div>
+    </div>
+    
+    <div class="nav">
+        <a href="../05.2 - Tipologia di funzioni.md">Torna alla teoria</a>
+        <a href="03_funzioni_come_valori.html">Prossimo esempio: Funzioni come valori</a>
+    </div>
+
+    <script>
+        // Funzione dichiarata
+        function saluta(nome) {
+            return "Ciao, " + nome + "!";
+        }
+        
+        function mostraEsempioFunzioneDichiarata() {
+            const output = document.getElementById('output-funzione-dichiarata');
+            output.textContent = saluta("Anna");
+        }
+        
+        // Function expression
+        const moltiplica = function(a, b) {
+            return a * b;
+        };
+        
+        function mostraEsempioFunctionExpression() {
+            const output = document.getElementById('output-function-expression');
+            output.textContent = "Risultato: " + moltiplica(4, 5);
+        }
+        
+        // Funzione anonima
+        function mostraEsempioFunzioneAnonima() {
+            const output = document.getElementById('output-funzione-anonima');
+            output.textContent = "Attendi 2 secondi per il messaggio...";
+            
+            setTimeout(function() {
+                output.textContent = "Messaggio ritardato eseguito!";
+            }, 2000);
+        }
+        
+        // Arrow function
+        const somma = (a, b) => a + b;
+        
+        function mostraEsempioArrowFunction() {
+            const output = document.getElementById('output-arrow-function');
+            output.textContent = "Risultato: " + somma(3, 7);
+        }
+        
+        // Callback
+        function esegui(funzione) {
+            funzione();
+        }
+        
+        function mostraEsempioCallback() {
+            const output = document.getElementById('output-callback');
+            
+            esegui(() => {
+                output.textContent = "Callback eseguita!";
+            });
+        }
+        
+        // Higher-order function
+        function applicaOperazione(arr, operazione) {
+            return arr.map(operazione);
+        }
+        
+        function mostraEsempioHigherOrder() {
+            const output = document.getElementById('output-higher-order');
+            
+            const numeri = [1, 2, 3, 4];
+            const doppi = applicaOperazione(numeri, num => num * 2);
+            
+            output.textContent = `Array originale: [${numeri}], Dopo operazione: [${doppi}]`;
+        }
+        
+        // IIFE
+        function mostraEsempioIIFE() {
+            const output = document.getElementById('output-iife');
+            
+            // Eseguiamo una IIFE che restituisce un valore
+            const risultato = (function() {
+                const messaggio = "Questa funzione si è eseguita immediatamente!";
+                return messaggio;
+            })();
+            
+            output.textContent = risultato;
+        }
+    </script>
+</body>
+</html>

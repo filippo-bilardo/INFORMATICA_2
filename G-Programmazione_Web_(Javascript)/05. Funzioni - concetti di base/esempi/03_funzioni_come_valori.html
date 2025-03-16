@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funzioni come Valori</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .example-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            background-color: #eef8ff;
+            border: 1px solid #cce5ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 8px 15px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .nav a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Funzioni come Valori (First Class Functions)</h1>
+    
+    <div class="example-section">
+        <h2>Assegnare una funzione a una variabile</h2>
+        <p>In JavaScript, le funzioni possono essere assegnate a variabili come qualsiasi altro valore.</p>
+        <pre><code>const saluta = function(nome) {
+  return "Ciao, " + nome;
+};</code></pre>
+        
+        <button onclick="mostraEsempioAssegnazione()">Prova la funzione</button>
+        <div class="output" id="output-assegnazione"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Passare una funzione come argomento</h2>
+        <p>Le funzioni possono essere passate come argomenti ad altre funzioni, una caratteristica fondamentale per le funzioni di callback.</p>
+        <pre><code>function eseguiOperazione(a, b, operazione) {
+  return operazione(a, b);
+}</code></pre>
+        
+        <button onclick="mostraEsempioArgomento()">Esegui operazioni</button>
+        <div class="output" id="output-argomento"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Restituire una funzione da un'altra funzione</h2>
+        <p>Le funzioni possono anche restituire altre funzioni, permettendo di creare funzioni personalizzate.</p>
+        <pre><code>function creaSaluto(greeting) {
+  return function(nome) {
+    return greeting + ", " + nome;
+  };
+}</code></pre>
+        
+        <button onclick="mostraEsempioRestituzione()">Crea saluti personalizzati</button>
+        <div class="output" id="output-restituzione"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni come proprietà degli oggetti</h2>
+        <p>Le funzioni possono essere assegnate come proprietà di un oggetto, diventando metodi.</p>
+        <pre><code>const persona = {
+  nome: "Marco",
+  saluta: function() {
+    return "Ciao, mi chiamo " + this.nome;
+  }
+};</code></pre>
+        
+        <button onclick="mostraEsempioMetodi()">Usa metodo dell'oggetto</button>
+        <div class="output" id="output-metodi"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Funzioni memorizzate in array</h2>
+        <p>Le funzioni possono essere memorizzate in array e iterate come qualsiasi altro valore.</p>
+        <pre><code>const operazioni = [
+  (x) => x + 1,
+  (x) => x * 2,
+  (x) => x - 3
+];</code></pre>
+        
+        <button onclick="mostraEsempioArray()">Applica sequenza di operazioni</button>
+        <div class="output" id="output-array"></div>
+    </div>
+    
+    <div class="nav">
+        <a href="../05.3 - Le funzioni come valori (first class function).md">Torna alla teoria</a>
+        <a href="04_funzioni_anonime.html">Prossimo esempio: Funzioni anonime</a>
+    </div>
+
+    <script>
+        // Assegnare una funzione a una variabile
+        const saluta = function(nome) {
+            return "Ciao, " + nome;
+        };
+        
+        function mostraEsempioAssegnazione() {
+            const output = document.getElementById('output-assegnazione');
+            output.textContent = saluta("Anna");
+        }
+        
+        // Passare una funzione come argomento
+        function eseguiOperazione(a, b, operazione) {
+            return operazione(a, b);
+        }
+        
+        function mostraEsempioArgomento() {
+            const output = document.getElementById('output-argomento');
+            
+            const somma = (x, y) => x + y;
+            const moltiplica = (x, y) => x * y;
+            const sottrai = (x, y) => x - y;
+            
+            const risultatoSomma = eseguiOperazione(5, 3, somma);
+            const risultatoMoltiplicazione = eseguiOperazione(5, 3, moltiplica);
+            const risultatoSottrazione = eseguiOperazione(5, 3, sottrai);
+            
+            output.innerHTML = `Somma: 5 + 3 = ${risultatoSomma}<br>
+                               Moltiplicazione: 5 × 3 = ${risultatoMoltiplicazione}<br>
+                               Sottrazione: 5 - 3 = ${risultatoSottrazione}`;
+        }
+        
+        // Restituire una funzione da un'altra funzione
+        function creaSaluto(greeting) {
+            return function(nome) {
+                return greeting + ", " + nome;
+            };
+        }
+        
+        function mostraEsempioRestituzione() {
+            const output = document.getElementById('output-restituzione');
+            
+            const salutaInglese = creaSaluto("Hello");
+            const salutaItaliano = creaSaluto("Ciao");
+            const salutaSpagnolo = creaSaluto("Hola");
+            
+            output.innerHTML = `Saluto inglese: ${salutaInglese("John")}<br>
+                               Saluto italiano: ${salutaItaliano("Luca")}<br>
+                               Saluto spagnolo: ${salutaSpagnolo("Carlos")}`;
+        }
+        
+        // Funzioni come proprietà degli oggetti
+        function mostraEsempioMetodi() {
+            const output = document.getElementById('output-metodi');
+            
+            const persona1 = {
+                nome: "Marco",
+                saluta: function() {
+                    return "Ciao, mi chiamo " + this.nome;
+                }
+            };
+            
+            const persona2 = {
+                nome: "Laura",
+                saluta: function() {
+                    return "Ciao, mi chiamo " + this.nome;
+                }
+            };
+            
+            output.innerHTML = `${persona1.saluta()}<br>${persona2.saluta()}`;
+        }
+        
+        // Funzioni memorizzate in array
+        function mostraEsempioArray() {
+            const output = document.getElementById('output-array');
+            
+            const operazioni = [
+                (x) => x + 1,  // Incrementa di 1
+                (x) => x * 2,  // Moltiplica per 2
+                (x) => x - 3   // Sottrai 3
+            ];
+            
+            let risultato = 5;
+            let passaggi = [`Valore iniziale: ${risultato}`];
+            
+            for (const operazione of operazioni) {
+                risultato = operazione(risultato);
+                passaggi.push(`Dopo operazione: ${risultato}`);
+            }
+            
+            output.innerHTML = passaggi.join('<br>');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scope e Contesto (this)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .example-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        pre {
+            background-color: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            background-color: #eef8ff;
+            border: 1px solid #cce5ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 8px 15px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .nav a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scope e Contesto (this)</h1>
+    
+    <div class="example-section">
+        <h2>Scope Globale e Locale</h2>
+        <p>Lo scope definisce l'ambito di visibilità delle variabili. Le variabili dichiarate all'esterno di una funzione sono globali, mentre quelle dichiarate all'interno sono locali.</p>
+        <pre><code>let nome = "Mario";  // Variabile globale
+
+function saluta() {
+    let nome = "Luigi";  // Variabile locale
+    console.log("Ciao " + nome);  // Ciao Luigi
+}
+
+saluta();
+console.log(nome);  // Mario</code></pre>
+        
+        <button onclick="mostraEsempioScope()">Prova l'esempio</button>
+        <div class="output" id="output-scope"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Scope Block-Level (let e const)</h2>
+        <p>Le variabili dichiarate con <code>let</code> e <code>const</code> hanno uno scope di blocco, limitato al blocco in cui sono definite.</p>
+        <pre><code>if (true) {
+    let messaggio = "Ciao!";
+    var vecchioMessaggio = "Vecchio ciao!";
+    console.log(messaggio);  // Ciao!
+}
+// console.log(messaggio);  // Errore: messaggio non è definito
+console.log(vecchioMessaggio);  // Vecchio ciao! (var non ha scope di blocco)</code></pre>
+        
+        <button onclick="mostraEsempioBlockScope()">Prova l'esempio</button>
+        <div class="output" id="output-block-scope"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>this nel Contesto Globale</h2>
+        <p>Nel contesto globale, <code>this</code> si riferisce all'oggetto globale (window nel browser).</p>
+        <pre><code>console.log(this === window);  // true nel browser</code></pre>
+        
+        <button onclick="mostraEsempioThisGlobale()">Prova l'esempio</button>
+        <div class="output" id="output-this-globale"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>this nelle Funzioni Tradizionali</h2>
+        <p>All'interno di una funzione, il valore di <code>this</code> dipende da come la funzione è chiamata.</p>
+        <pre><code>function mostraThis() {
+    console.log(this);
+}
+
+mostraThis();  // Nel browser, this si riferisce a window</code></pre>
+        
+        <button onclick="mostraEsempioThisFunzione()">Prova l'esempio</button>
+        <div class="output" id="output-this-funzione"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>this negli Oggetti</h2>
+        <p>Quando una funzione è chiamata come metodo di un oggetto, <code>this</code> si riferisce all'oggetto stesso.</p>
+        <pre><code>const persona = {
+    nome: "Mario",
+    saluta: function() {
+        console.log("Ciao, sono " + this.nome);
+    }
+};
+
+persona.saluta();  // Ciao, sono Mario</code></pre>
+        
+        <button onclick="mostraEsempioThisOggetto()">Prova l'esempio</button>
+        <div class="output" id="output-this-oggetto"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>this e il Costruttore</h2>
+        <p>Quando una funzione viene utilizzata come costruttore (usando la keyword <code>new</code>), <code>this</code> si riferisce al nuovo oggetto che viene creato.</p>
+        <pre><code>function Persona(nome) {
+    this.nome = nome;
+}
+
+const p = new Persona("Luigi");
+console.log(p.nome);  // Luigi</code></pre>
+        
+        <button onclick="mostraEsempioThisCostruttore()">Prova l'esempio</button>
+        <div class="output" id="output-this-costruttore"></div>
+    </div>
+    
+    <div class="example-section">
+        <h2>Arrow Functions e this</h2>
+        <p>Le arrow functions non creano un proprio valore di <code>this</code>, ma ereditano quello dal contesto lessicale in cui sono definite.</p>
+        <pre><code>const persona = {
+    nome: "Mario",
+    // Metodo tradizionale
+    salutaTraditional: function() {
+        setTimeout(function() {
+            console.log("Traditional: Ciao, sono " + this.nome);
+            // this.nome è undefined perché this si riferisce all'oggetto globale
+        }, 100);
+    },
+    // Metodo con arrow function
+    salutaArrow: function() {
+        setTimeout(() => {
+            console.log("Arrow: Ciao, sono " + this.nome);
+            // this.nome è "Mario" perché this è ereditato dal contesto esterno
+        }, 100);
+    }
+};</code></pre>
+        
+        <button onclick="mostraEsempioThisArrow()">Prova l'esempio</button>
+        <div class="output" id="output-this-arrow"></div>
+    </div>
+    
+    <div class="nav">
+        <a href="../05.6 - Scope e contesto (`this`).md">Torna alla teoria</a>
+        <a href="01_dichiarazione_invocazione.html">Torna al primo esempio</a>
+    </div>
+
+    <script>
+        // Esempio di scope globale e locale
+        function mostraEsempioScope() {
+            const output = document.getElementById('output-scope');
+            
+            let nome = "Mario";  // Variabile globale (in realtà è locale alla funzione mostraEsempioScope)
+            
+            function saluta() {
+                let nome = "Luigi";  // Variabile locale
+                return "Dentro la funzione: " + nome;  // Luigi
+            }
+            
+            output.innerHTML = saluta() + "<br>";
+            output.innerHTML += "Fuori dalla funzione: " + nome;  // Mario
+        }
+        
+        // Esempio di scope di blocco
+        function mostraEsempioBlockScope() {
+            const output = document.getElementById('output-block-scope');
+            
+            output.innerHTML = "Esempio di scope di blocco:<br>";
+            
+            if (true) {
+                let messaggioLet = "Ciao con let!";
+                var messaggioVar = "Ciao con var!";
+                const messaggioConst = "Ciao con const!";
+                
+                output.innerHTML += "Dentro il blocco if:<br>";
+                output.innerHTML += "- messaggioLet: " + messaggioLet + "<br>";
+                output.innerHTML += "- messaggioVar: " + messaggioVar + "<br>";
+                output.innerHTML += "- messaggioConst: " + messaggioConst + "<br><br>";
+            }
+            
+            output.innerHTML += "Fuori dal blocco if:<br>";
+            
+            try {
+                output.innerHTML += "- messaggioLet: " + messaggioLet + "<br>";
+            } catch (error) {
+                output.innerHTML += "- messaggioLet: Non accessibile (ReferenceError)<br>";
+            }
+            
+            output.innerHTML += "- messaggioVar: " + messaggioVar + "<br>";
+            
+            try {
+                output.innerHTML += "- messaggioConst: " + messaggioConst;
+            } catch (error) {
+                output.innerHTML += "- messaggioConst: Non accessibile (ReferenceError)";
+            }
+        }
+        
+        // Esempio di this nel contesto globale
+        function mostraEsempioThisGlobale() {
+            const output = document.getElementById('output-this-globale');
+            
+            output.innerHTML = "Nel contesto globale, this === window: " + (this === window);
+            output.innerHTML += "<br>Tipo di this: " + typeof this;
+        }
+        
+        // Esempio di this in una funzione
+        function mostraEsempioThisFunzione() {
+            const output = document.getElementById('output-this-funzione');
+            
+            function mostraThis() {
+                return "Tipo di this: " + typeof this + "<br>" +
+                       "this === window: " + (this === window);
+            }
+            
+            output.innerHTML = mostraThis();
+        }
+        
+        // Esempio di this in un oggetto
+        function mostraEsempioThisOggetto() {
+            const output = document.getElementById('output-this-oggetto');
+            
+            const persona1 = {
+                nome: "Mario",
+                saluta: function() {
+                    return "Ciao, sono " + this.nome;
+                }
+            };
+            
+            const persona2 = {
+                nome: "Luigi",
+                saluta: function() {
+                    return "Ciao, sono " + this.nome;
+                }
+            };
+            
+            output.innerHTML = "persona1.saluta(): " + persona1.saluta() + "<br>";
+            output.innerHTML += "persona2.saluta(): " + persona2.saluta() + "<br><br>";
+            
+            // Cosa succede se assegniamo il metodo a una variabile?
+            const salutaStaccato = persona1.saluta;
+            output.innerHTML += "salutaStaccato(): " + salutaStaccato() + " (this ha perso il riferimento all'oggetto)";
+        }
+        
+        // Esempio di this in un costruttore
+        function mostraEsempioThisCostruttore() {
+            const output = document.getElementById('output-this-costruttore');
+            
+            function Persona(nome) {
+                this.nome = nome;
+                this.saluta = function() {
+                    return "Ciao, sono " + this.nome;
+                };
+            }
+            
+            const p1 = new Persona("Mario");
+            const p2 = new Persona("Luigi");
+            
+            output.innerHTML = "p1.nome: " + p1.nome + "<br>";
+            output.innerHTML += "p2.nome: " + p2.nome + "<br><br>";
+            output.innerHTML += "p1.saluta(): " + p1.saluta() + "<br>";
+            output.innerHTML += "p2.saluta(): " + p2.saluta();
+        }
+        
+        // Esempio di this con arrow functions
+        function mostraEsempioThisArrow() {
+            const output = document.getElementById('output-this-arrow');
+            
+            const persona = {
+                nome: "Mario",
+                // Metodo tradizionale
+                salutaTraditional: function() {
+                    output.innerHTML = "Attendi il risultato...";
+                    
+                    setTimeout(function() {
+                        output.innerHTML = "Funzione tradizionale: this.nome è '" + 
+                                          (this.nome || "undefined") + "'<br>" +
+                                          "(this si riferisce all'oggetto globale)";
+                    }, 100);
+                },
+                // Metodo con arrow function
+                salutaArrow: function() {
+                    setTimeout(() => {
+                        output.innerHTML += "<br><br>Arrow function: this.nome è '" + this.nome + "'<br>" +
+                                          "(this è ereditato dal contesto esterno)";
+                    }, 200);
+                }
+            };
+            
+            // Eseguiamo entrambi i metodi
+            persona.salutaTraditional();
+            setTimeout(() => persona.salutaArrow(), 150); // Piccolo ritardo per vedere i risultati in sequenza
+        }
+    </script>
+</body>
+</html>
