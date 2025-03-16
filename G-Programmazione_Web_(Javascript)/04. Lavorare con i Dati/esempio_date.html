@@ -112,7 +112,9 @@
         </div>
         
         <div class="date-form">
+            <label>Seleziona una data:</label>
             <input type="date" id="date-input">
+            <label>Seleziona un orario:</label>
             <input type="time" id="time-input" value="12:00">
             <button onclick="createFromInputs()">Crea Data</button>
         </div>
@@ -338,4 +340,9 @@
             if (days) {
                 const date = new Date();
                 date.setDate(date.getDate() - parseInt(days));
-                showResult('set-result', `Sottrazione di ${
+                showResult('set-result', `Sottrazione di ${days} giorni:\n${date.toString()}`);
+            }
+        }   
+    </script>
+</body> 
+</html>
