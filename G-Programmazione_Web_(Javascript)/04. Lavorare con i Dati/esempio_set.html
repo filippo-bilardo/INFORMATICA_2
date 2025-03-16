@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Set - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 150px;
+        }
+        .output {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 20px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .comparison-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Set - Esempio Interattivo</h1>
+    
+    <div class="container">
+        <h2>Creazione di un Set</h2>
+        <div class="code-container">
+            <p>let insieme = new Set([1, 2, 3, 3, 4]);</p>
+        </div>
+        
+        <p>Il nostro Set (nota che i valori duplicati vengono automaticamente rimossi):</p>
+        <div id="set-display" class="output"></div>
+        
+        <div>
+            <input type="text" id="new-value" placeholder="Nuovo valore">
+            <button onclick="addValue()">Aggiungi Valore</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Operazioni comuni sui Set</h2>
+        
+        <div class="methods-grid">
+            <button onclick="addValueDemo()">add()</button>
+            <button onclick="hasValueDemo()">has()</button>
+            <button onclick="deleteValueDemo()">delete()</button>
+            <button onclick="clearSetDemo()">clear()</button>
+            <button onclick="showSizeDemo()">size</button>
+            <button onclick="valuesDemo()">values()</button>
+            <button onclick="keysDemo()">keys()</button>
+            <button onclick="entriesDemo()">entries()</button>
+        </div>
+        
+        <p>Risultato dell'operazione:</p>
+        <div id="operation-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Iterazione su un Set</h2>
+        
+        <div class="methods-grid">
+            <button onclick="forEachExample()">forEach()</button>
+            <button onclick="forOfExample()">for...of</button>
+            <button onclick="spreadOperatorExample()">Spread Operator</button>
+        </div>
+        
+        <p>Risultato dell'iterazione:</p>
+        <div id="iteration-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Operazioni su insiemi</h2>
+        
+        <div class="code-container">
+            <p>// Creiamo due Set
+let setA = new Set([1, 2, 3, 4]);
+let setB = new Set([3, 4, 5, 6]);</p>
+        </div>
+        
+        <div class="methods-grid">
+            <button onclick="unionExample()">Unione</button>
+            <button onclick="intersectionExample()">Intersezione</button>
+            <button onclick="differenceExample()">Differenza</button>
+            <button onclick="symmetricDifferenceExample()">Differenza Simmetrica</button>
+            <button onclick="isSubsetExample()">Sottoinsieme</button>
+        </div>
+        
+        <p>Risultato dell'operazione:</p>
+        <div id="set-operation-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Confronto tra Set e Array</h2>
+        
+        <div class="comparison">
+            <div class="comparison-item">
+                <h3>Set</h3>
+                <ul>
+                    <li>Valori unici</li>
+                    <li>Ricerca veloce (O(1))</li>
+                    <li>Nessun indice</li>
+                    <li>Metodi specifici per insiemi</li>
+                    <li>Iterabile direttamente</li>
+                </ul>
+                <button onclick="setPerformanceExample()">Test Prestazioni Set</button>
+            </div>
+            <div class="comparison-item">
+                <h3>Array</h3>
+                <ul>
+                    <li>Può contenere duplicati</li>
+                    <li>Ricerca più lenta (O(n))</li>
+                    <li>Accesso tramite indice</li>
+                    <li>Più metodi di manipolazione</li>
+                    <li>Mantiene l'ordine di inserimento</li>
+                </ul>
+                <button onclick="arrayPerformanceExample()">Test Prestazioni Array</button>
+            </div>
+        </div>
+        
+        <p>Risultato del confronto:</p>
+        <div id="comparison-result" class="output"></div>
+    </div>
+
+    <script>
+        // Set iniziale
+        let insieme = new Set([1, 2, 3, 3, 4]);
+        
+        // Funzione per aggiornare la visualizzazione del Set
+        function updateSetDisplay() {
+            document.getElementById('set-display').textContent = 
+                `Set(${insieme.size}) {${[...insieme].join(', ')}}`;
+        }
+        
+        // Inizializza la visualizzazione
+        updateSetDisplay();
+        
+        // Funzione per aggiungere un valore al Set
+        function addValue() {
+            const newValue = document.getElementById('new-value').value.trim();
+            if (newValue) {
+                // Cerca di convertire il valore in numero se possibile
+                const numValue = Number(newValue);
+                const finalValue = !isNaN(numValue) && newValue !== '' ? numValue : newValue;
+                
+                const sizeBefore = insieme.size;
+                insieme.add(finalValue);
+                updateSetDisplay();
+                
+                document.getElementById('new-value').value = '';
+                
+                if (insieme.size > sizeBefore) {
+                    showResult('operation-result', `add(${JSON.stringify(finalValue)}): Valore aggiunto`);
+                } else {
+                    showResult('operation-result', `add(${JSON.stringify(finalValue)}): Valore già presente (i Set contengono solo valori unici)`);
+                }
+            }
+        }
+        
+        // Funzioni per le operazioni comuni sui Set
+        function addValueDemo() {
+            const newValue = prompt("Inserisci un valore da aggiungere:", "5");
+            if (newValue) {
+                // Cerca di convertire il valore in numero se possibile
+                const numValue = Number(newValue);
+                const finalValue = !isNaN(numValue) && newValue !== '' ? numValue : newValue;
+                
+                const sizeBefore = insieme.size;
+                insieme.add(finalValue);
+                updateSetDisplay();
+                
+                if (insieme.size > sizeBefore) {
+                    showResult('operation-result', `add(${JSON.stringify(finalValue)}): Valore aggiunto`);
+                } else {
+                    showResult('operation-result', `add(${JSON.stringify(finalValue)}): Valore già presente (i Set contengono solo valori unici)`);
+                }
+            }
+        }
+        
+        function hasValueDemo() {
+            const value = prompt("Inserisci un valore da verificare:", "3");
+            if (value) {
+                // Cerca di convertire il valore in numero se possibile
+                const numValue = Number(value);
+                const finalValue = !isNaN(numValue) && value !== '' ? numValue : value;
+                
+                const exists = insieme.has(finalValue);
+                showResult('operation-result', `has(${JSON.stringify(finalValue)}): ${exists}`);
+            }
+        }
+        
+        function deleteValueDemo() {
+            const value = prompt("Inserisci un valore da eliminare:", "3");
+            if (value) {
+                // Cerca di convertire il valore in numero se possibile
+                const numValue = Number(value);
+                const finalValue = !isNaN(numValue) && value !== '' ? numValue : value;
+                
+                const deleted = insieme.delete(finalValue);
+                updateSetDisplay();
+                showResult('operation-result', `delete(${JSON.stringify(finalValue)}): ${deleted}`);
+            }
+        }
+        
+        function clearSetDemo() {
+            if (confirm("Sei sicuro di voler cancellare tutti i valori?")) {
+                insieme.clear();
+                updateSetDisplay();
+                showResult('operation-result', "clear(): Tutti i valori sono stati rimossi");
+            }
+        }
+        
+        function showSizeDemo() {
+            showResult('operation-result', `size: ${insieme.size}`);
+        }
+        
+        function valuesDemo() {
+            const values = Array.from(insieme.values());
+            showResult('operation-result', `values(): [${values.join(', ')}]`);
+        }
+        
+        function keysDemo() {
+            const keys = Array.from(insieme.keys());
+            showResult('operation-result', `keys(): [${keys.join(', ')}]\n\nNota: In un Set, keys() e values() restituiscono gli stessi valori`);
+        }
+        
+        function entriesDemo() {
+            const entries = Array.from(insieme.entries());
+            let result = "entries():\n";
+            
+            entries.forEach(([key, value]) => {
+                result += `  [${key}, ${value}]\n`;
+            });
+            
+            result += "\nNota: In un Set, ogni valore è anche la sua chiave";
+            
+            showResult('operation-result', result);
+        }
+        
+        // Funzioni per l'iterazione
+        function forEachExample() {
+            let result = "forEach((value) => {...}):\n";
+            
+            insieme.forEach((value) => {
+                result += `  ${value}\n`;
+            });
+            
+            showResult('iteration-result', result);
+        }
+        
+        function forOfExample() {
+            let result = "for (let value of insieme) {...}:\n";
+            
+            for (let value of insieme) {
+                result += `  ${value}\n`;
+            }
+            
+            showResult('iteration-result', result);
+        }
+        
+        function spreadOperatorExample() {
+            let result = "[...insieme]:\n";
+            const spread = [...insieme];
+            
+            result += `  [${spread.join(', ')}]`;
+            
+            showResult('iteration-result', result);
+        }
+        
+        // Funzioni per le operazioni su insiemi
+        function unionExample() {
+            const setA = new Set([1, 2, 3, 4]);
+            const setB = new Set([3, 4, 5, 6]);
+            
+            // Unione: A ∪ B (tutti gli elementi che sono in A o in B o in entrambi)
+            const union = new Set([...setA, ...setB]);
+            
+            let result = "Unione di A e B (A ∪ B):\n";
+            result += `  A = {${[...setA].join(', ')}}\n`;
+            result += `  B = {${[...setB].join(', ')}}\n`;
+            result += `  A ∪ B = {${[...union].join(', ')}}`;
+            
+            showResult('set-operation-result', result);
+        }
+        
+        function intersectionExample() {
+            const setA = new Set([1, 2, 3, 4]);
+            const setB = new Set([3, 4, 5, 6]);
+            
+            // Intersezione: A ∩ B (elementi che sono sia in A che in B)
+            const intersection = new Set([...setA].filter(x => setB.has(x)));
+            
+            let result = "Intersezione di A e B (A ∩ B):\n";
+            result += `  A = {${[...setA].join(', ')}}\n`;
+            result += `  B = {${[...setB].join(', ')}}\n`;
+            result += `  A ∩ B = {${[...intersection].join(', ')}}`;
+            
+            showResult('set-operation-result', result);
+        }
+        
+        function differenceExample() {
+            const setA = new Set([1, 2, 3, 4]);
+            const setB = new Set([3, 4, 5, 6]);
+            
+            // Differenza: A - B (elementi che sono in A ma non in B)
+            const difference = new Set([...setA].filter(x => !setB.has(x)));
+            
+            let result = "Differenza di A e B (A - B):\n";
+            result += `  A = {${[...setA].join(', ')}}\n`;
+            result += `  B = {${[...setB].join(', ')}}\n`;
+            result += `  A - B = {${[...difference].join(', ')}}`;
+            
+            showResult('set-operation-result', result);
+        }
+        
+        function symmetricDifferenceExample() {
+            const setA = new Set([1, 2, 3, 4]);
+            const setB = new Set([3, 4, 5, 6]);
+            
+            // Differenza simmetrica: A △ B (elementi che sono in A o in B, ma non in entrambi)
+            const symmetricDifference = new Set(
+                [...setA].filter(x => !setB.has(x)).concat([...setB].filter(x => !setA.has(x)))
+            );
+            
+            let result = "Differenza simmetrica di A e B (A △ B):\n";
+            result += `  A = {${[...setA].join(', ')}}\n`;
+            result += `  B = {${[...setB].join(', ')}}\n`;
+            result += `  A △ B = {${[...symmetricDifference].join(', ')}}`;
+            
+            showResult('set-operation-result', result);
+        }
+        
+        function isSubsetExample() {
+            const setA = new Set([1, 2]);
+            const setB = new Set([1, 2, 3, 4]);
+            
+            // Verifica se A è un sottoinsieme di B
+            const isSubset = [...setA].every(x => setB.has(x));
+            
+            let result = "Verifica se A è un sottoinsieme di B (A ⊆ B):\n";
+            result += `  A = {${[...setA].join(', ')}}\n`;
+            result += `  B = {${[...setB].join(', ')}}\n`;
+            result += `  A ⊆ B: ${isSubset}`;
+            
+            showResult('set-operation-result', result);
+        }
+        
+        // Funzioni per il confronto tra Set e Array
+        function setPerformanceExample() {
+            const size = 100000;
+            const searchValue = 99999;
+            
+            // Crea un grande Set
+            const largeSet = new Set();
+            for (let i = 0; i < size; i++) {
+                largeSet.add(i);
+            }
+            
+            // Misura il tempo per cercare un valore nel Set
+            const startSet = performance.now();
+            const hasValue = largeSet.has(searchValue);
+            const endSet = performance.now();
+            
+            showResult('comparison-result', `Ricerca del valore ${searchValue} in un Set di ${size} elementi:\n  Tempo: ${(endSet - startSet).toFixed(6)} ms\n  Risultato: ${hasValue}`);
+        }
+        
+        function arrayPerformanceExample() {
+            const size = 100000;
+            const searchValue = 99999;
+            
+            // Crea un grande Array
+            const largeArray = [];
+            for (let i = 0; i < size; i++) {
+                largeArray.push(i);
+            }
+            
+            // Misura il tempo per cercare un valore nell'Array
+            const startArray = performance.now();
+            const hasValue = largeArray.includes(searchValue);
+            const endArray = performance.now();
+            
+            showResult('comparison-result', `Ricerca del valore ${searchValue} in un Array di ${size} elementi:\n  Tempo: ${(endArray - startArray).toFixed(6)} ms\n  Risultato: ${hasValue}`);
+        }
+        
+        // Funzione di utilità per mostrare i risultati
+        function showResult(elementId, result) {
+            document.getElementById(elementId).innerHTML = result;
+        }

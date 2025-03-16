@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Date - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 150px;
+        }
+        .output {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 20px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .date-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .date-form input {
+            margin-right: 10px;
+        }
+        .current-date {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Date - Esempio Interattivo</h1>
+    
+    <div class="container">
+        <h2>Data Corrente</h2>
+        <div class="code-container">
+            <p>let oggi = new Date();</p>
+        </div>
+        
+        <p>Data e ora attuali:</p>
+        <div id="current-date" class="current-date"></div>
+        
+        <div class="methods-grid">
+            <button onclick="updateCurrentDate()">Aggiorna Data</button>
+            <button onclick="showTimestamp()">Mostra Timestamp</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Creazione di Date</h2>
+        
+        <div class="methods-grid">
+            <button onclick="createFromString()">Da Stringa</button>
+            <button onclick="createFromComponents()">Da Componenti</button>
+            <button onclick="createFromTimestamp()">Da Timestamp</button>
+        </div>
+        
+        <div class="date-form">
+            <input type="date" id="date-input">
+            <input type="time" id="time-input" value="12:00">
+            <button onclick="createFromInputs()">Crea Data</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="creation-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Ottenere Componenti della Data</h2>
+        
+        <div class="methods-grid">
+            <button onclick="getYear()">getFullYear()</button>
+            <button onclick="getMonth()">getMonth()</button>
+            <button onclick="getDate()">getDate()</button>
+            <button onclick="getDay()">getDay()</button>
+            <button onclick="getHours()">getHours()</button>
+            <button onclick="getMinutes()">getMinutes()</button>
+            <button onclick="getSeconds()">getSeconds()</button>
+            <button onclick="getTime()">getTime()</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="get-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Modificare Componenti della Data</h2>
+        
+        <div class="methods-grid">
+            <button onclick="setYear()">setFullYear()</button>
+            <button onclick="setMonth()">setMonth()</button>
+            <button onclick="setDate()">setDate()</button>
+            <button onclick="setHours()">setHours()</button>
+            <button onclick="addDays()">Aggiungi Giorni</button>
+            <button onclick="subtractDays()">Sottrai Giorni</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="set-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Formattazione delle Date</h2>
+        
+        <div class="methods-grid">
+            <button onclick="toStringDemo()">toString()</button>
+            <button onclick="toDateStringDemo()">toDateString()</button>
+            <button onclick="toTimeStringDemo()">toTimeString()</button>
+            <button onclick="toLocaleDateStringDemo()">toLocaleDateString()</button>
+            <button onclick="toLocaleTimeStringDemo()">toLocaleTimeString()</button>
+            <button onclick="toISOStringDemo()">toISOString()</button>
+            <button onclick="customFormatDemo()">Formato Personalizzato</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="format-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Operazioni con le Date</h2>
+        
+        <div class="methods-grid">
+            <button onclick="calculateDifference()">Differenza tra Date</button>
+            <button onclick="compareDemo()">Confronto tra Date</button>
+            <button onclick="calculateAge()">Calcola Età</button>
+            <button onclick="addTimeDemo()">Aggiungi Tempo</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="operation-result" class="output"></div>
+    </div>
+
+    <script>
+        // Funzione per aggiornare la data corrente
+        function updateCurrentDate() {
+            const now = new Date();
+            document.getElementById('current-date').textContent = now.toString();
+        }
+        
+        // Inizializza la data corrente
+        updateCurrentDate();
+        
+        // Mostra il timestamp corrente
+        function showTimestamp() {
+            const now = new Date();
+            const timestamp = now.getTime();
+            showResult('current-date', `Timestamp (millisecondi dal 1 gennaio 1970): ${timestamp}`);
+        }
+        
+        // Funzioni per la creazione di date
+        function createFromString() {
+            const dateString = prompt("Inserisci una data in formato ISO (YYYY-MM-DD):", "2023-12-31");
+            if (dateString) {
+                const date = new Date(dateString);
+                showResult('creation-result', `new Date("${dateString}"):\n${date.toString()}`);
+            }
+        }
+        
+        function createFromComponents() {
+            const year = prompt("Anno:", "2023");
+            const month = prompt("Mese (0-11):", "11"); // Dicembre è 11
+            const day = prompt("Giorno:", "31");
+            
+            if (year && month && day) {
+                const date = new Date(parseInt(year), parseInt(month), parseInt(day));
+                showResult('creation-result', `new Date(${year}, ${month}, ${day}):\n${date.toString()}\n\nNota: I mesi sono 0-based (0 = gennaio, 11 = dicembre)`);
+            }
+        }
+        
+        function createFromTimestamp() {
+            const timestamp = prompt("Inserisci un timestamp (millisecondi):", "1672444800000"); // 31 dicembre 2022
+            if (timestamp) {
+                const date = new Date(parseInt(timestamp));
+                showResult('creation-result', `new Date(${timestamp}):\n${date.toString()}`);
+            }
+        }
+        
+        function createFromInputs() {
+            const dateInput = document.getElementById('date-input').value;
+            const timeInput = document.getElementById('time-input').value;
+            
+            if (dateInput) {
+                const dateTimeString = `${dateInput}T${timeInput || '00:00'}`;
+                const date = new Date(dateTimeString);
+                showResult('creation-result', `Data creata da input:\n${date.toString()}`);
+            } else {
+                showResult('creation-result', "Seleziona una data valida");
+            }
+        }
+        
+        // Funzioni per ottenere componenti della data
+        function getYear() {
+            const now = new Date();
+            showResult('get-result', `getFullYear(): ${now.getFullYear()}`);
+        }
+        
+        function getMonth() {
+            const now = new Date();
+            const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+            showResult('get-result', `getMonth(): ${now.getMonth()} (${monthNames[now.getMonth()]})\n\nNota: I mesi sono 0-based (0 = gennaio, 11 = dicembre)`);
+        }
+        
+        function getDate() {
+            const now = new Date();
+            showResult('get-result', `getDate(): ${now.getDate()} (giorno del mese)`);
+        }
+        
+        function getDay() {
+            const now = new Date();
+            const dayNames = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+            showResult('get-result', `getDay(): ${now.getDay()} (${dayNames[now.getDay()]})\n\nNota: I giorni sono 0-based (0 = domenica, 6 = sabato)`);
+        }
+        
+        function getHours() {
+            const now = new Date();
+            showResult('get-result', `getHours(): ${now.getHours()}`);
+        }
+        
+        function getMinutes() {
+            const now = new Date();
+            showResult('get-result', `getMinutes(): ${now.getMinutes()}`);
+        }
+        
+        function getSeconds() {
+            const now = new Date();
+            showResult('get-result', `getSeconds(): ${now.getSeconds()}`);
+        }
+        
+        function getTime() {
+            const now = new Date();
+            showResult('get-result', `getTime(): ${now.getTime()} (millisecondi dal 1 gennaio 1970)`);
+        }
+        
+        // Funzioni per modificare componenti della data
+        function setYear() {
+            const year = prompt("Inserisci un anno:", "2025");
+            if (year) {
+                const date = new Date();
+                date.setFullYear(parseInt(year));
+                showResult('set-result', `setFullYear(${year}):\n${date.toString()}`);
+            }
+        }
+        
+        function setMonth() {
+            const month = prompt("Inserisci un mese (0-11):", "6");
+            if (month !== null) {
+                const date = new Date();
+                date.setMonth(parseInt(month));
+                showResult('set-result', `setMonth(${month}):\n${date.toString()}\n\nNota: I mesi sono 0-based (0 = gennaio, 11 = dicembre)`);
+            }
+        }
+        
+        function setDate() {
+            const day = prompt("Inserisci un giorno del mese:", "15");
+            if (day) {
+                const date = new Date();
+                date.setDate(parseInt(day));
+                showResult('set-result', `setDate(${day}):\n${date.toString()}`);
+            }
+        }
+        
+        function setHours() {
+            const hours = prompt("Inserisci l'ora (0-23):", "14");
+            if (hours !== null) {
+                const date = new Date();
+                date.setHours(parseInt(hours));
+                showResult('set-result', `setHours(${hours}):\n${date.toString()}`);
+            }
+        }
+        
+        function addDays() {
+            const days = prompt("Inserisci il numero di giorni da aggiungere:", "7");
+            if (days) {
+                const date = new Date();
+                date.setDate(date.getDate() + parseInt(days));
+                showResult('set-result', `Aggiunta di ${days} giorni:\n${date.toString()}`);
+            }
+        }
+        
+        function subtractDays() {
+            const days = prompt("Inserisci il numero di giorni da sottrarre:", "7");
+            if (days) {
+                const date = new Date();
+                date.setDate(date.getDate() - parseInt(days));
+                showResult('set-result', `Sottrazione di ${

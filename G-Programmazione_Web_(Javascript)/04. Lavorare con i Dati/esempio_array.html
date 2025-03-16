@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Array - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 150px;
+        }
+        .output {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 20px;
+            margin-top: 10px;
+        }
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .highlight {
+            background-color: #ffffcc;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Array - Esempio Interattivo</h1>
+    
+    <div class="container">
+        <h2>Creazione di un Array</h2>
+        <div class="code-container">
+            <p>let frutti = ["mela", "banana", "arancia"];</p>
+        </div>
+        
+        <p>Il nostro array di frutti:</p>
+        <div id="array-display" class="output"></div>
+        
+        <div>
+            <input type="text" id="new-item" placeholder="Aggiungi un frutto">
+            <button onclick="addItem()">Aggiungi</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Operazioni comuni sugli Array</h2>
+        
+        <div class="methods-grid">
+            <button onclick="pushItem()">push()</button>
+            <button onclick="popItem()">pop()</button>
+            <button onclick="shiftItem()">shift()</button>
+            <button onclick="unshiftItem()">unshift()</button>
+            <button onclick="spliceItem()">splice()</button>
+            <button onclick="sliceArray()">slice()</button>
+            <button onclick="sortArray()">sort()</button>
+            <button onclick="reverseArray()">reverse()</button>
+        </div>
+        
+        <p>Risultato dell'operazione:</p>
+        <div id="operation-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Metodi di iterazione</h2>
+        
+        <div class="methods-grid">
+            <button onclick="forEachExample()">forEach()</button>
+            <button onclick="mapExample()">map()</button>
+            <button onclick="filterExample()">filter()</button>
+            <button onclick="reduceExample()">reduce()</button>
+            <button onclick="findExample()">find()</button>
+            <button onclick="someExample()">some()</button>
+            <button onclick="everyExample()">every()</button>
+        </div>
+        
+        <p>Risultato dell'iterazione:</p>
+        <div id="iteration-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Array bidimensionali</h2>
+        
+        <div class="code-container">
+            <p>let matrice = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];</p>
+        </div>
+        
+        <button onclick="showMatrix()">Mostra matrice</button>
+        <button onclick="accessMatrixElement()">Accedi elemento [1][2]</button>
+        
+        <p>Risultato:</p>
+        <div id="matrix-result" class="output"></div>
+    </div>
+
+    <script>
+        // Array iniziale
+        let frutti = ["mela", "banana", "arancia"];
+        
+        // Funzione per aggiornare la visualizzazione dell'array
+        function updateArrayDisplay() {
+            document.getElementById('array-display').innerHTML = 
+                `[${frutti.map(item => `"${item}"`).join(', ')}]`;
+        }
+        
+        // Inizializza la visualizzazione
+        updateArrayDisplay();
+        
+        // Funzione per aggiungere un elemento all'array
+        function addItem() {
+            const newItem = document.getElementById('new-item').value.trim();
+            if (newItem) {
+                frutti.push(newItem);
+                updateArrayDisplay();
+                document.getElementById('new-item').value = '';
+                showResult('operation-result', `Aggiunto "${newItem}" all'array`);
+            }
+        }
+        
+        // Funzioni per le operazioni comuni sugli array
+        function pushItem() {
+            const newItem = prompt("Inserisci un elemento da aggiungere alla fine:", "kiwi");
+            if (newItem) {
+                frutti.push(newItem);
+                updateArrayDisplay();
+                showResult('operation-result', `push(): Aggiunto "${newItem}" alla fine dell'array`);
+            }
+        }
+        
+        function popItem() {
+            if (frutti.length > 0) {
+                const removed = frutti.pop();
+                updateArrayDisplay();
+                showResult('operation-result', `pop(): Rimosso "${removed}" dalla fine dell'array`);
+            } else {
+                showResult('operation-result', "L'array è vuoto!");
+            }
+        }
+        
+        function shiftItem() {
+            if (frutti.length > 0) {
+                const removed = frutti.shift();
+                updateArrayDisplay();
+                showResult('operation-result', `shift(): Rimosso "${removed}" dall'inizio dell'array`);
+            } else {
+                showResult('operation-result', "L'array è vuoto!");
+            }
+        }
+        
+        function unshiftItem() {
+            const newItem = prompt("Inserisci un elemento da aggiungere all'inizio:", "ananas");
+            if (newItem) {
+                frutti.unshift(newItem);
+                updateArrayDisplay();
+                showResult('operation-result', `unshift(): Aggiunto "${newItem}" all'inizio dell'array`);
+            }
+        }
+        
+        function spliceItem() {
+            const index = prompt("Indice da cui iniziare:", "1");
+            const deleteCount = prompt("Numero di elementi da eliminare:", "1");
+            const newItem = prompt("Elemento da inserire (lascia vuoto per non inserire):", "pera");
+            
+            if (index !== null && deleteCount !== null) {
+                const idx = parseInt(index);
+                const count = parseInt(deleteCount);
+                
+                let result;
+                if (newItem && newItem.trim() !== '') {
+                    result = frutti.splice(idx, count, newItem);
+                    showResult('operation-result', `splice(${idx}, ${count}, "${newItem}"): Rimossi [${result.join(', ')}] e inserito "${newItem}"`);
+                } else {
+                    result = frutti.splice(idx, count);
+                    showResult('operation-result', `splice(${idx}, ${count}): Rimossi [${result.join(', ')}]`);
+                }
+                
+                updateArrayDisplay();
+            }
+        }
+        
+        function sliceArray() {
+            const start = prompt("Indice di inizio:", "1");
+            const end = prompt("Indice di fine (escluso):", "3");
+            
+            if (start !== null && end !== null) {
+                const startIdx = parseInt(start);
+                const endIdx = parseInt(end);
+                
+                const result = frutti.slice(startIdx, endIdx);
+                showResult('operation-result', `slice(${startIdx}, ${endIdx}): [${result.join(', ')}]`);
+            }
+        }
+        
+        function sortArray() {
+            const sortedArray = [...frutti].sort();
+            showResult('operation-result', `sort(): [${sortedArray.join(', ')}]`);
+        }
+        
+        function reverseArray() {
+            const reversedArray = [...frutti].reverse();
+            showResult('operation-result', `reverse(): [${reversedArray.join(', ')}]`);
+        }
+        
+        // Funzioni per i metodi di iterazione
+        function forEachExample() {
+            let result = "";
+            frutti.forEach((frutto, index) => {
+                result += `${index}: ${frutto}<br>`;
+            });
+            showResult('iteration-result', `forEach(): <br>${result}`);
+        }
+        
+        function mapExample() {
+            const result = frutti.map(frutto => frutto.toUpperCase());
+            showResult('iteration-result', `map(): [${result.join(', ')}]`);
+        }
+        
+        function filterExample() {
+            const result = frutti.filter(frutto => frutto.length > 5);
+            showResult('iteration-result', `filter(frutto => frutto.length > 5): [${result.join(', ')}]`);
+        }
+        
+        function reduceExample() {
+            const result = frutti.reduce((acc, frutto) => acc + frutto.length, 0);
+            showResult('iteration-result', `reduce(): Somma delle lunghezze = ${result}`);
+        }
+        
+        function findExample() {
+            const result = frutti.find(frutto => frutto.startsWith('a'));
+            showResult('iteration-result', `find(frutto => frutto.startsWith('a')): ${result || 'Nessun risultato'}`);
+        }
+        
+        function someExample() {
+            const result = frutti.some(frutto => frutto.includes('e'));
+            showResult('iteration-result', `some(frutto => frutto.includes('e')): ${result}`);
+        }
+        
+        function everyExample() {
+            const result = frutti.every(frutto => frutto.length > 3);
+            showResult('iteration-result', `every(frutto => frutto.length > 3): ${result}`);
+        }
+        
+        // Funzioni per array bidimensionali
+        function showMatrix() {
+            const matrice = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+            let result = "";
+            
+            for (let i = 0; i < matrice.length; i++) {
+                result += `[${matrice[i].join(', ')}]<br>`;
+            }
+            
+            showResult('matrix-result', result);
+        }
+        
+        function accessMatrixElement() {
+            const matrice = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+            const element = matrice[1][2]; // Accedi all'elemento nella riga 1, colonna 2
+            
+            showResult('matrix-result', `matrice[1][2] = ${element}`);
+        }
+        
+        // Funzione di utilità per mostrare i risultati
+        function showResult(elementId, result) {
+            document.getElementById(elementId).innerHTML = result;
+        }
+    </script>
+</body>
+</html>

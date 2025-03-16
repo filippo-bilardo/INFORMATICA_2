@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Oggetti - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 150px;
+        }
+        .output {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 20px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .property-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .property-form input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Oggetti - Esempio Interattivo</h1>
+    
+    <div class="container">
+        <h2>Creazione di un Oggetto</h2>
+        <div class="code-container">
+            <p>let persona = {
+  nome: "Mario",
+  cognome: "Rossi",
+  età: 30,
+  professione: "Sviluppatore"
+};</p>
+        </div>
+        
+        <p>Il nostro oggetto persona:</p>
+        <div id="object-display" class="output"></div>
+        
+        <div class="property-form">
+            <input type="text" id="property-name" placeholder="Nome proprietà">
+            <input type="text" id="property-value" placeholder="Valore">
+            <button onclick="addProperty()">Aggiungi/Modifica Proprietà</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Operazioni comuni sugli Oggetti</h2>
+        
+        <div class="methods-grid">
+            <button onclick="accessProperty()">Accedi Proprietà</button>
+            <button onclick="deleteProperty()">Elimina Proprietà</button>
+            <button onclick="checkProperty()">Verifica Proprietà</button>
+            <button onclick="listKeys()">Object.keys()</button>
+            <button onclick="listValues()">Object.values()</button>
+            <button onclick="listEntries()">Object.entries()</button>
+            <button onclick="mergeObjects()">Object.assign()</button>
+            <button onclick="spreadOperator()">Spread Operator</button>
+        </div>
+        
+        <p>Risultato dell'operazione:</p>
+        <div id="operation-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Metodi e Oggetti Annidati</h2>
+        
+        <div class="code-container">
+            <p>let utente = {
+  nome: "Laura",
+  indirizzo: {
+    via: "Via Roma 123",
+    città: "Milano",
+    cap: "20100"
+  },
+  saluta: function() {
+    return "Ciao, sono " + this.nome;
+  }
+};</p>
+        </div>
+        
+        <div class="methods-grid">
+            <button onclick="showNestedObject()">Mostra Oggetto Annidato</button>
+            <button onclick="accessNestedProperty()">Accedi Proprietà Annidata</button>
+            <button onclick="callMethod()">Chiama Metodo</button>
+            <button onclick="destructuring()">Destructuring</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="nested-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Costruttori e Prototipi</h2>
+        
+        <div class="code-container">
+            <p>function Persona(nome, età) {
+  this.nome = nome;
+  this.età = età;
+}
+
+Persona.prototype.saluta = function() {
+  return "Ciao, sono " + this.nome;
+};</p>
+        </div>
+        
+        <div class="methods-grid">
+            <button onclick="createInstance()">Crea Istanza</button>
+            <button onclick="usePrototype()">Usa Metodo Prototipo</button>
+            <button onclick="showPrototypeChain()">Catena Prototipi</button>
+            <button onclick="classExample()">Esempio Classe ES6</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="prototype-result" class="output"></div>
+    </div>
+
+    <script>
+        // Oggetto iniziale
+        let persona = {
+            nome: "Mario",
+            cognome: "Rossi",
+            età: 30,
+            professione: "Sviluppatore"
+        };
+        
+        // Funzione per aggiornare la visualizzazione dell'oggetto
+        function updateObjectDisplay() {
+            document.getElementById('object-display').textContent = 
+                JSON.stringify(persona, null, 2);
+        }
+        
+        // Inizializza la visualizzazione
+        updateObjectDisplay();
+        
+        // Funzione per aggiungere o modificare una proprietà
+        function addProperty() {
+            const propertyName = document.getElementById('property-name').value.trim();
+            const propertyValue = document.getElementById('property-value').value.trim();
+            
+            if (propertyName) {
+                // Cerca di convertire il valore in numero se possibile
+                const numValue = Number(propertyValue);
+                persona[propertyName] = !isNaN(numValue) && propertyValue !== '' ? numValue : propertyValue;
+                
+                updateObjectDisplay();
+                document.getElementById('property-name').value = '';
+                document.getElementById('property-value').value = '';
+                showResult('operation-result', `Proprietà "${propertyName}" impostata a "${propertyValue}"`);
+            }
+        }
+        
+        // Funzioni per le operazioni comuni sugli oggetti
+        function accessProperty() {
+            const propertyName = prompt("Inserisci il nome della proprietà da accedere:", "nome");
+            if (propertyName) {
+                const value = persona[propertyName];
+                showResult('operation-result', `persona["${propertyName}"] = ${value !== undefined ? JSON.stringify(value) : 'undefined'}`);
+            }
+        }
+        
+        function deleteProperty() {
+            const propertyName = prompt("Inserisci il nome della proprietà da eliminare:", "professione");
+            if (propertyName && propertyName in persona) {
+                delete persona[propertyName];
+                updateObjectDisplay();
+                showResult('operation-result', `Proprietà "${propertyName}" eliminata`);
+            } else {
+                showResult('operation-result', `Proprietà "${propertyName}" non trovata`);
+            }
+        }
+        
+        function checkProperty() {
+            const propertyName = prompt("Inserisci il nome della proprietà da verificare:", "nome");
+            if (propertyName) {
+                const exists = propertyName in persona;
+                const ownProperty = persona.hasOwnProperty(propertyName);
+                
+                showResult('operation-result', 
+                    `"${propertyName}" in persona: ${exists}\n` +
+                    `persona.hasOwnProperty("${propertyName}"): ${ownProperty}`);
+            }
+        }
+        
+        function listKeys() {
+            const keys = Object.keys(persona);
+            showResult('operation-result', `Object.keys(persona): [${keys.join(', ')}]`);
+        }
+        
+        function listValues() {
+            const values = Object.values(persona);
+            showResult('operation-result', `Object.values(persona): [${values.map(v => JSON.stringify(v)).join(', ')}]`);
+        }
+        
+        function listEntries() {
+            const entries = Object.entries(persona);
+            let result = 'Object.entries(persona):\n';
+            
+            entries.forEach(([key, value]) => {
+                result += `  ["${key}", ${JSON.stringify(value)}]\n`;
+            });
+            
+            showResult('operation-result', result);
+        }
+        
+        function mergeObjects() {
+            const additionalInfo = {
+                email: "mario.rossi@example.com",
+                telefono: "123-456789"
+            };
+            
+            const merged = Object.assign({}, persona, additionalInfo);
+            showResult('operation-result', 
+                `Object.assign({}, persona, additionalInfo):\n${JSON.stringify(merged, null, 2)}`);
+        }
+        
+        function spreadOperator() {
+            const additionalInfo = {
+                email: "mario.rossi@example.com",
+                telefono: "123-456789"
+            };
+            
+            const merged = {...persona, ...additionalInfo};
+            showResult('operation-result', 
+                `{...persona, ...additionalInfo}:\n${JSON.stringify(merged, null, 2)}`);
+        }
+        
+        // Funzioni per oggetti annidati e metodi
+        function showNestedObject() {
+            const utente = {
+                nome: "Laura",
+                indirizzo: {
+                    via: "Via Roma 123",
+                    città: "Milano",
+                    cap: "20100"
+                },
+                saluta: function() {
+                    return "Ciao, sono " + this.nome;
+                }
+            };
+            
+            showResult('nested-result', JSON.stringify(utente, (key, value) => {
+                if (typeof value === 'function') {
+                    return value.toString();
+                }
+                return value;
+            }, 2));
+        }
+        
+        function accessNestedProperty() {
+            const utente = {
+                nome: "Laura",
+                indirizzo: {
+                    via: "Via Roma 123",
+                    città: "Milano",
+                    cap: "20100"
+                }
+            };
+            
+            const città = utente.indirizzo.città;
+            showResult('nested-result', `utente.indirizzo.città = "${città}"`);
+        }
+        
+        function callMethod() {
+            const utente = {
+                nome: "Laura",
+                saluta: function() {
+                    return "Ciao, sono " + this.nome;
+                }
+            };
+            
+            const saluto = utente.saluta();
+            showResult('nested-result', `utente.saluta() = "${saluto}"`);
+        }
+        
+        function destructuring() {
+            const utente = {
+                nome: "Laura",
+                indirizzo: {
+                    via: "Via Roma 123",
+                    città: "Milano",
+                    cap: "20100"
+                }
+            };
+            
+            const { nome, indirizzo: { città } } = utente;
+            showResult('nested-result', 
+                `const { nome, indirizzo: { città } } = utente;\n` +
+                `nome = "${nome}"\n` +
+                `città = "${città}"`);
+        }
+        
+        // Funzioni per costruttori e prototipi
+        function createInstance() {
+            function Persona(nome, età) {
+                this.nome = nome;
+                this.età = età;
+            }
+            
+            const persona1 = new Persona("Giovanni", 25);
+            showResult('prototype-result', 
+                `const persona1 = new Persona("Giovanni", 25);\n` +
+                JSON.stringify(persona1, null, 2));
+        }
+        
+        function usePrototype() {
+            function Persona(nome, età) {
+                this.nome = nome;
+                this.età = età;
+            }
+            
+            Persona.prototype.saluta = function() {
+                return "Ciao, sono " + this.nome;
+            };
+            
+            const persona1 = new Persona("Giovanni", 25);
+            const saluto = persona1.saluta();
+            
+            showResult('prototype-result', 
+                `persona1.saluta() = "${saluto}"`);
+        }
+        
+        function showPrototypeChain() {
+            function Persona(nome, età) {
+                this.nome = nome;
+                this.età = età;
+            }
+            
+            Persona.prototype.saluta = function() {
+                return "Ciao, sono " + this.nome
