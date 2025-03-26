@@ -413,4 +413,20 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Errore durante il recupero della nota:', event.target.error);
     };
   }
-    const transaction = db.transaction(['notes
+
+  // Funzione per mostrare l'editor con i dati della nota
+  function showEditor(note) {
+    const editorTitle = document.getElementById('editor-title');
+    const editorContent = document.getElementById('editor-content');
+    const saveButton = document.getElementById('save-note');
+
+    editorTitle.value = note.title;
+    editorContent.value = note.content;
+
+    saveButton.onclick = () => {
+      note.title = editorTitle.value;
+      note.content = editorContent.value;
+      saveNote(note);
+    };
+  }
+});

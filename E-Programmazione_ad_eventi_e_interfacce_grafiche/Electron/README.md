@@ -15,51 +15,50 @@ Crea un corso completo su Electron e Node.js per insegnare la programmazione vis
 
 Il corso deve essere organizzato nei seguenti moduli di difficoltà crescente:
 
-### Modulo 1: Fondamenti di Node.js e programmazione ad eventi
-- Introduzione a Node.js e al modello event-driven
-- L'event loop e gestione asincrona
-- Creazione e gestione di moduli
-- Event emitters e gestione degli eventi
-- Progetto: Creazione di un semplice server con gestione eventi personalizzati
+### Moduli
 
-### Modulo 2: Introduzione a Electron
-- Architettura di Electron (processi main e renderer)
-- Setup dell'ambiente di sviluppo
-- Creazione della prima applicazione
-- Comunicazione tra processi
-- Progetto: Creazione di un'applicazione desktop di base
-
-### Modulo 3: Interfaccia utente e componenti visuali
-- Creazione di interfacce responsive con HTML, CSS e framework UI
-- Gestione degli input utente e eventi DOM
-- Menu, finestre di dialogo e notifiche
-- Progetto: Applicazione con interfaccia multi-finestra e interazioni utente
-
-### Modulo 4: Gestione dati e persistenza
-- Lettura e scrittura di file
-- Database integrati (SQLite, IndexedDB)
-- Sincronizzazione dati e cache
-- Progetto: Applicazione di gestione note con persistenza dati
-
-### Modulo 5: Interazione con API e servizi esterni
-- Chiamate HTTP e gestione di API REST
-- WebSockets per comunicazioni real-time
-- Integrazione con servizi cloud
-- Progetto: Dashboard con dati in tempo reale da API esterne
-
-### Modulo 6: Funzionalità avanzate e ottimizzazione
-- Accesso a funzionalità di sistema
-- Ottimizzazione delle performance
-- Gestione della memoria
-- Testing e debugging
-- Progetto: Applicazione di produttività con funzionalità di sistema avanzate
-
-### Modulo 7: Distribuzione e deployment
-- Pacchettizzazione dell'applicazione
-- Auto-aggiornamenti
-- Gestione delle release
-- Sicurezza delle applicazioni desktop
-- Progetto finale: Distribuzione di un'applicazione completa multi-piattaforma
+- [Modulo 1: Fondamenti di Node.js e programmazione ad eventi](./Modulo1/README.md)
+    - Introduzione a Node.js e al modello event-driven
+    - L'event loop e gestione asincrona
+    - Creazione e gestione di moduli
+    - Event emitters e gestione degli eventi
+    - Progetto: Creazione di un semplice server con gestione eventi personalizzati
+- [Modulo 2: Introduzione a Electron](./Modulo2/README.md)
+    - Architettura di Electron (processi main e renderer)
+    - Setup dell'ambiente di sviluppo
+    - Creazione della prima applicazione
+    - Comunicazione tra processi
+    - Progetto: Creazione di un'applicazione desktop di base
+- [Modulo 3: Interfaccia utente e componenti visuali](./Modulo3/README.md)
+    - Creazione di interfacce responsive con HTML, CSS e framework UI
+    - Gestione degli input utente e eventi DOM
+    - Menu, finestre di dialogo e notifiche
+    - Progetto: Applicazione con interfaccia multi-finestra e interazioni utente
+- [Modulo 4: Gestione dati e persistenza](./Modulo4/README.md)
+    - Lettura e scrittura di file
+    - Database integrati (SQLite, IndexedDB)
+    - Sincronizzazione dati e cache
+    - Progetto: Applicazione di gestione note con persistenza dati
+- [Modulo 5: Debugging avanzato](./Modulo5/README.md)
+- [Modulo 6: Gestione dei pacchetti e dipendenze](./Modulo6/README.md)
+- [Modulo 7: Testing e strumenti di qualità del codice](./Modulo7/README.md)
+- [Modulo 8: Interazione con API e servizi esterni](./Modulo8/README.md)
+    - Chiamate HTTP e gestione di API REST
+    - WebSockets per comunicazioni real-time
+    - Integrazione con servizi cloud
+    - Progetto: Dashboard con dati in tempo reale da API esterne
+- [Modulo 9: Funzionalità avanzate e ottimizzazione](./Modulo9/README.md)
+    - Accesso a funzionalità di sistema
+    - Ottimizzazione delle performance
+    - Gestione della memoria
+    - Testing e debugging
+    - Progetto: Applicazione di produttività con funzionalità di sistema avanzate
+- [Modulo 10: Distribuzione e deployment](./Modulo10/README.md)
+    - Pacchettizzazione dell'applicazione
+    - Auto-aggiornamenti
+    - Gestione delle release
+    - Sicurezza delle applicazioni desktop
+    - Progetto finale: Distribuzione di un'applicazione completa multi-piattaforma
 
 ## Per ogni progetto
 
