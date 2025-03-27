@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavorare con il Testo in Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        select, input {
+            padding: 6px;
+            margin: 4px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lavorare con il Testo in Canvas</h1>
+        <p>
+            Canvas permette di disegnare testo con varie proprietà come font, allineamento e stile.
+            È possibile sia riempire che contornare il testo, creare effetti e animazioni.
+        </p>
+
+        <div class="section">
+            <h2>1. Proprietà di Base del Testo</h2>
+            <p>
+                Le proprietà principali per lavorare con il testo sono:
+            </p>
+            <ul>
+                <li><code>font</code>: specifica lo stile, peso, dimensione e famiglia del font</li>
+                <li><code>textAlign</code>: allineamento orizzontale (start, end, left, right, center)</li>
+                <li><code>textBaseline</code>: allineamento verticale (top, hanging, middle, alphabetic, ideographic, bottom)</li>
+                <li><code>direction</code>: direzione del testo (ltr, rtl)</li>
+            </ul>
+
+            <canvas id="basicTextCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div style="margin-bottom: 10px;">
+                    <label>Testo: <input type="text" id="basicText" value="Ciao, Canvas!" style="width: 200px;"></label>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        Font: 
+                        <select id="fontFamily">
+                            <option value="Arial">Arial</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Impact">Impact</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Dimensione: 
+                        <select id="fontSize">
+                            <option value="12px">12px</option>
+                            <option value="16px">16px</option>
+                            <option value="20px">20px</option>
+                            <option value="24px">24px</option>
+                            <option value="30px" selected>30px</option>
+                            <option value="36px">36px</option>
+                            <option value="48px">48px</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Stile: 
+                        <select id="fontStyle">
+                            <option value="normal">Normal</option>
+                            <option value="italic">Italic</option>
+                            <option value="oblique">Oblique</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Peso: 
+                        <select id="fontWeight">
+                            <option value="normal">Normal</option>
+                            <option value="bold">Bold</option>
+                            <option value="bolder">Bolder</option>
+                            <option value="lighter">Lighter</option>
+                        </select>
+                    </label>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        Allineamento: 
+                        <select id="textAlign">
+                            <option value="start">Start</option>
+                            <option value="end">End</option>
+                            <option value="left">Left</option>
+                            <option value="right">Right</option>
+                            <option value="center" selected>Center</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Linea Base: 
+                        <select id="textBaseline">
+                            <option value="top">Top</option>
+                            <option value="hanging">Hanging</option>
+                            <option value="middle" selected>Middle</option>
+                            <option value="alphabetic">Alphabetic</option>
+                            <option value="ideographic">Ideographic</option>
+                            <option value="bottom">Bottom</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Colore: 
+                        <input type="color" id="textColor" value="#000000">
+                    </label>
+                </div>
+                <button id="drawBasicText">Disegna Testo</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Imposta le proprietà del testo
+ctx.font = 'italic bold 30px Arial';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.fillStyle = 'blue';
+
+// Disegna il testo (riempito)
+ctx.fillText('Ciao, Canvas!', x, y);
+
+// Disegna il testo (contorno)
+ctx.strokeStyle = 'red';
+ctx.lineWidth = 1;
+ctx.strokeText('Ciao, Canvas!', x, y);</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Effetti di Testo</h2>
+            <p>
+                È possibile creare vari effetti sul testo come ombreggiatura, riempimento con gradiente,
+                contorno e molto altro.
+            </p>
+
+            <canvas id="textEffectsCanvas" width="600" height="350"></canvas>
+            
+            <div class="controls">
+                <div style="margin-bottom: 10px;">
+                    <label>Testo: <input type="text" id="effectsText" value="Effetti Testo" style="width: 200px;"></label>
+                </div>
+                <button id="drawShadow">Testo con Ombra</button>
+                <button id="drawGradient">Testo con Gradiente</button>
+                <button id="drawPattern">Testo con Pattern</button>
+                <button id="drawStrokeAndFill">Contorno + Riempimento</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Imposta l'ombra
+ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+ctx.shadowBlur = 10;
+ctx.shadowOffsetX = 5;
+ctx.shadowOffsetY = 5;
+
+// Disegna il testo con ombra
+ctx.fillStyle = 'purple';
+ctx.fillText('Testo con Ombra', x, y);
+
+// Resetta l'ombra
+ctx.shadowColor = 'transparent';
+ctx.shadowBlur = 0;
+ctx.shadowOffsetX = 0;
+ctx.shadowOffsetY = 0;</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Misurazione del Testo</h2>
+            <p>
+                Prima di disegnare il testo, può essere utile misurarlo per posizionarlo correttamente o
+                adattarlo allo spazio disponibile.
+            </p>
+
+            <canvas id="textMeasureCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div style="margin-bottom: 10px;">
+                    <label>Testo da misurare: <input type="text" id="measureText" value="Misura questo testo" style="width: 200px;"></label>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        Font: 
+                        <select id="measureFontFamily">
+                            <option value="Arial">Arial</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                        </select>
+                    </label>
+                    
+                    <label>
+                        Dimensione: 
+                        <select id="measureFontSize">
+                            <option value="16px">16px</option>
+                            <option value="24px" selected>24px</option>
+                            <option value="32px">32px</option>
+                            <option value="48px">48px</option>
+                        </select>
+                    </label>
+                </div>
+                <button id="measureTextBtn">Misura e Mostra</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Imposta il font
+ctx.font = '24px Arial';
+
+// Misura il testo
+const metrics = ctx.measureText('Testo da misurare');
+
+// Ottieni le dimensioni
+const width = metrics.width;
+const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+
+// Disegna un rettangolo delle dimensioni del testo
+ctx.strokeStyle = 'red';
+ctx.strokeRect(x, y - metrics.actualBoundingBoxAscent, width, height);
+
+// Disegna il testo
+ctx.fillText('Testo da misurare', x, y);</pre>
+            </div>
+            
+            <div class="note">
+                <p><strong>Nota:</strong> Alcune metriche avanzate come <code>actualBoundingBoxAscent</code> e <code>actualBoundingBoxDescent</code> potrebbero non essere supportate in tutti i browser. È sempre bene testare e fornire un fallback.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Testo su Percorsi</h2>
+            <p>
+                Un effetto avanzato è il testo disegnato lungo un percorso curvo o spezzato.
+            </p>
+
+            <canvas id="textPathCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div style="margin-bottom: 10px;">
+                    <label>Testo sul percorso: <input type="text" id="pathText" value="Testo lungo un percorso curvo" style="width: 250px;"></label>
+                </div>
+                <button id="drawTextArc">Testo su Arco</button>
+                <button id="drawTextWave">Testo su Onda</button>
+                <button id="drawTextCircle">Testo su Cerchio</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Funzione per disegnare testo lungo un percorso circolare
+function drawTextAlongArc(ctx, text, x, y, radius, startAngle) {
+    ctx.save();
+    ctx.translate(x, y);
+    
+    // Disegna ogni carattere ruotato
+    const characters = text.split('');
+    let angleStep = 0.1;  // radianti per carattere
+    
+    ctx.rotate(startAngle);
+    for(let i = 0; i < characters.length; i++) {
+        ctx.save();
+        ctx.rotate(i * angleStep);
+        ctx.fillText(characters[i], 0, -radius);
+        ctx.restore();
+    }
+    
+    ctx.restore();
+}</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. Animazione di Testo</h2>
+            <p>
+                Puoi creare effetti di animazione del testo tramite Canvas e requestAnimationFrame.
+            </p>
+
+            <canvas id="textAnimationCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="startWaveAnimation">Animazione Ondulata</button>
+                <button id="startTypewriterAnimation">Effetto Macchina da Scrivere</button>
+                <button id="startRotationAnimation">Rotazione Testo</button>
+                <button id="stopAnimation">Ferma Animazione</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Animazione del testo con requestAnimationFrame
+let animationId;
+let time = 0;
+
+function animate() {
+    time += 0.05;
+    
+    // Pulisci il canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Disegna testo animato
+    const text = 'Testo Animato';
+    ctx.font = '30px Arial';
+    
+    for(let i = 0; i < text.length; i++) {
+        const x = 100 + i * 20;
+        const y = 150 + Math.sin(time + i * 0.5) * 20;
+        ctx.fillText(text[i], x, y);
+    }
+    
+    // Continua l'animazione
+    animationId = requestAnimationFrame(animate);
+}
+
+animate();</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ------------- Proprietà di Base del Testo -------------
+        const basicTextCanvas = document.getElementById('basicTextCanvas');
+        const ctxBasic = basicTextCanvas.getContext('2d');
+        
+        // Funzione per disegnare il testo con diverse proprietà
+        function drawBasicText() {
+            // Ottieni i valori dai controlli
+            const text = document.getElementById('basicText').value || 'Ciao, Canvas!';
+            const fontFamily = document.getElementById('fontFamily').value;
+            const fontSize = document.getElementById('fontSize').value;
+            const fontStyle = document.getElementById('fontStyle').value;
+            const fontWeight = document.getElementById('fontWeight').value;
+            const textAlign = document.getElementById('textAlign').value;
+            const textBaseline = document.getElementById('textBaseline').value;
+            const textColor = document.getElementById('textColor').value;
+            
+            // Crea la stringa font completa
+            const fontString = `${fontStyle} ${fontWeight} ${fontSize} ${fontFamily}`;
+            
+            // Pulisci il canvas
+            ctxBasic.clearRect(0, 0, basicTextCanvas.width, basicTextCanvas.height);
+            
+            // Disegna le linee guida
+            ctxBasic.beginPath();
+            ctxBasic.moveTo(300, 0);
+            ctxBasic.lineTo(300, basicTextCanvas.height);
+            ctxBasic.moveTo(0, 150);
+            ctxBasic.lineTo(basicTextCanvas.width, 150);
+            ctxBasic.strokeStyle = '#ddd';
+            ctxBasic.stroke();
+            
+            // Imposta le proprietà del testo
+            ctxBasic.font = fontString;
+            ctxBasic.textAlign = textAlign;
+            ctxBasic.textBaseline = textBaseline;
+            ctxBasic.fillStyle = textColor;
+            
+            // Disegna il testo
+            ctxBasic.fillText(text, 300, 150);
+            
+            // Disegna anche il contorno
+            ctxBasic.strokeStyle = '#333';
+            ctxBasic.lineWidth = 1;
+            ctxBasic.strokeText(text, 300, 150);
+            
+            // Mostra le proprietà usate
+            ctxBasic.font = '14px Arial';
+            ctxBasic.textAlign = 'left';
+            ctxBasic.textBaseline = 'top';
+            ctxBasic.fillStyle = '#333';
+            ctxBasic.fillText(`Font: ${fontString}`, 10, 10);
+            ctxBasic.fillText(`TextAlign: ${textAlign}`, 10, 30);
+            ctxBasic.fillText(`TextBaseline: ${textBaseline}`, 10, 50);
+            
+            // Disegna un punto per indicare la posizione di allineamento
+            ctxBasic.fillStyle = 'red';
+            ctxBasic.beginPath();
+            ctxBasic.arc(300, 150, 3, 0, Math.PI * 2);
+            ctxBasic.fill();
+        }
+        
+        // Inizializza con i valori predefiniti
+        drawBasicText();
+        
+        // Gestisci il pulsante di disegno
+        document.getElementById('drawBasicText').addEventListener('click', drawBasicText);
+        
+        // ------------- Effetti di Testo -------------
+        const textEffectsCanvas = document.getElementById('textEffectsCanvas');
+        const ctxEffects = textEffectsCanvas.getContext('2d');
+        
+        // Funzione per pulire il canvas degli effetti
+        function clearEffectsCanvas() {
+            ctxEffects.clearRect(0, 0, textEffectsCanvas.width, textEffectsCanvas.height);
+            
+            // Disegna un'intestazione
+            ctxEffects.font = '14px Arial';
+            ctxEffects.textAlign = 'center';
+            ctxEffects.textBaseline = 'top';
+            ctxEffects.fillStyle = '#333';
+            ctxEffects.fillText('Clicca i pulsanti sotto per vedere diversi effetti di testo', textEffectsCanvas.width / 2, 10);
+        }
+        
+        // Inizializza il canvas degli effetti
+        clearEffectsCanvas();
+        
+        // Funzione per disegnare testo con ombra
+        document.getElementById('drawShadow').addEventListener('click', function() {
+            const text = document.getElementById('effectsText').value || 'Effetti Testo';
+            
+            clearEffectsCanvas();
+            
+            // Imposta il font
+            ctxEffects.font = 'bold 48px Arial';
+            ctxEffects.textAlign = 'center';
+            
+            // Imposta l'ombra
+            ctxEffects.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctxEffects.shadowBlur = 10;
+            ctxEffects.shadowOffsetX = 5;
+            ctxEffects.shadowOffsetY = 5;
+            
+            // Disegna il testo con ombra
+            ctxEffects.fillStyle = 'purple';
+            ctxEffects.fillText(text, textEffectsCanvas.width / 2, 100);
+            
+            // Disegna un secondo testo con ombra diversa
+            ctxEffects.shadowColor = 'rgba(255, 0, 0, 0.5)';
+            ctxEffects.shadowBlur = 15;
+            ctxEffects.shadowOffsetX = -5;
+            ctxEffects.shadowOffsetY = 10;
+            
+            ctxEffects.fillStyle = 'blue';
+            ctxEffects.fillText(text, textEffectsCanvas.width / 2, 200);
+            
+            // Resetta l'ombra
+            ctxEffects.shadowColor = 'transparent';
+            ctxEffects.shadowBlur = 0;
+            ctxEffects.shadowOffsetX = 0;
+            ctxEffects.shadowOffsetY = 0;
+            
+            // Mostra il codice utilizzato
+            ctxEffects.font = '12px monospace';
+            ctxEffects.fillStyle = 'black';
+            ctxEffects.textAlign = 'left';
+            ctxEffects.fillText('ctx.shadowColor = "rgba(0, 0, 0, 0.5)";', 10, 280);
+            ctxEffects.fillText('ctx.shadowBlur = 10;', 10, 300);
+            ctxEffects.fillText('ctx.shadowOffsetX = 5; ctx.shadowOffsetY = 5;', 10, 320);
+        });
+        
+        // Funzione per disegnare testo con gradiente
+        document.getElementById('drawGradient').addEventListener('click', function() {
+            const text = document.getElementById('effectsText').value || 'Effetti Testo';
+            
+            clearEffectsCanvas();
+            
+            // Imposta il font
+            ctxEffects.font = 'bold 60px Arial';
+            ctxEffects.textAlign = 'center';
+            
+            // Crea una sfumatura lineare
+            const gradient = ctxEffects.createLinearGradient(
+                textEffectsCanvas.width / 2 - 150,
+                0,
+                textEffectsCanvas.width / 2 + 150,
+                0
+            );
+            gradient.addColorStop(0, 'red');
+            gradient.addColorStop(0.5, 'blue');
+            gradient.addColorStop(1, 'green');
+            
+            // Usa la sfumatura come colore di riempimento
+            ctxEffects.fillStyle = gradient;
+            ctxEffects.fillText(text, textEffectsCanvas.width / 2, 100);
+            
+            // Crea una sfumatura radiale
+            const radialGradient = ctxEffects.createRadialGradient(
+                textEffectsCanvas.width / 2,
+                200,
+                10,
+                textEffectsCanvas.width / 2,
+                200,
+                150
+            );
+            radialGradient.addColorStop(0, 'yellow');
+            radialGradient.addColorStop(0.7, 'orange');
+            radialGradient.addColorStop(1, 'red');
+            
+            // Usa la sfumatura radiale
+            ctxEffects.fillStyle = radialGradient;
+            ctxEffects.fillText(text, textEffectsCanvas.width / 2, 200);
+            
+            // Mostra il codice utilizzato
+            ctxEffects.font = '12px monospace';
+            ctxEffects.fillStyle = 'black';
+            ctxEffects.textAlign = 'left';
+            ctxEffects.fillText('const gradient = ctx.createLinearGradient(x0, y0, x1, y1);', 10, 280);
+            ctxEffects.fillText('gradient.addColorStop(0, "red");', 10, 300);
+            ctxEffects.fillText('ctx.fillStyle = gradient; ctx.fillText(text, x, y);', 10, 320);
+        });
+        
+        // Funzione per disegnare testo con pattern
+        document.getElementById('drawPattern').addEventListener('click', function() {
+            const text = document.getElementById('effectsText').value || 'Effetti Testo';
+            
+            clearEffectsCanvas();
+            
+            // Crea un canvas per il pattern
+            const patternCanvas = document.createElement('canvas');
+            patternCanvas.width = 20;
+            patternCanvas.height = 20;
+            const patternContext = patternCanvas.getContext('2d');
+            
+            // Disegna un pattern semplice
+            patternContext.fillStyle = '#ddd';
+            patternContext.fillRect(0, 0, 20, 20);
+            patternContext.fillStyle = '#555';
+            patternContext.fillRect(0, 0, 10, 10);
+            patternContext.fillRect(10, 10, 10, 10);
+            
+            // Crea il pattern
+            const pattern = ctxEffects.createPattern(patternCanvas, 'repeat');
+            
+            // Imposta il font
+            ctxEffects.font = 'bold 80px Arial';
+            ctxEffects.textAlign = 'center';
+            
+            // Funzione ausiliaria per disegnare testo con pattern
+            function fillTextWithPattern(text, x, y) {
+                // Salva il contesto corrente
+                ctxEffects.save();
+                
+                // Disegna il testo (verrà usato come maschera)
+                ctxEffects.fillStyle = 'black';
+                ctxEffects.fillText(text, x, y);
+                
+                // Usa l'operazione di composizione "source-in" per mascherare il pattern con il testo
+                ctxEffects.globalCompositeOperation = 'source-in';
+                
+                // Disegna un rettangolo con il pattern che verrà mascherato dalla forma del testo
+                ctxEffects.fillStyle = pattern;
+                ctxEffects.fillRect(x - 200, y - 80, 400, 160);
+                
+                // Ripristina il contesto
+                ctxEffects.restore();
+            }
+            
+            // Disegna il testo con pattern
+            fillTextWithPattern(text, textEffectsCanvas.width / 2, 120);
+            
+            // Crea un altro pattern
+            const patternCanvas2 = document.createElement('canvas');
+            patternCanvas2.width = 20;
+            patternCanvas2.height = 20;
+            const patternContext2 = patternCanvas2.getContext('2d');
+            
+            // Disegna un pattern a cerchi
+            patternContext2.fillStyle = '#fff';
+            patternContext2.fillRect(0, 0, 20, 20);
+            patternContext2.fillStyle = '#3498db';
+            patternContext2.beginPath();
+            patternContext2.arc(10, 10, 5, 0, Math.PI * 2);
+            patternContext2.fill();
+            
+            // Crea il secondo pattern
+            const pattern2 = ctxEffects.createPattern(patternCanvas2, 'repeat');
+            
+            // Disegna il secondo testo con pattern diverso
+            ctxEffects.fillStyle = pattern2;
+            ctxEffects.fillText(text, textEffectsCanvas.width / 2, 220);
+            
+            // Mostra il codice utilizzato
+            ctxEffects.font = '12px monospace';
+            ctxEffects.fillStyle = 'black';
+            ctxEffects.textAlign = 'left';
+            ctxEffects.fillText('const pattern = ctx.createPattern(patternCanvas, "repeat");', 10, 280);
+            ctxEffects.fillText('ctx.fillStyle = pattern;', 10, 300);
+            ctxEffects.fillText('ctx.fillText(text, x, y);', 10, 320);
+        });
+        
+        // Funzione per disegnare testo con contorno e riempimento
+        document.getElementById('drawStrokeAndFill').addEventListener('click', function() {
+            const text = document.getElementById('effectsText').value || 'Effetti Testo';
+            
+            clearEffectsCanvas();
+            
+            // Imposta il font
+            ctxEffects.font = 'bold 70px Arial';
+            ctxEffects.textAlign = 'center';
+            
+            // Disegna il contorno
+            ctxEffects.lineWidth = 8;
+            ctxEffects.strokeStyle = '#e74c3c';
+            ctxEffects.strokeText(text, textEffectsCanvas.width / 2, 100);
+            
+            // Disegna il riempimento
+            ctxEffects.fillStyle = '#3498db';
+            ctxEffects.fillText(text, textEffectsCanvas.width / 2, 100);
+            
+            // Contorno sopra riempimento
+            ctxEffects.fillStyle = '#f1c40f';
+            ctxEffects.fillText(text, textEffectsCanvas.width / 2, 200);
+            
+            ctxEffects.lineWidth = 2;
+            ctxEffects.strokeStyle = '#2c3e50';
+            ctxEffects.strokeText(text, textEffectsCanvas.width / 2, 200);
+            
+            // Mostra il codice utilizzato
+            ctxEffects.font = '12px monospace';
+            ctxEffects.fillStyle = 'black';
+            ctxEffects.textAlign = 'left';
+            ctxEffects.fillText('ctx.strokeStyle = "#e74c3c"; ctx.lineWidth = 8;', 10, 280);
+            ctxEffects.fillText('ctx.strokeText(text, x, y);', 10, 300);
+            ctxEffects.fillText('ctx.fillStyle = "#3498db"; ctx.fillText(text, x, y);', 10, 320);
+        });
+        
+        // ------------- Misurazione del Testo -------------
+        const textMeasureCanvas = document.getElementById('textMeasureCanvas');
+        const ctxMeasure = textMeasureCanvas.getContext('2d');
+        
+        // Funzione per misurare e mostrare le dimensioni del testo
+        document.getElementById('measureTextBtn').addEventListener('click', function() {
+            const text = document.getElementById('measureText').value;
+            const fontFamily = document.getElementById('measureFontFamily').value;
+            const fontSize = document.getElementById('measureFontSize').value;
+            
+            // Imposta il font
+            const fontString = `${fontSize} ${fontFamily}`;
+            ctxMeasure.font = fontString;
+            
+            // Pulisci il canvas
+            ctxMeasure.clearRect(0, 0, textMeasureCanvas.width, textMeasureCanvas.height);
+            
+            // Posizione del testo
+            const x = 50;
+            const y = 100;
+            
+            // Misura il testo
+            const metrics = ctxMeasure.measureText(text);
+            
+            // Ottieni larghezza e altezza (se supportata)
+            const width = metrics.width;
+            let ascent = 0;
+            let descent = 0;
+            let height = 0;
+            
+            // Verifica il supporto per le metriche avanzate
+            if (metrics.actualBoundingBoxAscent !== undefined && 
+                metrics.actualBoundingBoxDescent !== undefined) {
+                ascent = metrics.actualBoundingBoxAscent;
+                descent = metrics.actualBoundingBoxDescent;
+                height = ascent + descent;
+            } else {
+                // Fallback se le metriche avanzate non sono supportate
+                // Stima l'altezza in base alla dimensione del font
+                height = parseInt(fontSize) * 1.2;
+                ascent = height * 0.8;
+                descent = height * 0.2;
+            }
+            
+            // Disegna linee guida
+            ctxMeasure.strokeStyle = '#ddd';
+            ctxMeasure.beginPath();
+            ctxMeasure.moveTo(0, y);
+            ctxMeasure.lineTo(textMeasureCanvas.width, y);
+            ctxMeasure.stroke();
+            
+            // Disegna un rettangolo delle dimensioni del testo
+            ctxMeasure.strokeStyle = 'red';
+            ctxMeasure.strokeRect(x, y - ascent, width, height);
+            
+            // Disegna il testo
+            ctxMeasure.fillStyle = 'blue';
+            ctxMeasure.fillText(text, x, y);
+            
+            // Mostra le dimensioni misurate
+            ctxMeasure.fillStyle = 'black';
+            ctxMeasure.font = '16px Arial';
+            ctxMeasure.fillText(`Larghezza: ${width.toFixed(2)}px`, 50, 180);
+            ctxMeasure.fillText(`Altezza: ${height.toFixed(2)}px (Ascendente: ${ascent.toFixed(2)}px, Discendente: ${descent.toFixed(2)}px)`, 50, 210);
+            ctxMeasure.fillText(`Font: ${fontString}`, 50, 240);
+            
+            // Disegna un punto di riferimento
+            ctxMeasure.fillStyle = 'red';
+            ctxMeasure.beginPath();
+            ctxMeasure.arc(x, y, 3, 0, Math.PI * 2);
+            ctxMeasure.fill();
+        });
+        
+        // ------------- Testo su Percorsi -------------
+        const textPathCanvas = document.getElementById('textPathCanvas');
+        const ctxPath = textPathCanvas.getContext('2d');
+        
+        // Funzione per disegnare testo lungo un arco
+        document.getElementById('drawTextArc').addEventListener('click', function() {
+            const text = document.getElementById('pathText').value;
+            
+            // Pulisci il canvas
+            ctxPath.clearRect(0, 0, textPathCanvas.width, textPathCanvas.height);
+            
+            // Funzione per disegnare testo lungo un arco
+            function drawTextAlongArc(ctx, text, x, y, radius, startAngle) {
+                // Imposta il font
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#333';
+                
+                // Salva il contesto
+                ctx.save();
+                
+                // Trasla al centro dell'arco
+                ctx.translate(x, y);
+                
+                // Calcola l'angolo per distribuire uniformemente il testo
+                const characters = text.split('');
+                let angleStep = Math.PI / (characters.length - 1);
+                let currentAngle = startAngle;
+                
+                // Disegna ogni carattere
+                for (let i = 0; i < characters.length; i++) {
+                    ctx.save();
+                    ctx.rotate(currentAngle);
+                    ctx.fillText(characters[i], 0, -radius);
+                    ctx.restore();
+                    
+                    // Incrementa l'angolo
+                    currentAngle += angleStep;
+                }
+                
+                // Ripristina il contesto
+                ctx.restore();
+                
+                // Disegna l'arco di riferimento
+                ctx.beginPath();
+                ctx.arc(x, y, radius, startAngle, startAngle + Math.PI, false);
+                ctx.strokeStyle = '#ddd';
+                ctx.stroke();
+                
+                // Disegna il punto centrale
+                ctx.fillStyle = 'red';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Disegna il testo lungo un arco
+            drawTextAlongArc(ctxPath, text, textPathCanvas.width / 2, 150, 100, Math.PI);
+            
+            // Mostra il codice utilizzato
+            ctxPath.fillStyle = 'black';
+            ctxPath.font = '12px monospace';
+            ctxPath.fillText('Per ogni carattere nel testo:', 10, 250);
+            ctxPath.fillText('ctx.save(); ctx.rotate(angle); ctx.fillText(char, 0, -radius); ctx.restore();', 20, 270);
+        });
+        
+        // Funzione per disegnare testo su un'onda
+        document.getElementById('drawTextWave').addEventListener('click', function() {
+            const text = document.getElementById('pathText').value;
+            
+            // Pulisci il canvas
+            ctxPath.clearRect(0, 0, textPathCanvas.width, textPathCanvas.height);
+            
+            // Imposta il font
+            ctxPath.font = '24px Arial';
+            ctxPath.textAlign = 'center';
+            ctxPath.textBaseline = 'middle';
+            ctxPath.fillStyle = '#333';
+            
+            // Parametri dell'onda
+            const amplitude = 50; // Altezza dell'onda
+            const frequency = 0.05; // Frequenza dell'onda
+            const baseline = 150; // Linea di base
+            
+            // Disegna il percorso ondulato di riferimento
+            ctxPath.beginPath();
+            for (let x = 0; x < textPathCanvas.width; x += 2) {
+                const y = baseline + amplitude * Math.sin(x * frequency);
+                if (x === 0) {
+                    ctxPath.moveTo(x, y);
+                } else {
+                    ctxPath.lineTo(x, y);
+                }
+            }
+            ctxPath.strokeStyle = '#ddd';
+            ctxPath.stroke();
+            
+            // Disegna il testo lungo l'onda
+            const characters = text.split('');
+            const charWidth = ctxPath.measureText('M').width;
+            const startX = textPathCanvas.width / 2 - (characters.length / 2) * charWidth;
+            
+            for (let i = 0; i < characters.length; i++) {
+                const x = startX + i * charWidth;
+                const y = baseline + amplitude * Math.sin(x * frequency);
+                const angle = Math.atan(amplitude * frequency * Math.cos(x * frequency));
+                
+                ctxPath.save();
+                ctxPath.translate(x, y);
+                ctxPath.rotate(angle);
+                ctxPath.fillText(characters[i], 0, 0);
+                ctxPath.restore();
+            }
+            
+            // Mostra il codice utilizzato
+            ctxPath.fillStyle = 'black';
+            ctxPath.font = '12px monospace';
+            ctxPath.fillText('Per ogni carattere:', 10, 250);
+            ctxPath.fillText('const y = baseline + amplitude * Math.sin(x * frequency);', 20, 270);
+            ctxPath.fillText('const angle = Math.atan(amplitude * frequency * Math.cos(x * frequency));', 20, 290);
+        });
+        
+        // Funzione per disegnare testo su un cerchio
+        document.getElementById('drawTextCircle').addEventListener('click', function() {
+            const text = document.getElementById('pathText').value;
+            
+            // Pulisci il canvas
+            ctxPath.clearRect(0, 0, textPathCanvas.width, textPathCanvas.height);
+            
+            // Centro del cerchio
+            const centerX = textPathCanvas.width / 2;
+            const centerY = 150;
+            const radius = 100;
+            
+            // Disegna il cerchio di riferimento
+            ctxPath.beginPath();
+            ctxPath.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctxPath.strokeStyle = '#ddd';
+            ctxPath.stroke();
+            
+            // Disegna il punto centrale
+            ctxPath.fillStyle = 'red';
+            ctxPath.beginPath();
+            ctxPath.arc(centerX, centerY, 3, 0, Math.PI * 2);
+            ctxPath.fill();
+            
+            // Imposta il font
+            ctxPath.font = '18px Arial';
+            ctxPath.textAlign = 'center';
+            ctxPath.textBaseline = 'middle';
+            ctxPath.fillStyle = '#333';
+            
+            // Disegna il testo sul cerchio
+            const characters = text.split('');
+            const totalAngle = Math.PI * 2; // Angolo completo
+            const angleStep = totalAngle / characters.length;
+            let currentAngle = -Math.PI / 2; // Inizia dall'alto
+            
+            for (let i = 0; i < characters.length; i++) {
+                const x = centerX + radius * Math.cos(currentAngle);
+                const y = centerY + radius * Math.sin(currentAngle);
+                
+                ctxPath.save();
+                ctxPath.translate(x, y);
+                ctxPath.rotate(currentAngle + Math.PI / 2);
+                ctxPath.fillText(characters[i], 0, 0);
+                ctxPath.restore();
+                
+                currentAngle += angleStep;
+            }
+            
+            // Mostra il codice utilizzato
+            ctxPath.fillStyle = 'black';
+            ctxPath.font = '12px monospace';
+            ctxPath.fillText('const angleStep = (Math.PI * 2) / text.length;', 10, 250);
+            ctxPath.fillText('const x = centerX + radius * Math.cos(angle);', 10, 270);
+            ctxPath.fillText('const y = centerY + radius * Math.sin(angle);', 10, 290);
+        });
+        
+        // ------------- Animazione di Testo -------------
+        const textAnimationCanvas = document.getElementById('textAnimationCanvas');
+        const ctxAnim = textAnimationCanvas.getContext('2d');
+        
+        // Inizializza il canvas
+        ctxAnim.fillStyle = 'black';
+        ctxAnim.font = '20px Arial';
+        ctxAnim.textAlign = 'center';
+        ctxAnim.fillText('Clicca uno dei pulsanti sotto per avviare un\'animazione', textAnimationCanvas.width / 2, textAnimationCanvas.height / 2);
+        
+        // ID dell'animazione corrente
+        let currentAnimationId = null;
+        
+        // Funzione per fermare qualsiasi animazione corrente
+        function stopCurrentAnimation() {
+            if (currentAnimationId !== null) {
+                cancelAnimationFrame(currentAnimationId);
+                currentAnimationId = null;
+            }
+        }
+        
+        // Animazione ondulata
+        document.getElementById('startWaveAnimation').addEventListener('click', function() {
+            stopCurrentAnimation();
+            
+            const text = 'Animazione Ondulata';
+            let time = 0;
+            
+            function animate() {
+                time += 0.05;
+                
+                // Pulisci il canvas
+                ctxAnim.clearRect(0, 0, textAnimationCanvas.width, textAnimationCanvas.height);
+                
+                // Imposta il font
+                ctxAnim.font = '30px Arial';
+                ctxAnim.textBaseline = 'middle';
+                
+                // Disegna ogni lettera con una posizione Y variabile
+                const characters = text.split('');
+                const totalWidth = ctxAnim.measureText(text).width;
+                const startX = textAnimationCanvas.width / 2 - totalWidth / 2;
+                
+                for (let i = 0; i < characters.length; i++) {
+                    const charWidth = ctxAnim.measureText(characters[i]).width;
+                    const x = startX + ctxAnim.measureText(text.substring(0, i)).width + charWidth / 2;
+                    const y = textAnimationCanvas.height / 2 + Math.sin(time + i * 0.2) * 30;
+                    
+                    const hue = (360 / characters.length) * i;
+                    ctxAnim.fillStyle = `hsl(${Math.floor(hue)}, 70%, 60%)`;
+                    ctxAnim.fillText(characters[i], x, y);
+                }
+                
+                // Continua l'animazione
+                currentAnimationId = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        });
+        
+        // Animazione macchina da scrivere
+        document.getElementById('startTypewriterAnimation').addEventListener('click', function() {
+            stopCurrentAnimation();
+            
+            const text = 'Questo è un effetto macchina da scrivere...';
+            let currentIndex = 0;
+            let lastUpdateTime = 0;
+            
+            function animate(timestamp) {
+                // Aggiorna l'indice solo ogni 100ms
+                if (timestamp - lastUpdateTime > 100) {
+                    lastUpdateTime = timestamp;
+                    currentIndex = Math.min(currentIndex + 1, text.length);
+                }
+                
+                // Pulisci il canvas
+                ctxAnim.clearRect(0, 0, textAnimationCanvas.width, textAnimationCanvas.height);
+                
+                // Imposta il font
+                ctxAnim.font = '24px Courier New';
+                ctxAnim.fillStyle = '#333';
+                ctxAnim.textAlign = 'left';
+                ctxAnim.textBaseline = 'middle';
+                
+                // Disegna il testo fino all'indice corrente
+                const currentText = text.substring(0, currentIndex);
+                ctxAnim.fillText(currentText, 50, textAnimationCanvas.height / 2);
+                
+                // Simula un cursore lampeggiante
+                if (Math.floor(timestamp / 500) % 2 === 0) {
+                    const cursorX = 50 + ctxAnim.measureText(currentText).width;
+                    ctxAnim.fillText('|', cursorX, textAnimationCanvas.height / 2);
+                }
+                
+                // Continua l'animazione se non è completa
+                if (currentIndex < text.length || Math.floor(timestamp / 500) % 2 === 0) {
+                    currentAnimationId = requestAnimationFrame(animate);
+                }
+            }
+            
+            currentAnimationId = requestAnimationFrame(animate);
+        });
+        
+        // Animazione rotazione
+        document.getElementById('startRotationAnimation').addEventListener('click', function() {
+            stopCurrentAnimation();
+            
+            const text = 'Rotazione!';
+            let angle = 0;
+            
+            function animate() {
+                angle += 0.02;
+                
+                // Pulisci il canvas
+                ctxAnim.clearRect(0, 0, textAnimationCanvas.width, textAnimationCanvas.height);
+                
+                // Salva il contesto
+                ctxAnim.save();
+                
+                // Trasla al centro e ruota
+                ctxAnim.translate(textAnimationCanvas.width / 2, textAnimationCanvas.height / 2);
+                ctxAnim.rotate(angle);
+                
+                // Disegna testo con effetti
+                ctxAnim.font = '40px Impact';
+                ctxAnim.textAlign = 'center';
+                ctxAnim.textBaseline = 'middle';
+                
+                // Ombra
+                ctxAnim.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                ctxAnim.shadowBlur = 10;
+                ctxAnim.shadowOffsetX = 5;
+                ctxAnim.shadowOffsetY = 5;
+                
+                // Sfumatura di colore
+                const gradient = ctxAnim.createLinearGradient(-100, 0, 100, 0);
+                gradient.addColorStop(0, '#3498db');
+                gradient.addColorStop(1, '#e74c3c');
+                ctxAnim.fillStyle = gradient;
+                
+                // Disegna il testo
+                ctxAnim.fillText(text, 0, 0);
+                
+                // Ripristina il contesto
+                ctxAnim.restore();
+                
+                // Continua l'animazione
+                currentAnimationId = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        });
+        
+        // Ferma l'animazione
+        document.getElementById('stopAnimation').addEventListener('click', function() {
+            stopCurrentAnimation();
+            
+            // Mostra un messaggio
+            ctxAnim.clearRect(0, 0, textAnimationCanvas.width, textAnimationCanvas.height);
+            ctxAnim.font = '20px Arial';
+            ctxAnim.textAlign = 'center';
+            ctxAnim.fillStyle = 'black';
+            ctxAnim.fillText('Animazione fermata', textAnimationCanvas.width / 2, textAnimationCanvas.height / 2);
+        });
+    </script>
+</body>
+</html>

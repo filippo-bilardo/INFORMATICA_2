@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colore e Riempimento in Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .color-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .color-picker div {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: transform 0.2s;
+        }
+        .color-picker div:hover {
+            transform: scale(1.1);
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[type="range"] {
+            width: 180px;
+            vertical-align: middle;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .sample {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Colore e Riempimento in Canvas</h1>
+        <p>
+            In Canvas, il controllo dei colori e dei riempimenti è fondamentale per creare disegni accattivanti. Puoi usare
+            colori semplici, sfumature (gradients) e pattern per riempire forme e tracciare linee.
+        </p>
+
+        <div class="section">
+            <h2>1. Colori Base</h2>
+            <p>
+                I colori in Canvas possono essere espressi in vari formati:
+            </p>
+            <ul>
+                <li>Nomi dei colori: <code>red</code>, <code>blue</code>, <code>yellow</code>, ecc.</li>
+                <li>Valori esadecimali: <code>#FF0000</code> (rosso), <code>#0000FF</code> (blu), ecc.</li>
+                <li>Formato RGB: <code>rgb(255, 0, 0)</code> (rosso)</li>
+                <li>Formato RGBA: <code>rgba(255, 0, 0, 0.5)</code> (rosso con 50% di opacità)</li>
+                <li>Formato HSL: <code>hsl(0, 100%, 50%)</code> (rosso)</li>
+                <li>Formato HSLA: <code>hsla(0, 100%, 50%, 0.5)</code> (rosso con 50% di opacità)</li>
+            </ul>
+
+            <canvas id="coloriBaseCanvas" width="600" height="200"></canvas>
+            
+            <div class="controls">
+                Colore di riempimento: 
+                <div class="color-picker" id="fillColorPicker">
+                    <div style="background-color: #FF0000;" data-color="#FF0000"></div>
+                    <div style="background-color: #00FF00;" data-color="#00FF00"></div>
+                    <div style="background-color: #0000FF;" data-color="#0000FF"></div>
+                    <div style="background-color: #FFFF00;" data-color="#FFFF00"></div>
+                    <div style="background-color: #FF00FF;" data-color="#FF00FF"></div>
+                    <div style="background-color: #00FFFF;" data-color="#00FFFF"></div>
+                    <div style="background-color: #000000;" data-color="#000000"></div>
+                </div>
+                Opacità del riempimento: <input type="range" id="fillOpacity" min="0" max="1" step="0.1" value="1">
+                <span id="fillOpacityValue">1.0</span>
+                <button id="drawColoredShape">Disegna Forma</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Imposta il colore di riempimento
+ctx.fillStyle = 'rgb(255, 0, 0)';  // Rosso
+// o
+ctx.fillStyle = '#FF0000';         // Rosso in esadecimale 
+// o
+ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';  // Rosso con opacità al 50%
+
+// Disegna un rettangolo pieno
+ctx.fillRect(x, y, width, height);
+
+// Imposta il colore del tratto (bordo)
+ctx.strokeStyle = 'blue';
+ctx.lineWidth = 3;
+
+// Disegna un rettangolo con solo bordo
+ctx.strokeRect(x, y, width, height);</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Sfumature Lineari (Linear Gradients)</h2>
+            <p>
+                Le sfumature lineari creano un gradiente di colore lungo una linea retta tra due punti.
+            </p>
+
+            <canvas id="linearGradientCanvas" width="600" height="200"></canvas>
+            
+            <div class="controls">
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        Primo colore: 
+                        <input type="color" id="linearColor1" value="#ff0000">
+                    </label>
+                    <label style="margin-left: 15px;">
+                        Secondo colore: 
+                        <input type="color" id="linearColor2" value="#0000ff">
+                    </label>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    Direzione della sfumatura:
+                    <button id="linearHorizontal">Orizzontale</button>
+                    <button id="linearVertical">Verticale</button>
+                    <button id="linearDiagonal">Diagonale</button>
+                </div>
+                <button id="drawLinearGradient">Disegna Sfumatura Lineare</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Crea una sfumatura lineare (x0, y0, x1, y1)
+const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+
+// Aggiungi i fermi di colore (colorStop)
+gradient.addColorStop(0, 'red');    // 0% del percorso
+gradient.addColorStop(0.5, 'blue'); // 50% del percorso
+gradient.addColorStop(1, 'green');  // 100% del percorso
+
+// Usa la sfumatura come stile di riempimento
+ctx.fillStyle = gradient;
+ctx.fillRect(0, 0, canvas.width, canvas.height);</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Sfumature Radiali (Radial Gradients)</h2>
+            <p>
+                Le sfumature radiali creano un gradiente di colore che si irradia da un punto centrale.
+            </p>
+
+            <canvas id="radialGradientCanvas" width="600" height="200"></canvas>
+            
+            <div class="controls">
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        Colore interno: 
+                        <input type="color" id="radialColor1" value="#ff0000">
+                    </label>
+                    <label style="margin-left: 15px;">
+                        Colore esterno: 
+                        <input type="color" id="radialColor2" value="#0000ff">
+                    </label>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    Raggio: <input type="range" id="radialRadius" min="50" max="200" value="100">
+                    <button id="centerGradient">Centrato</button>
+                    <button id="offsetGradient">Sfuocato</button>
+                </div>
+                <button id="drawRadialGradient">Disegna Sfumatura Radiale</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Crea una sfumatura radiale (x0, y0, r0, x1, y1, r1)
+// x0, y0, r0: centro e raggio del cerchio iniziale
+// x1, y1, r1: centro e raggio del cerchio finale
+const gradient = ctx.createRadialGradient(
+    centerX, centerY, 0,     // Cerchio iniziale (punto)
+    centerX, centerY, radius // Cerchio finale
+);
+
+// Aggiungi i fermi di colore (colorStop)
+gradient.addColorStop(0, 'white');  // Colore al centro
+gradient.addColorStop(1, 'blue');   // Colore ai bordi
+
+// Usa la sfumatura come stile di riempimento
+ctx.fillStyle = gradient;
+ctx.fillRect(0, 0, canvas.width, canvas.height);</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Pattern e Texture</h2>
+            <p>
+                I pattern consentono di usare immagini, canvas o video come "pennello" per riempire forme.
+            </p>
+
+            <canvas id="patternCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="patternBrick">Pattern Mattoni</button>
+                <button id="patternDots">Pattern Punti</button>
+                <button id="patternImage">Pattern da Immagine</button>
+                <button id="patternCanvas">Pattern da Canvas</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Crea un'immagine
+const img = new Image();
+img.src = 'pattern.jpg';
+
+img.onload = function() {
+    // Crea un pattern ripetuto
+    const pattern = ctx.createPattern(img, 'repeat');
+    
+    // Usa il pattern come stile di riempimento
+    ctx.fillStyle = pattern;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+};</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. Disegno Libero con Colori</h2>
+            <p>
+                Prova a disegnare liberamente scegliendo colori e stili diversi.
+            </p>
+
+            <canvas id="freeDrawingCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        Colore: 
+                        <input type="color" id="drawingColor" value="#000000">
+                    </label>
+                    Spessore: <input type="range" id="lineWidth" min="1" max="50" value="5">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        <input type="checkbox" id="useGradient"> Usa sfumatura
+                    </label>
+                    <label style="margin-left: 15px;">
+                        <input type="checkbox" id="showCoordinates"> Mostra coordinate
+                    </label>
+                </div>
+                <button id="clearDrawing">Pulisci Canvas</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ------------- Colori Base -------------
+        const coloriBaseCanvas = document.getElementById('coloriBaseCanvas');
+        const ctxBase = coloriBaseCanvas.getContext('2d');
+        
+        // Disegna esempi di colori
+        function drawColorExamples() {
+            ctxBase.clearRect(0, 0, coloriBaseCanvas.width, coloriBaseCanvas.height);
+            
+            // Esempio di nomi colori
+            ctxBase.fillStyle = 'red';
+            ctxBase.fillRect(50, 40, 80, 80);
+            ctxBase.fillStyle = 'black';
+            ctxBase.font = '12px Arial';
+            ctxBase.fillText('red', 50, 140);
+            
+            // Esempio di valori esadecimali
+            ctxBase.fillStyle = '#00FF00';
+            ctxBase.fillRect(150, 40, 80, 80);
+            ctxBase.fillStyle = 'black';
+            ctxBase.fillText('#00FF00', 150, 140);
+            
+            // Esempio di RGB
+            ctxBase.fillStyle = 'rgb(0, 0, 255)';
+            ctxBase.fillRect(250, 40, 80, 80);
+            ctxBase.fillStyle = 'black';
+            ctxBase.fillText('rgb(0, 0, 255)', 250, 140);
+            
+            // Esempio di RGBA
+            ctxBase.fillStyle = 'rgba(255, 0, 255, 0.5)';
+            ctxBase.fillRect(350, 40, 80, 80);
+            ctxBase.fillStyle = 'black';
+            ctxBase.fillText('rgba(255, 0, 255, 0.5)', 350, 140);
+            
+            // Esempio di HSL
+            ctxBase.fillStyle = 'hsl(120, 100%, 50%)';
+            ctxBase.fillRect(450, 40, 80, 80);
+            ctxBase.fillStyle = 'black';
+            ctxBase.fillText('hsl(120, 100%, 50%)', 450, 140);
+        }
+        
+        drawColorExamples();
+        
+        // Gestione della selezione colore
+        let currentFillColor = '#FF0000';
+        let currentFillOpacity = 1;
+        
+        document.querySelectorAll('#fillColorPicker div').forEach(div => {
+            div.addEventListener('click', function() {
+                currentFillColor = this.getAttribute('data-color');
+            });
+        });
+        
+        const fillOpacitySlider = document.getElementById('fillOpacity');
+        fillOpacitySlider.addEventListener('input', function() {
+            currentFillOpacity = this.value;
+            document.getElementById('fillOpacityValue').textContent = parseFloat(this.value).toFixed(1);
+        });
+        
+        document.getElementById('drawColoredShape').addEventListener('click', function() {
+            // Converti il colore esadecimale in RGB
+            const r = parseInt(currentFillColor.slice(1, 3), 16);
+            const g = parseInt(currentFillColor.slice(3, 5), 16);
+            const b = parseInt(currentFillColor.slice(5, 7), 16);
+            
+            // Crea un colore RGBA con l'opacità specificata
+            const rgba = `rgba(${r}, ${g}, ${b}, ${currentFillOpacity})`;
+            
+            // Pulisci l'area per il disegno ma lascia gli esempi
+            ctxBase.clearRect(180, 150, 240, 40);
+            
+            // Disegna una forma con il colore selezionato
+            ctxBase.fillStyle = rgba;
+            ctxBase.fillRect(180, 150, 240, 40);
+            
+            // Mostra il codice colore usato
+            ctxBase.fillStyle = 'black';
+            ctxBase.font = '12px Arial';
+            ctxBase.fillText(`Colore usato: ${rgba}`, 230, 175);
+        });
+        
+        // ------------- Sfumature Lineari -------------
+        const linearGradientCanvas = document.getElementById('linearGradientCanvas');
+        const ctxLinear = linearGradientCanvas.getContext('2d');
+        
+        // Funzione per disegnare una sfumatura lineare
+        function drawLinearGradient(x0, y0, x1, y1) {
+            const color1 = document.getElementById('linearColor1').value;
+            const color2 = document.getElementById('linearColor2').value;
+            
+            // Crea la sfumatura
+            const gradient = ctxLinear.createLinearGradient(x0, y0, x1, y1);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+            
+            // Pulisci il canvas
+            ctxLinear.clearRect(0, 0, linearGradientCanvas.width, linearGradientCanvas.height);
+            
+            // Disegna un rettangolo con la sfumatura
+            ctxLinear.fillStyle = gradient;
+            ctxLinear.fillRect(50, 50, linearGradientCanvas.width - 100, linearGradientCanvas.height - 100);
+            
+            // Disegna il bordo
+            ctxLinear.strokeStyle = '#333';
+            ctxLinear.lineWidth = 2;
+            ctxLinear.strokeRect(50, 50, linearGradientCanvas.width - 100, linearGradientCanvas.height - 100);
+            
+            // Mostra i parametri della sfumatura
+            ctxLinear.fillStyle = 'black';
+            ctxLinear.font = '12px Arial';
+            ctxLinear.fillText(`createLinearGradient(${x0}, ${y0}, ${x1}, ${y1})`, 60, 40);
+            
+            // Mostra i colori usati
+            ctxLinear.fillText(`Colori: ${color1} → ${color2}`, 60, linearGradientCanvas.height - 20);
+        }
+        
+        // Gestione dei pulsanti per le sfumature lineari
+        document.getElementById('linearHorizontal').addEventListener('click', function() {
+            drawLinearGradient(50, 0, linearGradientCanvas.width - 50, 0);
+        });
+        
+        document.getElementById('linearVertical').addEventListener('click', function() {
+            drawLinearGradient(0, 50, 0, linearGradientCanvas.height - 50);
+        });
+        
+        document.getElementById('linearDiagonal').addEventListener('click', function() {
+            drawLinearGradient(50, 50, linearGradientCanvas.width - 50, linearGradientCanvas.height - 50);
+        });
+        
+        document.getElementById('drawLinearGradient').addEventListener('click', function() {
+            drawLinearGradient(50, 0, linearGradientCanvas.width - 50, 0); // Default: orizzontale
+        });
+        
+        // Disegno iniziale
+        drawLinearGradient(50, 0, linearGradientCanvas.width - 50, 0);
+        
+        // ------------- Sfumature Radiali -------------
+        const radialGradientCanvas = document.getElementById('radialGradientCanvas');
+        const ctxRadial = radialGradientCanvas.getContext('2d');
+        
+        // Funzione per disegnare una sfumatura radiale
+        function drawRadialGradient(x0, y0, r0, x1, y1, r1) {
+            const color1 = document.getElementById('radialColor1').value;
+            const color2 = document.getElementById('radialColor2').value;
+            
+            // Crea la sfumatura
+            const gradient = ctxRadial.createRadialGradient(x0, y0, r0, x1, y1, r1);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+            
+            // Pulisci il canvas
+            ctxRadial.clearRect(0, 0, radialGradientCanvas.width, radialGradientCanvas.height);
+            
+            // Disegna un rettangolo con la sfumatura
+            ctxRadial.fillStyle = gradient;
+            ctxRadial.fillRect(0, 0, radialGradientCanvas.width, radialGradientCanvas.height);
+            
+            // Mostra i parametri della sfumatura
+            ctxRadial.fillStyle = 'white';
+            ctxRadial.font = '12px Arial';
+            ctxRadial.fillText(`createRadialGradient(${x0}, ${y0}, ${r0}, ${x1}, ${y1}, ${r1})`, 10, 20);
+            
+            // Mostra i punti centrali della sfumatura radiale
+            ctxRadial.beginPath();
+            ctxRadial.arc(x0, y0, 5, 0, Math.PI * 2);
+            ctxRadial.fillStyle = "white";
+            ctxRadial.fill();
+            ctxRadial.beginPath();
+            ctxRadial.arc(x1, y1, 5, 0, Math.PI * 2);
+            ctxRadial.fillStyle = "black";
+            ctxRadial.fill();
+        }
+        
+        // Gestione dei pulsanti per le sfumature radiali
+        document.getElementById('centerGradient').addEventListener('click', function() {
+            const centerX = radialGradientCanvas.width / 2;
+            const centerY = radialGradientCanvas.height / 2;
+            const radius = parseInt(document.getElementById('radialRadius').value);
+            drawRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+        });
+        
+        document.getElementById('offsetGradient').addEventListener('click', function() {
+            const centerX = radialGradientCanvas.width / 2;
+            const centerY = radialGradientCanvas.height / 2;
+            const radius = parseInt(document.getElementById('radialRadius').value);
+            drawRadialGradient(centerX - 50, centerY - 20, 0, centerX + 20, centerY + 20, radius);
+        });
+        
+        document.getElementById('drawRadialGradient').addEventListener('click', function() {
+            const centerX = radialGradientCanvas.width / 2;
+            const centerY = radialGradientCanvas.height / 2;
+            const radius = parseInt(document.getElementById('radialRadius').value);
+            drawRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+        });
+        
+        // Disegno iniziale
+        const centerX = radialGradientCanvas.width / 2;
+        const centerY = radialGradientCanvas.height / 2;
+        drawRadialGradient(centerX, centerY, 0, centerX, centerY, 100);
+        
+        // ------------- Pattern e Texture -------------
+        const patternCanvas = document.getElementById('patternCanvas');
+        const ctxPattern = patternCanvas.getContext('2d');
+        
+        // Crea pattern di mattoni
+        function createBrickPattern() {
+            const patternCtx = document.createElement('canvas').getContext('2d');
+            patternCtx.canvas.width = 20;
+            patternCtx.canvas.height = 20;
+            
+            // Sfondo
+            patternCtx.fillStyle = '#d63031';
+            patternCtx.fillRect(0, 0, 20, 20);
+            
+            // Linee di malta
+            patternCtx.fillStyle = '#dfe6e9';
+            patternCtx.fillRect(0, 0, 20, 2);
+            patternCtx.fillRect(0, 0, 2, 20);
+            
+            return patternCtx.canvas;
+        }
+        
+        // Crea pattern di punti
+        function createDotsPattern() {
+            const patternCtx = document.createElement('canvas').getContext('2d');
+            patternCtx.canvas.width = 20;
+            patternCtx.canvas.height = 20;
+            
+            // Sfondo
+            patternCtx.fillStyle = '#ffffff';
+            patternCtx.fillRect(0, 0, 20, 20);
+            
+            // Punti
+            patternCtx.fillStyle = '#2d3436';
+            patternCtx.beginPath();
+            patternCtx.arc(10, 10, 3, 0, Math.PI * 2);
+            patternCtx.fill();
+            
+            return patternCtx.canvas;
+        }
+        
+        // Disegna usando un pattern
+        function drawWithPattern(patternSource) {
+            // Crea il pattern
+            const pattern = ctxPattern.createPattern(patternSource, 'repeat');
+            
+            // Pulisci il canvas
+            ctxPattern.clearRect(0, 0, patternCanvas.width, patternCanvas.height);
+            
+            // Disegna forme con il pattern
+            ctxPattern.fillStyle = pattern;
+            
+            // Rettangolo
+            ctxPattern.fillRect(50, 50, 200, 200);
+            
+            // Cerchio
+            ctxPattern.beginPath();
+            ctxPattern.arc(400, 150, 100, 0, Math.PI * 2);
+            ctxPattern.fill();
+            
+            // Bordi
+            ctxPattern.strokeStyle = '#333';
+            ctxPattern.lineWidth = 2;
+            ctxPattern.strokeRect(50, 50, 200, 200);
+            ctxPattern.beginPath();
+            ctxPattern.arc(400, 150, 100, 0, Math.PI * 2);
+            ctxPattern.stroke();
+        }
+        
+        // Gestione dei pulsanti per i pattern
+        document.getElementById('patternBrick').addEventListener('click', function() {
+            const brickPattern = createBrickPattern();
+            drawWithPattern(brickPattern);
+            
+            // Mostra info
+            ctxPattern.fillStyle = 'black';
+            ctxPattern.font = '12px Arial';
+            ctxPattern.fillText('Pattern di mattoni - createPattern(brickCanvas, "repeat")', 50, 30);
+        });
+        
+        document.getElementById('patternDots').addEventListener('click', function() {
+            const dotsPattern = createDotsPattern();
+            drawWithPattern(dotsPattern);
+            
+            // Mostra info
+            ctxPattern.fillStyle = 'black';
+            ctxPattern.font = '12px Arial';
+            ctxPattern.fillText('Pattern di punti - createPattern(dotsCanvas, "repeat")', 50, 30);
+        });
+        
+        document.getElementById('patternImage').addEventListener('click', function() {
+            // Crea un'immagine di esempio (in un caso reale useremmo un URL)
+            const img = new Image();
+            img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAADsQAAA7EB9YPtSQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAKiSURBVFiF7ZdLSFVBGMd/M3d0UbFNEZR2LSIoCIogyDBJV0XQA4oiIogggqIHRLSrRUXbXhQRI4Kiwm5REr0frVpEQS9qUVmLkpSw29V/i/OdOHOO55zj9Vw39YdhzpnvfM//++Y7M+fCf/xbWJZVDTQBi4AyIAP0AL3AD8MwpmZTgHKgE/CGiVLKBa4CR2YqoBSoG88MR4HTwKzQbOaAbcCB0BrNDRVxDpgfmkGh5QlwIzAAVADrQ/dTA7wEPhlGeidGQB1Q4fP1AteBUWADpespjWQkI0vj1K8cWO3znQc+o1RrCXAAGA4TkAUu+Xw9QB+wNODrAfqB74bR/zVKwHygwed7BlwDBiP6RGLAigMuBKZnPKaMQGHQitIsFuJqYF5ODHCQwDwejxYQteW0oB6YY2l+DRgWe02UgBlKfABwgE+SE/I2ADssLaAYWGhpfgAeS77b0lxAVVMckiuQFVjn8z0v0DeIduCt5LXATUvzLXA+5vl9QNLSPJe8OtCiAuiX4BGq0vEEZk8BU33y3UBbzDM3RnBDymQGWBDRPgN8lfx2lIAxYLMv3wbcFrsfOCZ1OCJBvqRThKpnCnWmbeDRCKEDdQSNfcBZsdPAlLhnRHGUPsIA9omtx6ojdUXbqK3bgBr2AuBRVCdgVMIKS/06YDnQKnHkbnfKY9SqfQm1jfQz1KmLcrGD+CuJHvDsGMplsUsl3upzz9YDTT7HAYCTN3G0HkM72Y/kPdaB1ljUEWwDxiVpAmYCRzm8gkGgSfwHgSeAC5xDDVonfPKhY7LSYzy/C/SHB3KRpFAQZcDDHHG9wMogqNRi/lH8xJYGa2MHP81MjdxsvbdM3ECOcXQq56UulRi5iX4xaUFVTQdQB6wC5qHeCPTZ0IM6fvrilj/FQo/nWqA8lgAAAABJRU5ErkJggg==';
+            
+            img.onload = function() {
+                drawWithPattern(img);
+                
+                // Mostra info
+                ctxPattern.fillStyle = 'black';
+                ctxPattern.font = '12px Arial';
+                ctxPattern.fillText('Pattern da immagine - createPattern(image, "repeat")', 50, 30);
+            };
+        });
+        
+        document.getElementById('patternCanvas').addEventListener('click', function() {
+            // Crea un mini-canvas personalizzato
+            const customCanvas = document.createElement('canvas');
+            customCanvas.width = 30;
+            customCanvas.height = 30;
+            const customCtx = customCanvas.getContext('2d');
+            
+            // Disegna sul mini-canvas
+            customCtx.fillStyle = '#dff9fb';
+            customCtx.fillRect(0, 0, 30, 30);
+            
+            customCtx.strokeStyle = '#ff7979';
+            customCtx.lineWidth = 2;
+            customCtx.beginPath();
+            customCtx.moveTo(0, 0);
+            customCtx.lineTo(30, 30);
+            customCtx.moveTo(30, 0);
+            customCtx.lineTo(0, 30);
+            customCtx.stroke();
+            
+            // Usa il mini-canvas come pattern
+            drawWithPattern(customCanvas);
+            
+            // Mostra info
+            ctxPattern.fillStyle = 'black';
+            ctxPattern.font = '12px Arial';
+            ctxPattern.fillText('Pattern da canvas personalizzato - createPattern(canvas, "repeat")', 50, 30);
+        });
+        
+        // Disegno iniziale
+        document.getElementById('patternBrick').click();
+        
+        // ------------- Disegno Libero con Colori -------------
+        const freeDrawingCanvas = document.getElementById('freeDrawingCanvas');
+        const ctxFree = freeDrawingCanvas.getContext('2d');
+        
+        // Inizializza lo sfondo
+        ctxFree.fillStyle = 'white';
+        ctxFree.fillRect(0, 0, freeDrawingCanvas.width, freeDrawingCanvas.height);
+        
+        // Variabili per il disegno
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let showCoords = false;
+        
+        // Funzione per iniziare il disegno
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+        
+        // Funzione per disegnare
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const x = e.offsetX;
+            const y = e.offsetY;
+            const useGradient = document.getElementById('useGradient').checked;
+            
+            // Imposta lo stile della linea
+            ctxFree.lineWidth = document.getElementById('lineWidth').value;
+            ctxFree.lineCap = 'round';
+            
+            if (useGradient) {
+                // Crea una sfumatura locale
+                const gradient = ctxFree.createLinearGradient(lastX, lastY, x, y);
+                gradient.addColorStop(0, document.getElementById('drawingColor').value);
+                gradient.addColorStop(1, `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`);
+                ctxFree.strokeStyle = gradient;
+            } else {
+                ctxFree.strokeStyle = document.getElementById('drawingColor').value;
+            }
+            
+            // Disegna la linea
+            ctxFree.beginPath();
+            ctxFree.moveTo(lastX, lastY);
+            ctxFree.lineTo(x, y);
+            ctxFree.stroke();
+            
+            // Mostra coordinate se richiesto
+            if (showCoords) {
+                // Pulisci l'area info
+                ctxFree.fillStyle = 'white';
+                ctxFree.fillRect(0, 0, 200, 20);
+                
+                // Scrivi le coordinate
+                ctxFree.fillStyle = 'black';
+                ctxFree.font = '12px Arial';
+                ctxFree.fillText(`x: ${x}, y: ${y}`, 10, 15);
+            }
+            
+            // Aggiorna le coordinate
+            [lastX, lastY] = [x, y];
+        }
+        
+        // Funzione per terminare il disegno
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        // Imposta i gestori di eventi per il disegno libero
+        freeDrawingCanvas.addEventListener('mousedown', startDrawing);
+        freeDrawingCanvas.addEventListener('mousemove', draw);
+        freeDrawingCanvas.addEventListener('mouseup', stopDrawing);
+        freeDrawingCanvas.addEventListener('mouseout', stopDrawing);
+        
+        // Gestione del pulsante per pulire il canvas
+        document.getElementById('clearDrawing').addEventListener('click', function() {
+            ctxFree.fillStyle = 'white';
+            ctxFree.fillRect(0, 0, freeDrawingCanvas.width, freeDrawingCanvas.height);
+        });
+        
+        // Gestione del checkbox per mostrare le coordinate
+        document.getElementById('showCoordinates').addEventListener('change', function() {
+            showCoords = this.checked;
+        });
+    </script>
+</body>
+</html>

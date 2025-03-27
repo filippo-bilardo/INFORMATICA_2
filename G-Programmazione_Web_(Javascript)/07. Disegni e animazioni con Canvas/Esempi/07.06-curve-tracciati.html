@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curve di Bézier, Archi e Tracciati in Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[type="range"] {
+            width: 180px;
+            vertical-align: middle;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .control-point {
+            fill: #3498db;
+            stroke: #2980b9;
+            stroke-width: 2;
+            cursor: move;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Curve di Bézier, Archi e Tracciati in Canvas</h1>
+        <p>
+            Questa pagina dimostra l'uso delle curve di Bézier, degli archi e dei tracciati complessi in Canvas,
+            incluse le tecniche di clipping per mascherare parti dell'output.
+        </p>
+
+        <div class="section">
+            <h2>1. Curve di Bézier</h2>
+            <p>
+                Le curve di Bézier sono definite da punti di controllo che ne determinano la forma.
+                Canvas supporta curve quadratiche (1 punto di controllo) e cubiche (2 punti di controllo).
+            </p>
+
+            <canvas id="bezierCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="showQuadratic">Curva Quadratica</button>
+                <button id="showCubic">Curva Cubica</button>
+                <button id="showMultiple">Curve Multiple</button>
+                <button id="clearBezier">Pulisci</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Curva quadratica di Bézier
+ctx.beginPath();
+ctx.moveTo(startX, startY);
+ctx.quadraticCurveTo(controlX, controlY, endX, endY);
+ctx.stroke();
+
+// Curva cubica di Bézier
+ctx.beginPath();
+ctx.moveTo(startX, startY);
+ctx.bezierCurveTo(control1X, control1Y, control2X, control2Y, endX, endY);
+ctx.stroke();</pre>
+            </div>
+            
+            <div class="note">
+                <strong>Interattività:</strong> Nei progetti complessi, è comune permettere all'utente di manipolare
+                i punti di controllo per modificare dinamicamente la forma delle curve.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Interattività con Curve di Bézier</h2>
+            <p>
+                In questo esempio puoi trascinare i punti di controllo (cerchi blu) per modificare la forma della curva di Bézier.
+            </p>
+
+            <canvas id="interactiveBezierCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="showHelpers">Mostra/Nascondi Linee di Aiuto</button>
+                <button id="resetBezier">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Gestione del mouse per il trascinamento dei punti di controllo
+canvas.addEventListener('mousedown', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Verifica se il mouse è su un punto di controllo
+    controlPoints.forEach(function(point) {
+        const dx = point.x - x;
+        const dy = point.y - y;
+        if (dx*dx + dy*dy < 100) { // Raggio 10px
+            point.isDragging = true;
+        }
+    });
+});
+
+canvas.addEventListener('mouseup', function() {
+    // Termina il trascinamento per tutti i punti
+    controlPoints.forEach(function(point) {
+        point.isDragging = false;
+    });
+});
+
+canvas.addEventListener('mousemove', function(e) {
+    // Aggiorna la posizione dei punti in fase di trascinamento
+    // ...
+});</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Archi e Cerchi</h2>
+            <p>
+                Gli archi sono porzioni di un cerchio, definiti da un angolo iniziale e finale.
+                Canvas utilizza il metodo <code>arc()</code> per disegnarli.
+            </p>
+
+            <canvas id="arcCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="drawFullCircle">Cerchio Completo</button>
+                <button id="drawSemicircle">Semicerchio</button>
+                <button id="drawQuarterCircle">Quarto di Cerchio</button>
+                <button id="drawCustomArc">Arco Personalizzato</button>
+                <button id="clearArcs">Pulisci</button>
+            </div>
+            
+            <div class="controls">
+                Angolo iniziale: <input type="range" id="startAngle" min="0" max="360" value="0"> <span id="startAngleValue">0°</span>
+                Angolo finale: <input type="range" id="endAngle" min="0" max="360" value="180"> <span id="endAngleValue">180°</span>
+            </div>
+            
+            <div class="code-container">
+<pre>// Disegna un arco
+ctx.beginPath();
+// arc(x, y, raggio, angolo_iniziale, angolo_finale, senso_antiorario)
+ctx.arc(x, y, radius, startAngle * Math.PI / 180, endAngle * Math.PI / 180, false);
+ctx.stroke();</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Combinare Tracciati con Clipping</h2>
+            <p>
+                Il clipping permette di definire un'area che limita il rendering, creando effetti di mascheratura.
+                Qualsiasi disegno fuori dall'area definita non sarà visibile.
+            </p>
+
+            <canvas id="clippingCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="clipWithCircle">Mascheratura con Cerchio</button>
+                <button id="clipWithRect">Mascheratura con Rettangolo</button>
+                <button id="clipWithText">Mascheratura con Testo</button>
+                <button id="clipWithPath">Mascheratura con Percorso</button>
+                <button id="clearClipping">Pulisci</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Definizione dell'area di clipping
+ctx.beginPath();
+ctx.arc(250, 150, 100, 0, Math.PI * 2); // Percorso circolare
+ctx.clip(); // Applica il clipping (tutto ciò che è fuori non sarà visibile)
+
+// Ora disegna qualcosa che sarà visibile solo dentro il cerchio
+ctx.fillStyle = 'blue';
+ctx.fillRect(0, 0, 500, 300);
+
+// Per ripristinare, devi salvare e ripristinare il contesto
+ctx.save();
+// ... operazioni di clipping ...
+ctx.restore(); // Ripristina il contesto senza clipping</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. Esempi Creativi con Curve e Clipping</h2>
+            <p>
+                Vediamo alcuni esempi creativi che combinano curve di Bézier e tecniche di clipping.
+            </p>
+
+            <canvas id="creativeCanvas" width="600" height="400"></canvas>
+            
+            <div class="controls">
+                <button id="drawFlower">Fiore</button>
+                <button id="drawWaves">Onde</button>
+                <button id="drawLandscape">Paesaggio</button>
+                <button id="clearCreative">Pulisci</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ------------- Curve di Bézier -------------
+        const bezierCanvas = document.getElementById('bezierCanvas');
+        const ctxBezier = bezierCanvas.getContext('2d');
+        
+        // Disegna il canvas con sfondo bianco
+        function clearBezierCanvas() {
+            ctxBezier.clearRect(0, 0, bezierCanvas.width, bezierCanvas.height);
+            
+            // Disegna una griglia leggera per riferimento
+            ctxBezier.strokeStyle = '#f0f0f0';
+            ctxBezier.lineWidth = 1;
+            
+            // Griglia verticale
+            for (let x = 0; x < bezierCanvas.width; x += 50) {
+                ctxBezier.beginPath();
+                ctxBezier.moveTo(x, 0);
+                ctxBezier.lineTo(x, bezierCanvas.height);
+                ctxBezier.stroke();
+            }
+            
+            // Griglia orizzontale
+            for (let y = 0; y < bezierCanvas.height; y += 50) {
+                ctxBezier.beginPath();
+                ctxBezier.moveTo(0, y);
+                ctxBezier.lineTo(bezierCanvas.width, y);
+                ctxBezier.stroke();
+            }
+        }
+        
+        // Inizializza il canvas
+        clearBezierCanvas();
+        
+        // Funzione per disegnare una curva quadratica di Bézier
+        function drawQuadraticCurve() {
+            clearBezierCanvas();
+            
+            // Punto di inizio
+            const startX = 50;
+            const startY = 150;
+            
+            // Punto di controllo
+            const controlX = 300;
+            const controlY = 50;
+            
+            // Punto finale
+            const endX = 550;
+            const endY = 150;
+            
+            // Disegna i punti
+            ctxBezier.fillStyle = 'red';
+            ctxBezier.beginPath();
+            ctxBezier.arc(startX, startY, 5, 0, Math.PI * 2);
+            ctxBezier.arc(controlX, controlY, 5, 0, Math.PI * 2);
+            ctxBezier.arc(endX, endY, 5, 0, Math.PI * 2);
+            ctxBezier.fill();
+            
+            // Disegna le linee di costruzione
+            ctxBezier.strokeStyle = '#aaa';
+            ctxBezier.beginPath();
+            ctxBezier.moveTo(startX, startY);
+            ctxBezier.lineTo(controlX, controlY);
+            ctxBezier.lineTo(endX, endY);
+            ctxBezier.stroke();
+            
+            // Disegna la curva quadratica
+            ctxBezier.strokeStyle = '#333';
+            ctxBezier.lineWidth = 3;
+            ctxBezier.beginPath();
+            ctxBezier.moveTo(startX, startY);
+            ctxBezier.quadraticCurveTo(controlX, controlY, endX, endY);
+            ctxBezier.stroke();
+            
+            // Mostra le etichette
+            ctxBezier.font = '12px Arial';
+            ctxBezier.fillStyle = 'black';
+            ctxBezier.fillText('Punto Iniziale (P0)', startX, startY + 20);
+            ctxBezier.fillText('Punto di Controllo (P1)', controlX - 40, controlY - 10);
+            ctxBezier.fillText('Punto Finale (P2)', endX - 40, endY + 20);
+            
+            // Mostra il codice
+            ctxBezier.fillStyle = '#333';
+            ctxBezier.font = '14px monospace';
+            ctxBezier.fillText('ctx.quadraticCurveTo(controlX, controlY, endX, endY)', 100, 250);
+        }
+        
+        // Funzione per disegnare una curva cubica di Bézier
+        function drawCubicCurve() {
+            clearBezierCanvas();
+            
+            // Punto di inizio
+            const startX = 50;
+            const startY = 150;
+            
+            // Primo punto di controllo
+            const control1X = 150;
+            const control1Y = 50;
+            
+            // Secondo punto di controllo
+            const control2X = 450;
+            const control2Y = 50;
+            
+            // Punto finale
+            const endX = 550;
+            const endY = 150;
+            
+            // Disegna i punti
+            ctxBezier.fillStyle = 'red';
+            ctxBezier.beginPath();
+            ctxBezier.arc(startX, startY, 5, 0, Math.PI * 2);
+            ctxBezier.arc(control1X, control1Y, 5, 0, Math.PI * 2);
+            ctxBezier.arc(control2X, control2Y, 5, 0, Math.PI * 2);
+            ctxBezier.arc(endX, endY, 5, 0, Math.PI * 2);
+            ctxBezier.fill();
+            
+            // Disegna le linee di costruzione
+            ctxBezier.strokeStyle = '#aaa';
+            ctxBezier.beginPath();
+            ctxBezier.moveTo(startX, startY);
+            ctxBezier.lineTo(control1X, control1Y);
+            ctxBezier.lineTo(control2X, control2Y);
+            ctxBezier.lineTo(endX, endY);
+            ctxBezier.stroke();
+            
+            // Disegna la curva cubica
+            ctxBezier.strokeStyle = '#333';
+            ctxBezier.lineWidth = 3;
+            ctxBezier.beginPath();
+            ctxBezier.moveTo(startX, startY);
+            ctxBezier.bezierCurveTo(control1X, control1Y, control2X, control2Y, endX, endY);
+            ctxBezier.stroke();
+            
+            // Mostra le etichette
+            ctxBezier.font = '12px Arial';
+            ctxBezier.fillStyle = 'black';
+            ctxBezier.fillText('P0', startX + 10, startY);
+            ctxBezier.fillText('P1', control1X + 10, control1Y);
+            ctxBezier.fillText('P2', control2X + 10, control2Y);
+            ctxBezier.fillText('P3', endX + 10, endY);
+            
+            // Mostra il codice
+            ctxBezier.fillStyle = '#333';
+            ctxBezier.font = '14px monospace';
+            ctxBezier.fillText('ctx.bezierCurveTo(control1X, control1Y, control2X, control2Y, endX, endY)', 50, 250);
+        }
+        
+        // Funzione per disegnare multiple curve di Bézier
+        function drawMultipleCurves() {
+            clearBezierCanvas();
+            
+            // Disegna curve multiple per creare una forma ondulata
+            ctxBezier.strokeStyle = '#333';
+            ctxBezier.lineWidth = 3;
+            ctxBezier.beginPath();
+            
+            // Punto iniziale
+            ctxBezier.moveTo(50, 150);
+            
+            // Curve multiple
+            ctxBezier.bezierCurveTo(100, 50, 200, 250, 250, 150);
+            ctxBezier.bezierCurveTo(300, 50, 400, 250, 450, 150);
+            ctxBezier.bezierCurveTo(500, 50, 550, 250, 550, 150);
+            
+            // Colora la curva
+            const gradient = ctxBezier.createLinearGradient(50, 0, 550, 0);
+            gradient.addColorStop(0, '#3498db');
+            gradient.addColorStop(0.5, '#e74c3c');
+            gradient.addColorStop(1, '#2ecc71');
+            
+            ctxBezier.strokeStyle = gradient;
+            ctxBezier.stroke();
+            
+            // Testo esplicativo
+            ctxBezier.fillStyle = '#333';
+            ctxBezier.font = '14px Arial';
+            ctxBezier.fillText('Concatenazione di multiple curve di Bézier per creare forme complesse', 100, 250);
+        }
+        
+        // Gestione pulsanti per le curve di Bézier
+        document.getElementById('showQuadratic').addEventListener('click', drawQuadraticCurve);
+        document.getElementById('showCubic').addEventListener('click', drawCubicCurve);
+        document.getElementById('showMultiple').addEventListener('click', drawMultipleCurves);
+        document.getElementById('clearBezier').addEventListener('click', clearBezierCanvas);
+        
+        // Inizializza con una curva di esempio
+        drawCubicCurve();
+        
+        // ------------- Interattività con Curve di Bézier -------------
+        const interactiveBezierCanvas = document.getElementById('interactiveBezierCanvas');
+        const ctxInteractive = interactiveBezierCanvas.getContext('2d');
+        
+        // Dimensioni del canvas
+        const width = interactiveBezierCanvas.width;
+        const height = interactiveBezierCanvas.height;
+        
+        // Definizione dei punti di controllo
+        let points = [
+            { x: 50, y: 150, isDragging: false }, // Punto iniziale
+            { x: 150, y: 50, isDragging: false },  // Primo punto di controllo
+            { x: 450, y: 50, isDragging: false },  // Secondo punto di controllo
+            { x: 550, y: 150, isDragging: false }  // Punto finale
+        ];
+        
+        // Variabile per mostrare/nascondere le linee di aiuto
+        let showHelpers = true;
+        
+        // Funzione per disegnare il canvas interattivo
+        function drawInteractiveBezier() {
+            ctxInteractive.clearRect(0, 0, width, height);
+            
+            // Disegna una griglia leggera per riferimento
+            ctxInteractive.strokeStyle = '#f0f0f0';
+            ctxInteractive.lineWidth = 1;
+            
+            // Griglia verticale
+            for (let x = 0; x < width; x += 50) {
+                ctxInteractive.beginPath();
+                ctxInteractive.moveTo(x, 0);
+                ctxInteractive.lineTo(x, height);
+                ctxInteractive.stroke();
+            }
+            
+            // Griglia orizzontale
+            for (let y = 0; y < height; y += 50) {
+                ctxInteractive.beginPath();
+                ctxInteractive.moveTo(0, y);
+                ctxInteractive.lineTo(width, y);
+                ctxInteractive.stroke();
+            }
+            
+            // Disegna le linee di controllo se richiesto
+            if (showHelpers) {
+                ctxInteractive.strokeStyle = '#aaa';
+                ctxInteractive.beginPath();
+                ctxInteractive.moveTo(points[0].x, points[0].y);
+                ctxInteractive.lineTo(points[1].x, points[1].y);
+                ctxInteractive.moveTo(points[3].x, points[3].y);
+                ctxInteractive.lineTo(points[2].x, points[2].y);
+                ctxInteractive.stroke();
+            }
+            
+            // Disegna la curva di Bézier
+            ctxInteractive.strokeStyle = '#3498db';
+            ctxInteractive.lineWidth = 3;
+            ctxInteractive.beginPath();
+            ctxInteractive.moveTo(points[0].x, points[0].y);
+            ctxInteractive.bezierCurveTo(
+                points[1].x, points[1].y,
+                points[2].x, points[2].y,
+                points[3].x, points[3].y
+            );
+            ctxInteractive.stroke();
+            
+            // Disegna i punti di controllo
+            if (showHelpers) {
+                points.forEach((point, index) => {
+                    ctxInteractive.fillStyle = index === 0 || index === 3 ? '#e74c3c' : '#3498db';
+                    ctxInteractive.beginPath();
+                    ctxInteractive.arc(point.x, point.y, 6, 0, Math.PI * 2);
+                    ctxInteractive.fill();
+                    
+                    // Aggiunge etichette
+                    ctxInteractive.fillStyle = '#333';
+                    ctxInteractive.font = '12px Arial';
+                    ctxInteractive.fillText(index === 0 ? 'Inizio' : index === 3 ? 'Fine' : 'Controllo ' + index, point.x + 10, point.y);
+                });
+            }
+            
+            // Aggiungi istruzioni
+            ctxInteractive.fillStyle = '#333';
+            ctxInteractive.font = '14px Arial';
+            ctxInteractive.textAlign = 'center';
+            ctxInteractive.fillText('Trascina i punti di controllo per modificare la curva di Bézier', width/2, 30);
+        }
+        
+        // Gestione degli eventi del mouse
+        interactiveBezierCanvas.addEventListener('mousedown', function(e) {
+            const rect = interactiveBezierCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            points.forEach(point => {
+                const dx = point.x - x;
+                const dy = point.y - y;
+                if (dx*dx + dy*dy < 100) { // Raggio 10px
+                    point.isDragging = true;
+                }
+            });
+        });
+        
+        interactiveBezierCanvas.addEventListener('mouseup', function() {
+            points.forEach(point => {
+                point.isDragging = false;
+            });
+        });
+        
+        interactiveBezierCanvas.addEventListener('mouseleave', function() {
+            points.forEach(point => {
+                point.isDragging = false;
+            });
+        });
+        
+        interactiveBezierCanvas.addEventListener('mousemove', function(e) {
+            const rect = interactiveBezierCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            let needRedraw = false;
+            points.forEach(point => {
+                if (point.isDragging) {
+                    point.x = x;
+                    point.y = y;
+                    needRedraw = true;
+                }
+            });
+            
+            if (needRedraw) {
+                drawInteractiveBezier();
+            }
+        });
+        
+        // Gestione dei pulsanti
+        document.getElementById('showHelpers').addEventListener('click', function() {
+            showHelpers = !showHelpers;
+            drawInteractiveBezier();
+        });
+        
+        document.getElementById('resetBezier').addEventListener('click', function() {
+            points = [
+                { x: 50, y: 150, isDragging: false },
+                { x: 150, y: 50, isDragging: false },
+                { x: 450, y: 50, isDragging: false },
+                { x: 550, y: 150, isDragging: false }
+            ];
+            drawInteractiveBezier();
+        });
+        
+        // Inizializza il canvas interattivo
+        drawInteractiveBezier();
+        
+        // ------------- Archi e Cerchi -------------
+        const arcCanvas = document.getElementById('arcCanvas');
+        const ctxArc = arcCanvas.getContext('2d');
+        
+        function clearArcCanvas() {
+            ctxArc.clearRect(0, 0, arcCanvas.width, arcCanvas.height);
+            
+            // Disegna una griglia leggera per riferimento
+            ctxArc.strokeStyle = '#f0f0f0';
+            ctxArc.lineWidth = 1;
+            
+            // Griglia verticale
+            for (let x = 0; x < arcCanvas.width; x += 50) {
+                ctxArc.beginPath();
+                ctxArc.moveTo(x, 0);
+                ctxArc.lineTo(x, arcCanvas.height);
+                ctxArc.stroke();
+            }
+            
+            // Griglia orizzontale
+            for (let y = 0; y < arcCanvas.height; y += 50) {
+                ctxArc.beginPath();
+                ctxArc.moveTo(0, y);
+                ctxArc.lineTo(arcCanvas.width, y);
+                ctxArc.stroke();
+            }
+        }
+        
+        // Inizializza il canvas
+        clearArcCanvas();
+        
+        // Funzione per disegnare un cerchio completo
+        document.getElementById('drawFullCircle').addEventListener('click', function() {
+            clearArcCanvas();
+            
+            const x = arcCanvas.width / 2;
+            const y = arcCanvas.height / 2;
+            const radius = 100;
+            
+            // Disegna il cerchio
+            ctxArc.strokeStyle = '#3498db';
+            ctxArc.lineWidth = 3;
+            ctxArc.beginPath();
+            ctxArc.arc(x, y, radius, 0, Math.PI * 2);
+            ctxArc.stroke();
+            
+            // Disegna il centro
+            ctxArc.fillStyle = 'red';
+            ctxArc.beginPath();
+            ctxArc.arc(x, y, 4, 0, Math.PI * 2);
+            ctxArc.fill();
+            
+            // Mostra il codice
+            ctxArc.fillStyle = '#333';
+            ctxArc.font = '14px monospace';
+            ctxArc.fillText('ctx.arc(x, y, radius, 0, Math.PI * 2)', 150, 250);
+        });
+        
+        // Funzione per disegnare un semicerchio
+        document.getElementById('drawSemicircle').addEventListener('click', function() {
+            clearArcCanvas();
+            
+            const x = arcCanvas.width / 2;
+            const y = arcCanvas.height / 2;
+            const radius = 100;
+            
+            // Disegna il semicerchio
+            ctxArc.strokeStyle = '#e74c3c';
+            ctxArc.lineWidth = 3;
+            ctxArc.beginPath();
+            ctxArc.arc(x, y, radius, 0, Math.PI);
+            ctxArc.stroke();
+            
+            // Disegna il centro
+            ctxArc.fillStyle = 'red';
+            ctxArc.beginPath();
+            ctxArc.arc(x, y, 4, 0, Math.PI * 2);
+            ctxArc.fill();
+            
+            // Mostra il codice
+            ctxArc.fillStyle = '#333';
+            ctxArc.font = '14px monospace';
+            ctxArc.fillText('ctx.arc(x, y, radius, 0, Math.PI)', 180, 250);
+        });
+        
+        // Funzione per disegnare un quarto di cerchio
+        document.getElementById('drawQuarterCircle').addEventListener('click', function() {
+            clearArcCanvas();
+            
+            const x = arcCanvas.width / 2;
+            const y = arcCanvas.height / 2;
+            const radius = 100;
+            
+            // Disegna il quarto di cerchio
+            ctxArc.strokeStyle = '#2ecc71';
+            ctxArc.lineWidth = 3;
+            ctxArc.beginPath();
+            ctxArc.arc(x, y, radius, 0, Math.PI / 2);
+            ctxArc.stroke();
+            
+            // Disegna il centro
+            ctxArc.fillStyle = 'red';
+            ctxArc.beginPath();
+            ctxArc.arc(x, y, 4, 0, Math.PI * 2);
+            ctxArc.fill();
+            
+            // Mostra il codice
+            ctxArc.fillStyle = '#333';
+            ctxArc.font = '14px monospace';
+            ctxArc.fillText('ctx.arc(x, y, radius, 0, Math.PI / 2)', 170, 250);
+        });
+        
+        // Arco personalizzato con slider
+        document.getElementById('drawCustomArc').addEventListener('click', function() {
+            updateCustomArc();
+        });
+        
+        function updateCustomArc() {
+            clearArcCanvas();
+            
+            const x = arcCanvas.width / 2;
+            const y = arcCanvas.height / 2;
+            const radius = 100;
+            
+            // Ottieni gli angoli dagli slider (convertiti in radianti)
+            const startAngle = document.getElementById('startAngle').value * (Math.PI / 180);
+            const endAngle = document.getElementById('endAngle').value * (Math.PI / 180);
+            
+            // Disegna l'arco personalizzato
+            ctxArc.strokeStyle = '#9b59b6';
+            ctxArc.lineWidth = 3;
+            ctxArc.beginPath();
+            ctxArc.arc(x, y, radius, startAngle, endAngle);
+            ctxArc.stroke();
+            
+            // Disegna il centro
+            ctxArc.fillStyle = 'red';
+            ctxArc.beginPath();
+            ctxArc.arc(x, y, 4, 0, Math.PI * 2);
+            ctxArc.fill();
+            
+            // Disegna le linee che indicano gli angoli
+            ctxArc.strokeStyle = '#ddd';
+            ctxArc.beginPath();
+            ctxArc.moveTo(x, y);
+            ctxArc.lineTo(x + radius * Math.cos(startAngle), y + radius * Math.sin(startAngle));
+            ctxArc.moveTo(x, y);
+            ctxArc.lineTo(x + radius * Math.cos(endAngle), y + radius * Math.sin(endAngle));
+            ctxArc.stroke();
+            
+            // Mostra il codice
+            ctxArc.fillStyle = '#333';
+            ctxArc.font = '14px monospace';
+            ctxArc.fillText(`ctx.arc(x, y, radius, ${startAngle.toFixed(2)}, ${endAngle.toFixed(2)})`, 150, 250);
+        }
+        
+        // Gestione degli slider
+        document.getElementById('startAngle').addEventListener('input', function() {
+            document.getElementById('startAngleValue').textContent = this.value + '°';
+            if (document.getElementById('drawCustomArc').classList.contains('active')) {
+                updateCustomArc();
+            }
+        });
+        
+        document.getElementById('endAngle').addEventListener('input', function() {
+            document.getElementById('endAngleValue').textContent = this.value + '°';
+            if (document.getElementById('drawCustomArc').classList.contains('active')) {
+                updateCustomArc();
+            }
+        });
+        
+        document.getElementById('clearArcs').addEventListener('click', clearArcCanvas);
+        
+        // ------------- Combinare Tracciati con Clipping -------------
+        const clippingCanvas = document.getElementById('clippingCanvas');
+        const ctxClip = clippingCanvas.getContext('2d');
+        
+        function clearClippingCanvas() {
+            ctxClip.clearRect(0, 0, clippingCanvas.width, clippingCanvas.height);
+        }
+        
+        clearClippingCanvas();
+        
+        // Funzione per disegnare un pattern di sfondo
+        function drawPattern() {
+            // Disegna un pattern a strisce diagonali
+            for (let i = 0; i < clippingCanvas.width + clippingCanvas.height; i += 20) {
+                ctxClip.beginPath();
+                ctxClip.moveTo(i, 0);
+                ctxClip.lineTo(0, i);
+                ctxClip.lineWidth = 10;
+                
+                // Colore alternato
+                ctxClip.strokeStyle = i % 40 === 0 ? '#3498db' : '#e74c3c';
+                ctxClip.stroke();
+            }
+        }
+        
+        // Mascheratura con un cerchio
+        document.getElementById('clipWithCircle').addEventListener('click', function() {
+            clearClippingCanvas();
+            
+            // Salva il contesto prima del clipping
+            ctxClip.save();
+            
+            // Definisci un percorso circolare
+            ctxClip.beginPath();
+            ctxClip.arc(clippingCanvas.width / 2, clippingCanvas.height / 2, 100, 0, Math.PI * 2);
+            ctxClip.clip();
+            
+            // Disegna contenuto che sarà visibile solo all'interno del cerchio
+            drawPattern();
+            
+            // Ripristina il contesto
+            ctxClip.restore();
+            
+            // Disegna il bordo del cerchio
+            ctxClip.strokeStyle = '#333';
+            ctxClip.lineWidth = 2;
+            ctxClip.beginPath();
+            ctxClip.arc(clippingCanvas.width / 2, clippingCanvas.height / 2, 100, 0, Math.PI * 2);
+            ctxClip.stroke();
+            
+            // Mostra il codice
+            ctxClip.fillStyle = '#333';
+            ctxClip.font = '14px Arial';
+            ctxClip.fillText('Clipping con un cerchio', 20, 30);
+        });
+        
+        // Mascheratura con un rettangolo
+        document.getElementById('clipWithRect').addEventListener('click', function() {
+            clearClippingCanvas();
+            
+            // Salva il contesto prima del clipping
+            ctxClip.save();
+            
+            // Definisci un percorso rettangolare
+            ctxClip.beginPath();
+            ctxClip.rect(150, 50, 300, 200);
+            ctxClip.clip();
+            
+            // Disegna contenuto che sarà visibile solo all'interno del rettangolo
+            drawPattern();
+            
+            // Ripristina il contesto
+            ctxClip.restore();
+            
+            // Disegna il bordo del rettangolo
+            ctxClip.strokeStyle = '#333';
+            ctxClip.lineWidth = 2;
+            ctxClip.strokeRect(150, 50, 300, 200);
+            
+            // Mostra il codice
+            ctxClip.fillStyle = '#333';
+            ctxClip.font = '14px Arial';
+            ctxClip.fillText('Clipping con un rettangolo', 20, 30);
+        });
+        
+        // Mascheratura con testo
+        document.getElementById('clipWithText').addEventListener('click', function() {
+            clearClippingCanvas();
+            
+            // Salva il contesto prima del clipping
+            ctxClip.save();
+            
+            // Definisci il testo per il clipping
+            ctxClip.font = 'bold 90px Arial';
+            ctxClip.textAlign = 'center';
+            ctxClip.textBaseline = 'middle';
+            
+            // Crea il tracciato del testo
+            ctxClip.beginPath();
+            ctxClip.fillText('CANVAS', clippingCanvas.width / 2, clippingCanvas.height / 2);
+            ctxClip.clip();
+            
+            // Disegna contenuto che sarà visibile solo all'interno del testo
+            drawPattern();
+            
+            // Ripristina il contesto
+            ctxClip.restore();
+            
+            // Mostra il codice
+            ctxClip.fillStyle = '#333';
+            ctxClip.font = '14px Arial';
+            ctxClip.fillText('Clipping con testo', 20, 30);
+        });
+        
+        // Mascheratura con un percorso complesso
+        document.getElementById('clipWithPath').addEventListener('click', function() {
+            clearClippingCanvas();
+            
+            // Salva il contesto prima del clipping
+            ctxClip.save();
+            
+            // Definisci un percorso complesso per il clipping (una stella)
+            ctxClip.beginPath();
+            const cx = clippingCanvas.width / 2;
+            const cy = clippingCanvas.height / 2;
+            const spikes = 5;
+            const outerRadius = 100;
+            const innerRadius = 50;
+            
+            let rot = Math.PI / 2 * 3;
+            let x = cx;
+            let y = cy;
+            let step = Math.PI / spikes;
+            
+            ctxClip.moveTo(cx, cy - outerRadius);
+            
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerRadius;
+                y = cy + Math.sin(rot) * outerRadius;
+                ctxClip.lineTo(x, y);
+                rot += step;
+                
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                ctxClip.lineTo(x, y);
+                rot += step;
+            }
+            
+            ctxClip.lineTo(cx, cy - outerRadius);
+            ctxClip.closePath();
+            ctxClip.clip();
+            
+            // Disegna contenuto che sarà visibile solo all'interno della stella
+            drawPattern();
+            
+            // Ripristina il contesto
+            ctxClip.restore();
+            
+            // Disegna il bordo della stella
+            ctxClip.strokeStyle = '#333';
+            ctxClip.lineWidth = 2;
+            
+            ctxClip.beginPath();
+            rot = Math.PI / 2 * 3;
+            ctxClip.moveTo(cx, cy - outerRadius);
+            
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerRadius;
+                y = cy + Math.sin(rot) * outerRadius;
+                ctxClip.lineTo(x, y);
+                rot += step;
+                
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                ctxClip.lineTo(x, y);
+                rot += step;
+            }
+            
+            ctxClip.lineTo(cx, cy - outerRadius);
+            ctxClip.closePath();
+            ctxClip.stroke();
+            
+            // Mostra il codice
+            ctxClip.fillStyle = '#333';
+            ctxClip.font = '14px Arial';
+            ctxClip.fillText('Clipping con un percorso complesso (stella)', 20, 30);
+        });
+        
+        document.getElementById('clearClipping').addEventListener('click', clearClippingCanvas);
+        
+        // ------------- Esempi Creativi -------------
+        const creativeCanvas = document.getElementById('creativeCanvas');
+        const ctxCreative = creativeCanvas.getContext('2d');
+        
+        function clearCreativeCanvas() {
+            ctxCreative.clearRect(0, 0, creativeCanvas.width, creativeCanvas.height);
+        }
+        
+        clearCreativeCanvas();
+        
+        // Funzione per disegnare un fiore con curve di Bézier
+        document.getElementById('drawFlower').addEventListener('click', function() {
+            clearCreativeCanvas();
+            
+            const centerX = creativeCanvas.width / 2;
+            const centerY = creativeCanvas.height / 2;
+            const petalCount = 8;
+            const petalLength = 120;
+            const petalWidth = 40;
+            
+            // Disegna i petali con curve di Bézier
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i / petalCount) * Math.PI * 2;
+                const petalTipX = centerX + Math.cos(angle) * petalLength;
+                const petalTipY = centerY + Math.sin(angle) * petalLength;
+                
+                const controlAngle1 = angle - 0.3;
+                const controlAngle2 = angle + 0.3;
+                
+                const control1X = centerX + Math.cos(controlAngle1) * petalWidth;
+                const control1Y = centerY + Math.sin(controlAngle1) * petalWidth;
+                
+                const control2X = centerX + Math.cos(controlAngle2) * petalWidth;
+                const control2Y = centerY + Math.sin(controlAngle2) * petalWidth;
+                
+                // Colora il petalo con un gradiente
+                const gradient = ctxCreative.createRadialGradient(
+                    centerX, centerY, 0,
+                    centerX, centerY, petalLength
+                );
+                gradient.addColorStop(0, '#ff9ff3');
+                gradient.addColorStop(1, '#fd79a8');
+                
+                ctxCreative.fillStyle = gradient;
+                ctxCreative.beginPath();
+                ctxCreative.moveTo(centerX, centerY);
+                ctxCreative.bezierCurveTo(control1X, control1Y, control2X, control2Y, petalTipX, petalTipY);
+                ctxCreative.bezierCurveTo(control2X, control2Y, control1X, control1Y, centerX, centerY);
+                ctxCreative.fill();
+            }
+            
+            // Disegna il centro del fiore
+            const centerGradient = ctxCreative.createRadialGradient(
+                centerX, centerY, 0,
+                centerX, centerY, 30
+            );
+            centerGradient.addColorStop(0, '#ffeaa7');
+            centerGradient.addColorStop(1, '#fdcb6e');
+            
+            ctxCreative.fillStyle = centerGradient;
+            ctxCreative.beginPath();
+            ctxCreative.arc(centerX, centerY, 30, 0, Math.PI * 2);
+            ctxCreative.fill();
+            
+            // Dettagli del centro
+            ctxCreative.fillStyle = '#e17055';
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const x = centerX + Math.cos(angle) * 15;
+                const y = centerY + Math.sin(angle) * 15;
+                
+                ctxCreative.beginPath();
+                ctxCreative.arc(x, y, 3, 0, Math.PI * 2);
+                ctxCreative.fill();
+            }
+        });
+        
+        // Funzione per disegnare onde con curve di Bézier
+        document.getElementById('drawWaves').addEventListener('click', function() {
+            clearCreativeCanvas();
+            
+            // Crea un gradiente per lo sfondo
+            const bgGradient = ctxCreative.createLinearGradient(0, 0, 0, creativeCanvas.height);
+            bgGradient.addColorStop(0, '#74b9ff');
+            bgGradient.addColorStop(1, '#0984e3');
+            
+            // Disegna lo sfondo
+            ctxCreative.fillStyle = bgGradient;
+            ctxCreative.fillRect(0, 0, creativeCanvas.width, creativeCanvas.height);
+            
+            // Parametri per le onde
+            const waveLayers = 4;
+            const baseY = 150;
+            const amplitude = 20;
+            const frequency = 0.02;
+            
+            // Disegna multiple onde con opacità diverse
+            for (let layer = 0; layer < waveLayers; layer++) {
+                ctxCreative.fillStyle = `rgba(255, 255, 255, ${0.3 - layer * 0.05})`;
+                
+                // Inizia il percorso dell'onda
+                ctxCreative.beginPath();
+                ctxCreative.moveTo(0, baseY + layer * 50);
+                
+                // Crea le curve di Bézier per simulare l'onda
+                for (let x = 0; x < creativeCanvas.width; x += 100) {
+                    const waveHeight = amplitude * Math.sin((x + layer * 30) * frequency);
+                    
+                    ctxCreative.bezierCurveTo(
+                        x + 30, baseY + layer * 50 + waveHeight - 10,
+                        x + 70, baseY + layer * 50 + waveHeight + 10,
+                        x + 100, baseY + layer * 50 + waveHeight
+                    );
+                }
+                
+                // Completa il percorso dell'onda
+                ctxCreative.lineTo(creativeCanvas.width, creativeCanvas.height);
+                ctxCreative.lineTo(0, creativeCanvas.height);
+                ctxCreative.closePath();
+                ctxCreative.fill();
+            }
+            
+            // Aggiungi alcune bolle
+            for (let i = 0; i < 20; i++) {
+                const x = Math.random() * creativeCanvas.width;
+                const y = baseY + Math.random() * (creativeCanvas.height - baseY);
+                const radius = 2 + Math.random() * 5;
+                
+                ctxCreative.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctxCreative.beginPath();
+                ctxCreative.arc(x, y, radius, 0, Math.PI * 2);
+                ctxCreative.fill();
+            }
+        });
+        
+        // Funzione per disegnare un paesaggio con curve e mascherature
+        document.getElementById('drawLandscape').addEventListener('click', function() {
+            clearCreativeCanvas();
+            
+            // Cielo
+            const skyGradient = ctxCreative.createLinearGradient(0, 0, 0, 250);
+            skyGradient.addColorStop(0, '#70a1ff');
+            skyGradient.addColorStop(1, '#7bed9f');
+            
+            ctxCreative.fillStyle = skyGradient;
+            ctxCreative.fillRect(0, 0, creativeCanvas.width, creativeCanvas.height);
+            
+            // Sole
+            ctxCreative.fillStyle = '#feca57';
+            ctxCreative.beginPath();
+            ctxCreative.arc(100, 100, 50, 0, Math.PI * 2);
+            ctxCreative.fill();
+            
+            // Nuvole con curve di Bézier
+            ctxCreative.fillStyle = '#ecf0f1';
+            
+            // Nuvola 1
+            ctxCreative.beginPath();
+            ctxCreative.moveTo(170, 80);
+            ctxCreative.bezierCurveTo(130, 100, 130, 150, 230, 150);
+            ctxCreative.bezierCurveTo(250, 180, 320, 180, 340, 150);
+            ctxCreative.bezierCurveTo(420, 150, 420, 120, 390, 100);
+            ctxCreative.bezierCurveTo(430, 40, 370, 30, 340, 50);
+            ctxCreative.bezierCurveTo(320, 5, 250, 20, 250, 50);
+            ctxCreative.bezierCurveTo(200, 5, 150, 20, 170, 80);
+            ctxCreative.closePath();
+            ctxCreative.fill();
+            
+            // Nuvola 2
+            ctxCreative.beginPath();
+            ctxCreative.moveTo(500, 50);
+            ctxCreative.bezierCurveTo(480, 70, 480, 100, 520, 100);
+            ctxCreative.bezierCurveTo(530, 120, 560, 120, 570, 100);
+            ctxCreative.bezierCurveTo(600, 100, 600, 70, 580, 50);
+            ctxCreative.bezierCurveTo(590, 30, 570, 20, 550, 35);
+            ctxCreative.bezierCurveTo(540, 20, 520, 20, 500, 50);
+            ctxCreative.closePath();
+            ctxCreative.fill();
+            
+            // Colline con curve di Bézier
+            ctxCreative.fillStyle = '#78e08f';
+            ctxCreative.beginPath();
+            ctxCreative.moveTo(0, 300);
+            ctxCreative.bezierCurveTo(200, 250, 300, 350, 600, 300);
+            ctxCreative.lineTo(600, 400);
+            ctxCreative.lineTo(0, 400);
+            ctxCreative.closePath();
+            ctxCreative.fill();
+            
+            // Alberi
+            function drawTree(x, y, size) {
+                // Tronco
+                ctxCreative.fillStyle = '#cd6133';
+                ctxCreative.fillRect(x - size/10, y - size, size/5, size);
+                
+                // Chioma
+                ctxCreative.fillStyle = '#78e08f';
+                ctxCreative.beginPath();
+                ctxCreative.arc(x, y - size, size/2, 0, Math.PI * 2);
+                ctxCreative.fill();
+                
+                ctxCreative.beginPath();
+                ctxCreative.arc(x - size/3, y - size*1.1, size/3, 0, Math.PI * 2);
+                ctxCreative.fill();
+                
+                ctxCreative.beginPath();
+                ctxCreative.arc(x + size/3, y - size*1.1, size/3, 0, Math.PI * 2);
+                ctxCreative.fill();
+                
+                ctxCreative.beginPath();
+                ctxCreative.arc(x, y - size*1.3, size/3, 0, Math.PI * 2);
+                ctxCreative.fill();
+            }
+            
+            // Disegna alcuni alberi
+            drawTree(150, 300, 50);
+            drawTree(400, 320, 70);
+            drawTree(500, 300, 40);
+            
+            // Casa
+            ctxCreative.fillStyle = '#e58e26';
+            ctxCreative.fillRect(220, 230, 100, 70);
+            
+            // Tetto
+            ctxCreative.fillStyle = '#b71540';
+            ctxCreative.beginPath();
+            ctxCreative.moveTo(210, 230);
+            ctxCreative.lineTo(270, 190);
+            ctxCreative.lineTo(330, 230);
+            ctxCreative.closePath();
+            ctxCreative.fill();
+            
+            // Finestra
+            ctxCreative.fillStyle = '#0abde3';
+            ctxCreative.fillRect(240, 250, 20, 20);
+            
+            // Porta
+            ctxCreative.fillStyle = '#2f3542';
+            ctxCreative.fillRect(280, 270, 20, 30);
+        });
+        
+        document.getElementById('clearCreative').addEventListener('click', clearCreativeCanvas);
+
+        // Disegna un esempio iniziale
+        document.getElementById('drawFlower').click();
+    </script>
+</body>
+</html>
