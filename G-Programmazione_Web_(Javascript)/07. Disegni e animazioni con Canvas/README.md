@@ -1,9 +1,12 @@
 ## 7. **Disegni e animazioni con Canvas**
 
 ### Esercitazioni
+  - [Guida alle Esercitazioni](Esercitazioni/README.md)
   - [Progetto: Orologio Analogico](Esercitazioni/orologio-analogico.md)
   - [Progetto: Gioco Breakout](Esercitazioni/breakout-game.md)
   - [Progetto: Editor di Disegno](Esercitazioni/editor-disegno.md)
+  - [Progetto: Dashboard Interattiva](Esercitazioni/dashboard-interattiva.md)
+  - [Progetto: Snake Game](Esercitazioni/snake-game.md)
 
 ### Teoria
   - [07.01 Introduzione a Canvas](<07.01 Introduzione a Canvas.md>)   
@@ -19,6 +22,12 @@
   - [07.11 Gestione degli eventi - Gestione del touch](<07.11 Gestione degli eventi - Gestione del touch.md>)
   - [07.12 Animazioni con Canvas](<07.12 Animazioni con Canvas.md>)
   - [07.13 Ottimizzazione delle prestazioni](<07.13 Ottimizzazione delle prestazioni.md>)
+  - [07.14 Framework e librerie Canvas](<07.14 Framework e librerie Canvas.md>)
+  
+### Risorse
+  - [MDN Canvas Tutorial](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial)
+  - [HTML5 Canvas Cheat Sheet](https://simon.html5.org/dump/html5-canvas-cheat-sheet.html)
+  - [Can I Use: Canvas](https://caniuse.com/canvas)
   
 --- 
 [INDICE](../README.md)
