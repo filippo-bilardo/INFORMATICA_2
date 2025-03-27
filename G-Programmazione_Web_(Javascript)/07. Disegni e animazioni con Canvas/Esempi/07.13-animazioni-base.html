@@ -498,6 +498,85 @@ class SceneManager {
             </div>
         </div>
 
+        <h2>5. Animazione con easing</h2>
+        <p>
+            Le funzioni di easing rendono le animazioni più naturali e piacevoli:
+        </p>
+        
+        <canvas id="easingCanvas" width="500" height="300"></canvas>
+        
+        <div class="controls">
+            <button id="linearEasing">Lineare</button>
+            <button id="easeOutEasing">Ease Out</button>
+            <button id="easeInOutEasing">Ease In-Out</button>
+            <button id="bounceEasing">Rimbalzo</button>
+        </div>
+        
+        <div class="code-container">
+            <pre><code>
+                // 5. Animazione con easing
+                const easingCanvas = document.getElementById('easingCanvas');
+                const easingCtx = easingCanvas.getContext('2d');
+                let easingAnimationId;
+            
+                const easingFunctions = {
+                    linear: t => t,
+                    easeOut: t => 1 - Math.pow(1 - t, 3),
+                    easeInOut: t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+                    bounce: t => {
+                        const n1 = 7.5625;
+                        const d1 = 2.75;
+                        if (t < 1 / d1) return n1 * t * t;
+                        else if (t < 2 / d1) return n1 * (t -= 1.5 / d1) * t + 0.75;
+                        else if (t < 2.5 / d1) return n1 * (t -= 2.25 / d1) * t + 0.9375;
+                        else return n1 * (t -= 2.625 / d1) * t + 0.984375;
+                    }
+                };
+            
+                function animateWithEasing(easingFunction) {
+                    if (easingAnimationId) cancelAnimationFrame(easingAnimationId);
+                    
+                    let startTime = null;
+                    const duration = 2000;
+                    const startX = 50;
+                    const endX = easingCanvas.width - 50;
+            
+                    function step(timestamp) {
+                        if (!startTime) startTime = timestamp;
+                        const elapsed = timestamp - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const easedProgress = easingFunction(progress);
+                        
+                        easingCtx.clearRect(0, 0, easingCanvas.width, easingCanvas.height);
+                        easingCtx.beginPath();
+                        easingCtx.arc(
+                            startX + (endX - startX) * easedProgress,
+                            easingCanvas.height / 2,
+                            20, 0, Math.PI * 2
+                        );
+                        easingCtx.fillStyle = 'purple';
+                        easingCtx.fill();
+            
+                        if (progress < 1) {
+                            easingAnimationId = requestAnimationFrame(step);
+                        }
+                    }
+                    easingAnimationId = requestAnimationFrame(step);
+                }
+            
+                document.getElementById('linearEasing').addEventListener('click', () => animateWithEasing(easingFunctions.linear));
+                document.getElementById('easeOutEasing').addEventListener('click', () => animateWithEasing(easingFunctions.easeOut));
+                document.getElementById('easeInOutEasing').addEventListener('click', () => animateWithEasing(easingFunctions.easeInOut));
+                document.getElementById('bounceEasing').addEventListener('click', () => animateWithEasing(easingFunctions.bounce));
+            
+                // Disegna pallina iniziale
+                easingCtx.beginPath();
+                easingCtx.arc(50, easingCanvas.height / 2, 20, 0, Math.PI * 2);
+                easingCtx.fillStyle = 'purple';
+                easingCtx.fill();                
+            </code></pre>
+        </div>        
+
         <div class="note">
             <h3>Suggerimenti per Animazioni Performanti</h3>
             <ul>
@@ -1127,6 +1206,69 @@ class SceneManager {
         scene = new SceneManager();
         scene.initialize(starCount);
         scene.draw(sceneCtx);
+    </script>
+
+    <script>
+    // 5. Animazione con easing
+    const easingCanvas = document.getElementById('easingCanvas');
+    const easingCtx = easingCanvas.getContext('2d');
+    let easingAnimationId;
+
+    const easingFunctions = {
+        linear: t => t,
+        easeOut: t => 1 - Math.pow(1 - t, 3),
+        easeInOut: t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+        bounce: t => {
+            const n1 = 7.5625;
+            const d1 = 2.75;
+            if (t < 1 / d1) return n1 * t * t;
+            else if (t < 2 / d1) return n1 * (t -= 1.5 / d1) * t + 0.75;
+            else if (t < 2.5 / d1) return n1 * (t -= 2.25 / d1) * t + 0.9375;
+            else return n1 * (t -= 2.625 / d1) * t + 0.984375;
+        }
+    };
+
+    function animateWithEasing(easingFunction) {
+        if (easingAnimationId) cancelAnimationFrame(easingAnimationId);
+        
+        let startTime = null;
+        const duration = 2000;
+        const startX = 50;
+        const endX = easingCanvas.width - 50;
+
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easedProgress = easingFunction(progress);
+            
+            easingCtx.clearRect(0, 0, easingCanvas.width, easingCanvas.height);
+            easingCtx.beginPath();
+            easingCtx.arc(
+                startX + (endX - startX) * easedProgress,
+                easingCanvas.height / 2,
+                20, 0, Math.PI * 2
+            );
+            easingCtx.fillStyle = 'purple';
+            easingCtx.fill();
+
+            if (progress < 1) {
+                easingAnimationId = requestAnimationFrame(step);
+            }
+        }
+        easingAnimationId = requestAnimationFrame(step);
+    }
+
+    document.getElementById('linearEasing').addEventListener('click', () => animateWithEasing(easingFunctions.linear));
+    document.getElementById('easeOutEasing').addEventListener('click', () => animateWithEasing(easingFunctions.easeOut));
+    document.getElementById('easeInOutEasing').addEventListener('click', () => animateWithEasing(easingFunctions.easeInOut));
+    document.getElementById('bounceEasing').addEventListener('click', () => animateWithEasing(easingFunctions.bounce));
+
+    // Disegna pallina iniziale
+    easingCtx.beginPath();
+    easingCtx.arc(50, easingCanvas.height / 2, 20, 0, Math.PI * 2);
+    easingCtx.fillStyle = 'purple';
+    easingCtx.fill();
     </script>
 </body>
 </html>

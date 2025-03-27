@@ -20,14 +20,14 @@ Benvenuti al modulo dedicato al **Canvas HTML5**, uno strumento potente che cons
 
 ### Interattività e Animazione
 11. [Gestione degli eventi - Click e movimento del mouse](<07.11 Gestione degli eventi - Click e movimento del mouse.md>) | [Esempio](<Esempi/07.11-eventi-mouse.html>)
-12. [Gestione degli eventi - Gestione del touch](<07.11 Gestione degli eventi - Gestione del touch.md>) | [Esempio](<Esempi/07.11-eventi-touch.html>)
-13. [Animazioni con Canvas](<07.12 Animazioni con Canvas.md>) | [Esempio](<Esempi/07.12-animazioni.html>)
-14. [Audio per applicazioni Canvas](<07.16 Audio per applicazioni Canvas.md>) | [Esempio](<Esempi/07.16-audio-canvas.html>)
+12. [Gestione degli eventi - Gestione del touch](<07.12 Gestione degli eventi - Gestione del touch.md>) | [Esempio](<Esempi/07.12-eventi-touch.html>)
+13. [Animazioni con Canvas](<07.13 Animazioni con Canvas.md>) | [Esempio](<Esempi/07.13-animazioni-base.html>)
+14. [Audio per applicazioni Canvas](<07.14 Audio per applicazioni Canvas.md>) | [Esempio](<Esempi/07.14-audio-per-applicazioni.html>)
 
 ### Ottimizzazione e Esplorazione
-15. [Ottimizzazione delle prestazioni](<07.13 Ottimizzazione delle prestazioni.md>) | [Esempio](<Esempi/07.13-ottimizzazione.html>)
-16. [Framework e librerie Canvas](<07.14 Framework e librerie Canvas.md>) | [Esempio](<Esempi/07.14-librerie-canvas.html>)
-17. [Introduzione a WebGL](<07.17 Introduzione a WebGL.md>) | [Esempio](<Esempi/07.17-intro-webgl.html>)
+15. [Ottimizzazione delle prestazioni](<07.15 Ottimizzazione delle prestazioni.md>) | [Esempio](<Esempi/07.13-ottimizzazione.html>)
+16. [Framework e librerie Canvas](<07.16 Framework e librerie Canvas.md>) | [Esempio](<Esempi/07.16-canvas-nei-framework.html>)
+17. [Introduzione a WebGL](<07.17 Introduzione a WebGL.md>) | [Esempio](<Esempi/07.17-introduzione-webgl.html>)
 18. [Canvas nei framework moderni (React, Vue, Angular)](<07.18 Canvas nei framework moderni.md>) | [Esempio](<Esempi/07.18-canvas-nei-framework.html>)
 19. [Ottimizzazione per dispositivi mobili](<07.19 Ottimizzazione per dispositivi mobili.md>) | [Esempio](<Esempi/07.19-ottimizzazione-mobile.html>)
 
