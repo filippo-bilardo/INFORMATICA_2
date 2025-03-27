@@ -159,3 +159,376 @@ ctx.fillRect(50, 50, 100, 100);
 // Disegna un cerchio
 ctx.beginPath();
 ctx.arc(200, 100, 50, 0, Math.PI * 2);
+ctx.fill();</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. globalCompositeOperation</h2>
+            <p>
+                La proprietà <code>globalCompositeOperation</code> permette di specificare come un nuovo elemento disegnato interagisce con il contenuto esistente.
+                Esistono diverse modalità di composizione che possono creare effetti interessanti.
+            </p>
+
+            <canvas id="compositeCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div>
+                    Modalità di composizione: 
+                    <select id="compositeMode">
+                        <option value="source-over">source-over (default)</option>
+                        <option value="source-in">source-in</option>
+                        <option value="source-out">source-out</option>
+                        <option value="source-atop">source-atop</option>
+                        <option value="destination-over">destination-over</option>
+                        <option value="destination-in">destination-in</option>
+                        <option value="destination-out">destination-out</option>
+                        <option value="destination-atop">destination-atop</option>
+                        <option value="lighter">lighter</option>
+                        <option value="copy">copy</option>
+                        <option value="xor">xor</option>
+                        <option value="multiply">multiply</option>
+                        <option value="screen">screen</option>
+                        <option value="overlay">overlay</option>
+                        <option value="darken">darken</option>
+                        <option value="lighten">lighten</option>
+                    </select>
+                </div>
+                <button id="applyComposite">Applica Modalità</button>
+                <button id="resetComposite">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Imposta la modalità di composizione
+ctx.globalCompositeOperation = 'multiply';
+
+// Disegna un rettangolo blu
+ctx.fillStyle = 'blue';
+ctx.fillRect(50, 50, 100, 100);
+
+// Disegna un cerchio rosso che si sovrappone
+ctx.fillStyle = 'red';
+ctx.beginPath();
+ctx.arc(120, 120, 50, 0, Math.PI * 2);
+ctx.fill();</pre>
+            </div>
+            
+            <div class="note">
+                <p><strong>Nota:</strong> Le modalità di composizione possono avere comportamenti diversi a seconda del browser. 
+                Alcune modalità più recenti come 'multiply', 'screen', ecc. potrebbero non essere supportate in browser più vecchi.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Esempi Pratici</h2>
+            <p>
+                Ecco alcuni esempi pratici di come utilizzare la trasparenza per creare effetti interessanti.
+            </p>
+
+            <canvas id="examplesCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="drawGradient">Gradiente con Trasparenza</button>
+                <button id="drawShadows">Ombre con Trasparenza</button>
+                <button id="drawOverlap">Sovrapposizione con Blend Mode</button>
+                <button id="resetExamples">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Esempio: Gradiente con trasparenza
+let gradient = ctx.createLinearGradient(0, 0, 300, 0);
+gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
+gradient.addColorStop(0.5, 'rgba(0, 255, 0, 0.5)');
+gradient.addColorStop(1, 'rgba(0, 0, 255, 0)');
+ctx.fillStyle = gradient;
+ctx.fillRect(50, 50, 300, 200);</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funzioni di utilità
+        function clearCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // 1. globalAlpha
+        const alphaCanvas = document.getElementById('alphaCanvas');
+        const alphaCtx = alphaCanvas.getContext('2d');
+        const alphaValue = document.getElementById('alphaValue');
+        const alphaValueDisplay = document.getElementById('alphaValueDisplay');
+        const applyAlphaBtn = document.getElementById('applyAlpha');
+        const resetAlphaBtn = document.getElementById('resetAlpha');
+
+        function drawShapesWithAlpha() {
+            clearCanvas(alphaCanvas);
+            
+            // Imposta la trasparenza globale
+            alphaCtx.globalAlpha = parseFloat(alphaValue.value);
+            alphaValueDisplay.textContent = alphaValue.value;
+            
+            // Disegna un rettangolo
+            alphaCtx.fillStyle = 'blue';
+            alphaCtx.fillRect(50, 50, 100, 100);
+            
+            // Disegna un cerchio
+            alphaCtx.fillStyle = 'red';
+            alphaCtx.beginPath();
+            alphaCtx.arc(200, 100, 50, 0, Math.PI * 2);
+            alphaCtx.fill();
+            
+            // Disegna un triangolo
+            alphaCtx.fillStyle = 'green';
+            alphaCtx.beginPath();
+            alphaCtx.moveTo(300, 50);
+            alphaCtx.lineTo(350, 150);
+            alphaCtx.lineTo(250, 150);
+            alphaCtx.closePath();
+            alphaCtx.fill();
+            
+            // Disegna un rettangolo con bordo
+            alphaCtx.strokeStyle = 'purple';
+            alphaCtx.lineWidth = 5;
+            alphaCtx.strokeRect(400, 50, 100, 100);
+        }
+
+        // Inizializza il canvas con alpha
+        drawShapesWithAlpha();
+
+        // Event listeners per alpha
+        alphaValue.addEventListener('input', function() {
+            alphaValueDisplay.textContent = this.value;
+        });
+
+        applyAlphaBtn.addEventListener('click', drawShapesWithAlpha);
+        resetAlphaBtn.addEventListener('click', function() {
+            alphaValue.value = 1;
+            alphaValueDisplay.textContent = '1.0';
+            drawShapesWithAlpha();
+        });
+
+        // 2. Colori RGBA
+        const rgbaCanvas = document.getElementById('rgbaCanvas');
+        const rgbaCtx = rgbaCanvas.getContext('2d');
+        const rgbaColor = document.getElementById('rgbaColor');
+        const rgbaAlpha = document.getElementById('rgbaAlpha');
+        const rgbaAlphaDisplay = document.getElementById('rgbaAlphaDisplay');
+        const applyRgbaBtn = document.getElementById('applyRgba');
+        const resetRgbaBtn = document.getElementById('resetRgba');
+
+        function hexToRgb(hex) {
+            // Rimuovi il carattere # se presente
+            hex = hex.replace(/^#/, '');
+            
+            // Converti in RGB
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            
+            return { r, g, b };
+        }
+
+        function drawShapesWithRgba() {
+            clearCanvas(rgbaCanvas);
+            
+            // Ottieni il colore RGB dal color picker
+            const rgb = hexToRgb(rgbaColor.value);
+            const alpha = parseFloat(rgbaAlpha.value);
+            rgbaAlphaDisplay.textContent = alpha.toFixed(1);
+            
+            // Crea il colore RGBA
+            const rgbaColor1 = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+            
+            // Disegna un rettangolo con RGBA
+            rgbaCtx.fillStyle = rgbaColor1;
+            rgbaCtx.fillRect(50, 50, 100, 100);
+            
+            // Disegna un cerchio con RGBA
+            rgbaCtx.beginPath();
+            rgbaCtx.arc(200, 100, 50, 0, Math.PI * 2);
+            rgbaCtx.fill();
+            
+            // Disegna un triangolo con RGBA
+            rgbaCtx.beginPath();
+            rgbaCtx.moveTo(300, 50);
+            rgbaCtx.lineTo(350, 150);
+            rgbaCtx.lineTo(250, 150);
+            rgbaCtx.closePath();
+            rgbaCtx.fill();
+            
+            // Disegna un rettangolo con bordo RGBA
+            rgbaCtx.strokeStyle = rgbaColor1;
+            rgbaCtx.lineWidth = 5;
+            rgbaCtx.strokeRect(400, 50, 100, 100);
+            
+            // Mostra il valore RGBA
+            rgbaCtx.fillStyle = 'black';
+            rgbaCtx.font = '14px Arial';
+            rgbaCtx.fillText(`Colore RGBA: ${rgbaColor1}`, 50, 200);
+        }
+
+        // Inizializza il canvas con RGBA
+        drawShapesWithRgba();
+
+        // Event listeners per RGBA
+        rgbaAlpha.addEventListener('input', function() {
+            rgbaAlphaDisplay.textContent = parseFloat(this.value).toFixed(1);
+        });
+
+        applyRgbaBtn.addEventListener('click', drawShapesWithRgba);
+        resetRgbaBtn.addEventListener('click', function() {
+            rgbaColor.value = '#ff0000';
+            rgbaAlpha.value = 1;
+            rgbaAlphaDisplay.textContent = '1.0';
+            drawShapesWithRgba();
+        });
+
+        // 3. globalCompositeOperation
+        const compositeCanvas = document.getElementById('compositeCanvas');
+        const compositeCtx = compositeCanvas.getContext('2d');
+        const compositeMode = document.getElementById('compositeMode');
+        const applyCompositeBtn = document.getElementById('applyComposite');
+        const resetCompositeBtn = document.getElementById('resetComposite');
+
+        function drawShapesWithComposite() {
+            clearCanvas(compositeCanvas);
+            
+            // Imposta la modalità di composizione
+            compositeCtx.globalCompositeOperation = compositeMode.value;
+            
+            // Disegna un rettangolo blu
+            compositeCtx.fillStyle = 'blue';
+            compositeCtx.fillRect(150, 50, 150, 150);
+            
+            // Disegna un cerchio rosso che si sovrappone
+            compositeCtx.fillStyle = 'red';
+            compositeCtx.beginPath();
+            compositeCtx.arc(300, 125, 75, 0, Math.PI * 2);
+            compositeCtx.fill();
+            
+            // Mostra la modalità corrente
+            compositeCtx.globalCompositeOperation = 'source-over'; // Ripristina per il testo
+            compositeCtx.fillStyle = 'black';
+            compositeCtx.font = '14px Arial';
+            compositeCtx.fillText(`Modalità: ${compositeMode.value}`, 50, 250);
+        }
+
+        // Inizializza il canvas con composite
+        drawShapesWithComposite();
+
+        // Event listeners per composite
+        applyCompositeBtn.addEventListener('click', drawShapesWithComposite);
+        resetCompositeBtn.addEventListener('click', function() {
+            compositeMode.value = 'source-over';
+            drawShapesWithComposite();
+        });
+
+        // 4. Esempi Pratici
+        const examplesCanvas = document.getElementById('examplesCanvas');
+        const examplesCtx = examplesCanvas.getContext('2d');
+        const drawGradientBtn = document.getElementById('drawGradient');
+        const drawShadowsBtn = document.getElementById('drawShadows');
+        const drawOverlapBtn = document.getElementById('drawOverlap');
+        const resetExamplesBtn = document.getElementById('resetExamples');
+
+        function drawGradientExample() {
+            clearCanvas(examplesCanvas);
+            
+            // Crea un gradiente con trasparenza
+            let gradient = examplesCtx.createLinearGradient(0, 0, 300, 0);
+            gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
+            gradient.addColorStop(0.5, 'rgba(0, 255, 0, 0.5)');
+            gradient.addColorStop(1, 'rgba(0, 0, 255, 0)');
+            
+            examplesCtx.fillStyle = gradient;
+            examplesCtx.fillRect(50, 50, 300, 200);
+            
+            // Aggiungi testo descrittivo
+            examplesCtx.fillStyle = 'black';
+            examplesCtx.font = '14px Arial';
+            examplesCtx.fillText('Gradiente con trasparenza variabile', 50, 280);
+        }
+
+        function drawShadowsExample() {
+            clearCanvas(examplesCanvas);
+            
+            // Configura le ombre
+            examplesCtx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            examplesCtx.shadowBlur = 15;
+            examplesCtx.shadowOffsetX = 10;
+            examplesCtx.shadowOffsetY = 10;
+            
+            // Disegna forme con ombre
+            examplesCtx.fillStyle = 'blue';
+            examplesCtx.fillRect(50, 50, 100, 100);
+            
+            examplesCtx.fillStyle = 'red';
+            examplesCtx.beginPath();
+            examplesCtx.arc(250, 100, 50, 0, Math.PI * 2);
+            examplesCtx.fill();
+            
+            examplesCtx.fillStyle = 'green';
+            examplesCtx.beginPath();
+            examplesCtx.moveTo(400, 50);
+            examplesCtx.lineTo(450, 150);
+            examplesCtx.lineTo(350, 150);
+            examplesCtx.closePath();
+            examplesCtx.fill();
+            
+            // Ripristina le ombre per il testo
+            examplesCtx.shadowColor = 'transparent';
+            examplesCtx.shadowBlur = 0;
+            examplesCtx.shadowOffsetX = 0;
+            examplesCtx.shadowOffsetY = 0;
+            
+            // Aggiungi testo descrittivo
+            examplesCtx.fillStyle = 'black';
+            examplesCtx.font = '14px Arial';
+            examplesCtx.fillText('Ombre con trasparenza', 50, 280);
+        }
+
+        function drawOverlapExample() {
+            clearCanvas(examplesCanvas);
+            
+            // Usa blend mode per sovrapposizione
+            examplesCtx.globalCompositeOperation = 'multiply';
+            
+            // Disegna cerchi sovrapposti con colori semi-trasparenti
+            const colors = ['rgba(255, 0, 0, 0.7)', 'rgba(0, 255, 0, 0.7)', 'rgba(0, 0, 255, 0.7)'];
+            const positions = [
+                { x: 200, y: 100 },
+                { x: 250, y: 150 },
+                { x: 150, y: 150 }
+            ];
+            
+            for (let i = 0; i < 3; i++) {
+                examplesCtx.fillStyle = colors[i];
+                examplesCtx.beginPath();
+                examplesCtx.arc(positions[i].x, positions[i].y, 80, 0, Math.PI * 2);
+                examplesCtx.fill();
+            }
+            
+            // Ripristina per il testo
+            examplesCtx.globalCompositeOperation = 'source-over';
+            
+            // Aggiungi testo descrittivo
+            examplesCtx.fillStyle = 'black';
+            examplesCtx.font = '14px Arial';
+            examplesCtx.fillText('Sovrapposizione con blend mode (multiply)', 50, 280);
+        }
+
+        // Event listeners per esempi
+        drawGradientBtn.addEventListener('click', drawGradientExample);
+        drawShadowsBtn.addEventListener('click', drawShadowsExample);
+        drawOverlapBtn.addEventListener('click', drawOverlapExample);
+        resetExamplesBtn.addEventListener('click', function() {
+            clearCanvas(examplesCanvas);
+        });
+
+        // Inizializza il canvas degli esempi
+        drawGradientExample();
+    </script>
+</body>
+</html>
