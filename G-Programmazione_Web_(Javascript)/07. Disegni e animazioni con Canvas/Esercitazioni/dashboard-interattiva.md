@@ -28,129 +28,163 @@ Questo progetto avanzato combina molti dei concetti studiati nei vari capitoli p
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: #f5f7fa;
             color: #333;
         }
         
         .dashboard-container {
-            display: flex;
-            flex-direction: column;
             max-width: 1200px;
-            margin: 20px auto;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            background-color: white;
+            margin: 0 auto;
+            padding: 20px;
         }
         
         .dashboard-header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .dashboard-controls {
-            display: flex;
-            padding: 10px;
-            background-color: #ecf0f1;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
             border-bottom: 1px solid #ddd;
         }
         
-        .chart-container {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 600;
         }
         
-        .chart-card {
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #375a8a;
+        }
+        
+        .btn.active {
+            background-color: #2c4870;
+        }
+        
+        .btn.secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn.secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .time-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .time-control select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .chart-container {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
         }
         
         .chart-header {
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #eee;
-            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .chart-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-cell {
+            flex: 1;
+            min-height: 300px;
+            position: relative;
         }
         
         canvas {
-            width: 100%;
-            height: 300px;
             display: block;
-        }
-        
-        button {
-            background-color: #3498db;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-            transition: background-color 0.2s;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        .date-range {
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-        }
-        
-        .date-range select {
-            margin-left: 10px;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <div class="dashboard-header">
-            <h1>Analisi Dati di Vendita</h1>
-            <div class="date-range">
-                <span>Periodo:</span>
-                <select id="timeRange">
-                    <option value="7">Ultimi 7 giorni</option>
-                    <option value="30" selected>Ultimi 30 giorni</option>
-                    <option value="90">Ultimi 90 giorni</option>
-                    <option value="365">Ultimo anno</option>
-                </select>
+            <h1 class="dashboard-title">Dashboard Analitica</h1>
+            <div class="controls">
+                <button id="viewSales" class="btn active">Vendite</button>
+                <button id="viewTraffic" class="btn">Traffico</button>
+                <button id="viewConversion" class="btn">Conversione</button>
+                <button id="refreshData" class="btn secondary">↻ Aggiorna</button>
             </div>
         </div>
         
-        <div class="dashboard-controls">
-            <button id="viewSales">Vendite</button>
-            <button id="viewTraffic">Traffico</button>
-            <button id="viewConversion">Conversione</button>
-            <button id="refreshData">↻ Aggiorna</button>
+        <div class="time-control">
+            <label for="timeRange">Periodo:</label>
+            <select id="timeRange">
+                <option value="7">Ultima settimana</option>
+                <option value="30" selected>Ultimo mese</option>
+                <option value="90">Ultimo trimestre</option>
+                <option value="365">Ultimo anno</option>
+            </select>
         </div>
         
-        <div class="chart-container">
-            <div class="chart-card">
-                <div class="chart-header">Vendite per Categoria</div>
-                <canvas id="pieChart"></canvas>
+        <div class="chart-row">
+            <div class="chart-cell">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Distribuzione Vendite</h2>
+                    </div>
+                    <canvas id="pieChart"></canvas>
+                </div>
             </div>
-            
-            <div class="chart-card">
-                <div class="chart-header">Metriche di Performance</div>
-                <canvas id="gaugeChart"></canvas>
+            <div class="chart-cell">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Performance</h2>
+                    </div>
+                    <canvas id="gaugeChart"></canvas>
+                </div>
             </div>
-            
-            <div class="chart-card" style="grid-column: 1 / span 2;">
-                <div class="chart-header">Trend di Vendite</div>
-                <canvas id="lineChart"></canvas>
+        </div>
+        
+        <div class="chart-row">
+            <div class="chart-cell" style="flex: 2;">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Trend</h2>
+                    </div>
+                    <canvas id="lineChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -227,7 +261,8 @@ function drawPieChart() {
     // Disegna le fette
     let startAngle = -0.5 * Math.PI; // Inizia dall'alto
     for (let i = 0; i < salesData.categories.length; i++) {
-        const sliceAngle = (salesData.values[i] / total) * (Math.PI * 2);
+        const value = salesData.values[i];
+        const sliceAngle = (value / total) * (Math.PI * 2);
         const endAngle = startAngle + sliceAngle;
         
         // Disegna la fetta
@@ -236,14 +271,30 @@ function drawPieChart() {
         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
         ctx.closePath();
         
-        // Riempimento e bordo
+        // Riempimento
         ctx.fillStyle = salesData.colors[i];
         ctx.fill();
+        
+        // Contorno bianco
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 2;
         ctx.stroke();
         
-        // Passa alla fetta successiva
+        // Calcola la posizione del testo (a metà dell'angolo della fetta)
+        const midAngle = startAngle + sliceAngle / 2;
+        const labelRadius = radius * 0.7; // Un po' all'interno del bordo
+        const labelX = centerX + labelRadius * Math.cos(midAngle);
+        const labelY = centerY + labelRadius * Math.sin(midAngle);
+        
+        // Disegna la percentuale
+        const percentage = Math.round((value / total) * 100) + '%';
+        ctx.font = 'bold 14px Arial';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(percentage, labelX, labelY);
+        
+        // Aggiorna l'angolo di partenza per la prossima fetta
         startAngle = endAngle;
     }
     
@@ -256,14 +307,15 @@ function drawPieChart() {
         ctx.fillStyle = salesData.colors[i];
         ctx.fillRect(legendX, legendY, 15, 15);
         
-        // Testo
-        ctx.fillStyle = '#333';
+        // Testo della categoria
         ctx.font = '14px Arial';
+        ctx.fillStyle = '#333';
         ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
         ctx.fillText(
-            `${salesData.categories[i]}: ${salesData.values[i]}%`,
-            legendX + 25, 
-            legendY + 12
+            `${salesData.categories[i]} (${salesData.values[i]})`,
+            legendX + 20,
+            legendY + 7
         );
         
         legendY += 25; // Spazio per la prossima voce
@@ -358,13 +410,13 @@ function drawLineChart() {
     // Linee orizzontali
     for (let i = 0; i <= 5; i++) {
         const y = margin.top + (i * chartHeight / 5);
+        const value = maxValue * (1 - i / 5);
+        
         ctx.beginPath();
         ctx.moveTo(margin.left, y);
         ctx.lineTo(width - margin.right, y);
         ctx.stroke();
         
-        // Etichette dell'asse Y
-        const value = maxValue - (i * maxValue / 5);
         ctx.fillStyle = '#7f8c8d';
         ctx.font = '12px Arial';
         ctx.textAlign = 'right';
@@ -391,6 +443,17 @@ function drawLineChart() {
     
     ctx.stroke();
     
+    // Disegna i punti dei dati precedenti
+    for (let i = 0; i < trendData.previousValues.length; i++) {
+        const x = xScale(i);
+        const y = yScale(trendData.previousValues[i]);
+        
+        ctx.fillStyle = '#3498db';
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    
     // --- Disegna la linea dei dati attuali ---
     ctx.strokeStyle = '#2ecc71';
     ctx.lineWidth = 3;
@@ -406,15 +469,25 @@ function drawLineChart() {
         } else {
             ctx.lineTo(x, y);
         }
-        
-        // Disegna un punto per ogni valore
-        ctx.fillStyle = '#2ecc71';
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fill();
     }
     
     ctx.stroke();
+    
+    // Disegna i punti dei dati attuali
+    for (let i = 0; i < trendData.values.length; i++) {
+        const x = xScale(i);
+        const y = yScale(trendData.values[i]);
+        
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#2ecc71';
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+    }
     
     // --- Disegna l'asse X con le etichette ---
     ctx.fillStyle = '#7f8c8d';
@@ -497,8 +570,18 @@ function handleSwipe() {
     }
 }
 
-// Event listeners per i pulsanti
-document.getElementById('viewSales').addEventListener('click', () => {
+// Ottieni riferimenti ai pulsanti
+const viewSalesButton = document.getElementById('viewSales');
+const viewTrafficButton = document.getElementById('viewTraffic');
+const viewConversionButton = document.getElementById('viewConversion');
+const refreshDataButton = document.getElementById('refreshData');
+const timeRangeSelect = document.getElementById('timeRange');
+
+// Aggiungi event listeners per i pulsanti
+viewSalesButton.addEventListener('click', () => {
+    // Imposta il pulsante come attivo
+    setActiveButton(viewSalesButton);
+    
     // Cambia i dati per la vista vendite
     salesData.values = [42, 28, 15, 10, 5];
     performanceData.current = 78;
@@ -507,7 +590,10 @@ document.getElementById('viewSales').addEventListener('click', () => {
     animateTransition(salesData, drawAllCharts);
 });
 
-document.getElementById('viewTraffic').addEventListener('click', () => {
+viewTrafficButton.addEventListener('click', () => {
+    // Imposta il pulsante come attivo
+    setActiveButton(viewTrafficButton);
+    
     // Cambia i dati per la vista traffico
     salesData.values = [30, 25, 20, 15, 10];
     performanceData.current = 65;
@@ -516,7 +602,10 @@ document.getElementById('viewTraffic').addEventListener('click', () => {
     animateTransition(salesData, drawAllCharts);
 });
 
-document.getElementById('viewConversion').addEventListener('click', () => {
+viewConversionButton.addEventListener('click', () => {
+    // Imposta il pulsante come attivo
+    setActiveButton(viewConversionButton);
+    
     // Cambia i dati per la vista conversione
     salesData.values = [50, 20, 15, 10, 5];
     performanceData.current = 92;
@@ -525,26 +614,31 @@ document.getElementById('viewConversion').addEventListener('click', () => {
     animateTransition(salesData, drawAllCharts);
 });
 
-document.getElementById('refreshData').addEventListener('click', () => {
+refreshDataButton.addEventListener('click', () => {
     // Simula l'aggiornamento dei dati
-    document.getElementById('refreshData').textContent = '⟳ Aggiornamento...';
+    refreshDataButton.textContent = '⟳ Aggiornamento...';
     
     setTimeout(() => {
         // Genera nuovi valori casuali
         salesData.values = salesData.values.map(() => Math.floor(Math.random() * 50) + 10);
-        performanceData.current = Math.floor(Math.random() * 30) + 65;
-        trendData.values = trendData.values.map(() => Math.floor(Math.random() * 50) + 40);
+        performanceData.current = Math.floor(Math.random() * 30) + 65; // 65-95
+        trendData.values = trendData.values.map(() => Math.floor(Math.random() * 60) + 40); // 40-100
         
-        // Ridisegna i grafici
         drawAllCharts();
-        
-        // Ripristina il testo del pulsante
-        document.getElementById('refreshData').textContent = '↻ Aggiorna';
+        refreshDataButton.textContent = '↻ Aggiorna';
     }, 800);
 });
 
-// Listner per il cambio di periodo
-document.getElementById('timeRange').addEventListener('change', (e) => {
+// Funzione per impostare il pulsante attivo
+function setActiveButton(button) {
+    viewSalesButton.classList.remove('active');
+    viewTrafficButton.classList.remove('active');
+    viewConversionButton.classList.remove('active');
+    button.classList.add('active');
+}
+
+// Listener per il cambio di periodo
+timeRangeSelect.addEventListener('change', (e) => {
     const days = parseInt(e.target.value);
     console.log(`Cambiato periodo a ${days} giorni`);
     
@@ -563,49 +657,320 @@ document.getElementById('timeRange').addEventListener('change', (e) => {
 drawAllCharts();
 ```
 
-## Funzionalità implementate
+## Spiegazione del progetto
 
-Questo progetto implementa:
+### Architettura dell'applicazione
 
-1. **Visualizzazione di dati** con tre tipi di grafici:
-   - Grafico a torta per la distribuzione delle vendite per categoria
-   - Grafico a gauge per le metriche di performance
-   - Grafico a linee per il trend delle vendite nel tempo
+Questa dashboard interattiva è strutturata in tre componenti principali:
 
-2. **Interattività**:
-   - Cambio di vista (vendite, traffico, conversione)
-   - Aggiornamento dei dati con animazione
-   - Cambio del periodo temporale
-   - Supporto gesture touch per dispositivi mobili
+1. **Grafico a torta**: Mostra la distribuzione delle vendite per categoria, con percentuali e legenda
+2. **Grafico gauge**: Visualizza la performance attuale rispetto a un target
+3. **Grafico a linee**: Confronta i trend dell'anno corrente con quelli dell'anno precedente
 
-3. **Ottimizzazioni**:
-   - Canvas responsivi che si adattano alle dimensioni dello schermo
-   - Ridisegno efficiente solo dei grafici necessari
-   - Gestione degli eventi touch e mouse
+L'applicazione implementa diverse funzionalità interattive:
+- Cambio di vista (Vendite, Traffico, Conversione)
+- Aggiornamento dei dati con animazioni
+- Filtro temporale per adattare i dati a diversi periodi
+- Supporto per gesture touch su dispositivi mobili
 
-4. **Tecniche Canvas avanzate**:
-   - Utilizzo di gradienti
-   - Gestione del testo e allineamento
-   - Trasformazioni per il posizionamento degli elementi
-   - Linee tratteggiate e stili diversi
+### Struttura responsiva
 
-## Possibili estensioni
+Il canvas si adatta dinamicamente alle dimensioni del contenitore grazie alla funzione `resizeAllCanvases()`, che viene chiamata sia al caricamento della pagina che al ridimensionamento della finestra. Questo garantisce che i grafici siano sempre proporzionati e visivamente corretti.
 
-1. **Salvare i grafici come immagini**
-   Implementa una funzione per esportare i grafici come immagini PNG.
+### Gestione dei dati
 
-2. **Aggiungere tooltip interattivi**
-   Mostra informazioni dettagliate quando l'utente passa sopra un elemento del grafico.
+I dati sono organizzati in strutture dedicate per facilitare l'aggiornamento e la manipolazione:
 
-3. **Salvataggio delle preferenze utente**
-   Usa localStorage per ricordare l'ultima vista selezionata.
+```javascript
+let salesData = {
+    categories: ['Elettronica', 'Abbigliamento', 'Casa', 'Cibo', 'Altro'],
+    values: [42, 28, 15, 10, 5],
+    colors: ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6']
+};
 
-4. **Transizioni animate**
-   Implementa animazioni fluide quando i dati cambiano.
+let performanceData = {
+    current: 78,
+    target: 85,
+    min: 0,
+    max: 100
+};
 
-5. **Integrazione con una API reale**
-   Sostituisci i dati di esempio con chiamate a un'API reale.
+let trendData = { /* ... */ };
+```
 
-## Conclusione
+Ogni grafico ha una funzione dedicata per il disegno che utilizza queste strutture dati.
 
-Questo progetto dimostra come Canvas possa essere utilizzato per creare visualizzazioni di dati interattive e professionali, combinando concetti di disegno, gestione eventi, animazione e ottimizzazione. La struttura modulare del codice facilita anche l'estensione e la manutenzione dell'applicazione.
+### Tecniche Canvas avanzate
+
+#### Grafico a torta con percentuali
+
+Il grafico a torta utilizza archi di cerchio per disegnare le fette, calcolando gli angoli in base ai valori:
+
+```javascript
+// Calcola il totale per le percentuali
+const total = salesData.values.reduce((sum, value) => sum + value, 0);
+
+// Disegna le fette
+let startAngle = -0.5 * Math.PI;
+for (let i = 0; i < salesData.categories.length; i++) {
+    const value = salesData.values[i];
+    const sliceAngle = (value / total) * (Math.PI * 2);
+    const endAngle = startAngle + sliceAngle;
+    
+    // Disegna la fetta
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    ctx.closePath();
+    
+    // ... (riempimento, etichette, ecc.)
+    
+    startAngle = endAngle;
+}
+```
+
+#### Grafico gauge con gradiente
+
+Il gauge utilizza un arco semi-circolare con un gradiente di colori per indicare la performance:
+
+```javascript
+// Calcola la percentuale di riempimento
+const percentage = performanceData.current / performanceData.max;
+const angle = Math.PI + percentage * Math.PI;
+
+// Disegna l'arco colorato
+let gradient = ctx.createLinearGradient(0, 0, width, 0);
+gradient.addColorStop(0, "#e74c3c");   // Rosso
+gradient.addColorStop(0.5, "#f39c12"); // Giallo
+gradient.addColorStop(1, "#2ecc71");   // Verde
+
+ctx.beginPath();
+ctx.arc(centerX, centerY, radius, Math.PI, angle);
+ctx.stroke();
+```
+
+#### Grafico a linee con griglia e legenda
+
+Il grafico a linee implementa:
+- Sistema di coordinate con margini
+- Funzioni di scala per mappare i valori dei dati sullo spazio del canvas
+- Griglia di sfondo e etichette degli assi
+- Linee tratteggiate per i dati storici
+- Punti evidenziati con doppio cerchio
+
+### Interattività utente
+
+L'applicazione fornisce diversi metodi di interazione:
+
+1. **Cambio vista**: Pulsanti che aggiornano tutti i grafici con nuovi dati
+
+```javascript
+viewSalesButton.addEventListener('click', () => {
+    setActiveButton(viewSalesButton);
+    
+    // Cambia i dati per la vista vendite
+    salesData.values = [42, 28, 15, 10, 5];
+    // ...altri aggiornamenti dati
+    
+    animateTransition(salesData, drawAllCharts);
+});
+```
+
+2. **Filtro temporale**: Un selettore che modifica i dati in base al periodo selezionato
+
+```javascript
+timeRangeSelect.addEventListener('change', (e) => {
+    const days = parseInt(e.target.value);
+    
+    // Aggiorna i dati in base al periodo
+    const factor = days / 30;
+    trendData.values = trendData.values.map(v => 
+        Math.min(100, Math.max(10, Math.floor(v * (0.8 + factor * 0.4))))
+    );
+    
+    drawLineChart(); // Aggiorna solo il grafico interessato
+});
+```
+
+3. **Supporto touch**: Rilevamento di swipe per navigare tra le viste su dispositivi mobili
+
+```javascript
+function handleSwipe() {
+    const swipeThreshold = 100;
+    if (touchEndX < touchStartX - swipeThreshold) {
+        // Swipe a sinistra: prossima vista
+        // ...
+    } else if (touchEndX > touchStartX + swipeThreshold) {
+        // Swipe a destra: vista precedente
+        // ...
+    }
+}
+```
+
+## Estensioni possibili
+
+### 1. Animazioni fluide delle transizioni
+
+```javascript
+function animateTransition(oldData, newData, duration = 500, callback) {
+    const startTime = performance.now();
+    
+    // Crea una struttura per i dati intermedi
+    let currentData = JSON.parse(JSON.stringify(oldData));
+    
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Interpola i valori
+        for (let i = 0; i < oldData.values.length; i++) {
+            currentData.values[i] = oldData.values[i] + 
+                (newData.values[i] - oldData.values[i]) * progress;
+        }
+        
+        // Ridisegna con i dati interpolati
+        drawPieChart(currentData);
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            callback();
+        }
+    }
+    
+    requestAnimationFrame(animate);
+}
+```
+
+### 2. Tooltip interattivi
+
+```javascript
+lineChartCanvas.addEventListener('mousemove', (e) => {
+    const rect = lineChartCanvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Trova il punto più vicino
+    const xValue = xScale.invert(x);
+    const index = Math.round(xValue);
+    
+    if (index >= 0 && index < trendData.values.length) {
+        // Disegna tooltip
+        drawLineChart(); // Ridisegna il grafico
+        
+        const pointX = xScale(index);
+        const pointY = yScale(trendData.values[index]);
+        
+        // Disegna un cerchio maggiore sul punto
+        ctx.beginPath();
+        ctx.arc(pointX, pointY, 8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(46, 204, 113, 0.3)';
+        ctx.fill();
+        
+        // Disegna un tooltip con il valore
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.fillRect(pointX - 40, pointY - 40, 80, 30);
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.fillText(trendData.values[index], pointX, pointY - 25);
+    }
+});
+```
+
+### 3. Esportazione di immagini
+
+```javascript
+function addExportButtons() {
+    const charts = [
+        { canvas: pieChartCanvas, name: 'pie-chart' },
+        { canvas: gaugeChartCanvas, name: 'gauge-chart' },
+        { canvas: lineChartCanvas, name: 'trend-chart' }
+    ];
+    
+    charts.forEach(chart => {
+        const container = chart.canvas.parentElement;
+        const exportBtn = document.createElement('button');
+        exportBtn.textContent = 'Esporta';
+        exportBtn.className = 'export-btn';
+        exportBtn.style.position = 'absolute';
+        exportBtn.style.right = '10px';
+        exportBtn.style.top = '10px';
+        
+        exportBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `${chart.name}-${Date.now()}.png`;
+            link.href = chart.canvas.toDataURL('image/png');
+            link.click();
+        });
+        
+        container.style.position = 'relative';
+        container.appendChild(exportBtn);
+    });
+}
+
+// Chiama questa funzione dopo l'inizializzazione
+addExportButtons();
+```
+
+### 4. Zoom e pan sul grafico a linee
+
+```javascript
+let zoomLevel = 1;
+let panOffset = { x: 0, y: 0 };
+let isDragging = false;
+let dragStart = { x: 0, y: 0 };
+
+lineChartCanvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1; // Zoom in o out
+    zoomLevel *= delta;
+    zoomLevel = Math.max(0.5, Math.min(5, zoomLevel)); // Limita lo zoom
+    
+    drawLineChart();
+});
+
+lineChartCanvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    dragStart.x = e.clientX - panOffset.x;
+    dragStart.y = e.clientY - panOffset.y;
+    lineChartCanvas.style.cursor = 'grabbing';
+});
+
+lineChartCanvas.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+        panOffset.x = e.clientX - dragStart.x;
+        panOffset.y = e.clientY - dragStart.y;
+        drawLineChart();
+    }
+});
+
+window.addEventListener('mouseup', () => {
+    isDragging = false;
+    lineChartCanvas.style.cursor = 'default';
+});
+
+// Modifica la funzione drawLineChart per applicare zoom e pan
+function drawLineChart() {
+    // ...
+    
+    // Applica zoom e pan alle funzioni di scala
+    const xScale = (i) => (margin.left + (i * chartWidth / (trendData.labels.length - 1))) 
+                          * zoomLevel + panOffset.x;
+    const yScale = (value) => (height - margin.bottom - (value / maxValue * chartHeight)) 
+                              * zoomLevel + panOffset.y;
+                              
+    // ...
+}
+```
+
+## Conclusioni
+
+Questo progetto dimostra come combinare diversi concetti Canvas per creare un'applicazione interattiva e visivamente accattivante. I principali concetti che abbiamo applicato includono:
+
+1. **Canvas responsivo**: Adattamento dinamico alle dimensioni del contenitore
+2. **Visualizzazione dati**: Trasformazione di dati numerici in rappresentazioni visive
+3. **Interattività**: Gestione di eventi click, touch e cambio di stato
+4. **Gestione modulare**: Separazione delle funzioni di disegno per ogni componente
+5. **Ottimizzazione**: Ridisegno selettivo dei grafici quando necessario
+
+Questo esempio fornisce una solida base per lo sviluppo di dashboard più complesse e può essere facilmente esteso per supportare funzionalità aggiuntive come animazioni fluide, tooltips interattivi e integrazione con API di dati reali.
