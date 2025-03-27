@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione delle immagini con Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[type="range"] {
+            width: 180px;
+            vertical-align: middle;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .image-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestione delle immagini con Canvas</h1>
+        <p>
+            Canvas offre potenti funzionalità per lavorare con le immagini, permettendo di caricarle, disegnarle, 
+            manipolarle e applicare effetti. Questa guida mostra come utilizzare le immagini in Canvas.
+        </p>
+
+        <!-- Immagini nascoste per il caricamento -->
+        <div class="image-container">
+            <img id="sampleImage" src="https://picsum.photos/id/1015/400/300" alt="Sample Image" crossorigin="anonymous">
+        </div>
+
+        <div class="section">
+            <h2>1. Caricamento e disegno di un'immagine</h2>
+            <p>Per disegnare un'immagine su Canvas, si utilizza il metodo <code>drawImage</code>:</p>
+            
+            <canvas id="basicImageCanvas" width="500" height="350"></canvas>
+            
+            <div class="code-container">
+                <pre><code>// Carica un'immagine
+const img = new Image();
+img.src = 'path-to-your-image.jpg';
+
+img.onload = () => {
+    // Disegna l'immagine originale
+    ctx.drawImage(img, 50, 50);
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Ridimensionamento delle immagini</h2>
+            <p>
+                È possibile ridimensionare un'immagine specificando larghezza e altezza desiderate:
+            </p>
+            
+            <canvas id="resizeCanvas" width="500" height="350"></canvas>
+            
+            <div class="controls">
+                <button id="originalSize">Dimensione originale</button>
+                <button id="halfSize">Metà dimensione</button>
+                <button id="doubleSize">Doppia dimensione</button>
+            </div>
+            
+            <div class="code-container">
+                <pre><code>// Disegna l'immagine ridimensionata
+ctx.drawImage(img, x, y, width, height);</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Ritaglio di immagini</h2>
+            <p>
+                È possibile ritagliare una porzione di un'immagine e disegnarla sul canvas:
+            </p>
+            
+            <canvas id="cropCanvas" width="500" height="350"></canvas>
+            
+            <div class="controls">
+                <button id="cropTopLeft">Ritaglia angolo superiore sinistro</button>
+                <button id="cropCenter">Ritaglia centro</button>
+                <button id="cropCustom">Ritaglia personalizzato</button>
+            </div>
+            
+            <div class="code-container">
+                <pre><code>// Ritaglia e disegna una porzione dell'immagine
+ctx.drawImage(img, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Manipolazione delle immagini</h2>
+            <p>
+                Canvas permette di manipolare i pixel delle immagini con <code>getImageData</code> e <code>putImageData</code>:
+            </p>
+            
+            <canvas id="manipulationCanvas" width="500" height="350"></canvas>
+            
+            <div class="controls">
+                <button id="grayscale">Scala di grigi</button>
+                <button id="invert">Inverti colori</button>
+                <button id="brighten">Aumenta luminosità</button>
+                <button id="resetImage">Ripristina originale</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. Composizione di immagini</h2>
+            <p>
+                È possibile combinare più immagini utilizzando le operazioni di composizione:
+            </p>
+            
+            <canvas id="compositeCanvas" width="500" height="350"></canvas>
+            
+            <div class="controls">
+                <button id="sourceOver">source-over (default)</button>
+                <button id="multiply">multiply</button>
+                <button id="screen">screen</button>
+                <button id="overlay">overlay</button>
+            </div>
+            
+            <div class="code-container">
+                <pre><code>// Imposta il metodo di composizione
+ctx.globalCompositeOperation = 'multiply';
+// Disegna la seconda immagine sopra la prima
+ctx.drawImage(img2, x, y);</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Attendi che tutte le immagini siano caricate
+        window.addEventListener('load', function() {
+            // Immagine di esempio
+            const sampleImage = document.getElementById('sampleImage');
+            
+            // 1. Caricamento e disegno di base
+            const basicCanvas = document.getElementById('basicImageCanvas');
+            const basicCtx = basicCanvas.getContext('2d');
+            
+            // Disegna l'immagine di base
+            basicCtx.drawImage(sampleImage, 50, 25);
+            
+            // Aggiungi testo esplicativo
+            basicCtx.font = '14px Arial';
+            basicCtx.fillStyle = 'black';
+            basicCtx.fillText('Immagine disegnata con ctx.drawImage(img, 50, 25)', 50, 340);
+            
+            // 2. Ridimensionamento
+            const resizeCanvas = document.getElementById('resizeCanvas');
+            const resizeCtx = resizeCanvas.getContext('2d');
+            
+            function drawOriginalSize() {
+                resizeCtx.clearRect(0, 0, resizeCanvas.width, resizeCanvas.height);
+                resizeCtx.drawImage(sampleImage, 50, 25);
+                resizeCtx.font = '14px Arial';
+                resizeCtx.fillStyle = 'black';
+                resizeCtx.fillText('Dimensione originale', 50, 340);
+            }
+            
+            function drawHalfSize() {
+                resizeCtx.clearRect(0, 0, resizeCanvas.width, resizeCanvas.height);
+                // Disegna a metà dimensione
+                resizeCtx.drawImage(sampleImage, 50, 25, sampleImage.width / 2, sampleImage.height / 2);
+                resizeCtx.font = '14px Arial';
+                resizeCtx.fillStyle = 'black';
+                resizeCtx.fillText('Metà dimensione', 50, 340);
+            }
+            
+            function drawDoubleSize() {
+                resizeCtx.clearRect(0, 0, resizeCanvas.width, resizeCanvas.height);
+                // Disegna a doppia dimensione (potrebbe essere tagliata dal canvas)
+                resizeCtx.drawImage(sampleImage, 50, 25, sampleImage.width * 1.5, sampleImage.height * 1.5);
+                resizeCtx.font = '14px Arial';
+                resizeCtx.fillStyle = 'black';
+                resizeCtx.fillText('Dimensione aumentata (1.5x)', 50, 340);
+            }
+            
+            // Inizializza con dimensione originale
+            drawOriginalSize();
+            
+            // Aggiungi event listener ai pulsanti
+            document.getElementById('originalSize').addEventListener('click', drawOriginalSize);
+            document.getElementById('halfSize').addEventListener('click', drawHalfSize);
+            document.getElementById('doubleSize').addEventListener('click', drawDoubleSize);
+            
+            // 3. Ritaglio
+            const cropCanvas = document.getElementById('cropCanvas');
+            const cropCtx = cropCanvas.getContext('2d');
+            
+            function drawFullImage() {
+                cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+                cropCtx.drawImage(sampleImage, 50, 25);
+            }
+            
+            function cropTopLeft() {
+                cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+                // Ritaglia l'angolo superiore sinistro (primi 200x150 pixel)
+                cropCtx.drawImage(sampleImage, 0, 0, 200, 150, 50, 25, 200, 150);
+                cropCtx.font = '14px Arial';
+                cropCtx.fillStyle = 'black';
+                cropCtx.fillText('Ritaglio angolo superiore sinistro', 50, 340);
+            }
+            
+            function cropCenter() {
+                cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+                // Ritaglia il centro dell'immagine
+                const centerX = sampleImage.width / 2 - 100;
+                const centerY = sampleImage.height / 2 - 75;
+                cropCtx.drawImage(sampleImage, centerX, centerY, 200, 150, 50, 25, 200, 150);
+                cropCtx.font = '14px Arial';
+                cropCtx.fillStyle = 'black';
+                cropCtx.fillText('Ritaglio centro immagine', 50, 340);
+            }
+            
+            function cropCustom() {
+                cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+                // Ritaglia una porzione personalizzata e la ridimensiona
+                cropCtx.drawImage(sampleImage, 100, 50, 200, 150, 50, 25, 300, 225);
+                cropCtx.font = '14px Arial';
+                cropCtx.fillStyle = 'black';
+                cropCtx.fillText('Ritaglio personalizzato e ridimensionato', 50, 340);
+            }
+            
+            // Inizializza con l'immagine completa
+            drawFullImage();
+            
+            // Aggiungi event listener ai pulsanti
+            document.getElementById('cropTopLeft').addEventListener('click', cropTopLeft);
+            document.getElementById('cropCenter').addEventListener('click', cropCenter);
+            document.getElementById('cropCustom').addEventListener('click', cropCustom);
+            
+            // 4. Manipolazione delle immagini
+            const manipulationCanvas = document.getElementById('manipulationCanvas');
+            const manipulationCtx = manipulationCanvas.getContext('2d');
+            let originalImageData;
+            
+            function initManipulationCanvas() {
+                manipulationCtx.clearRect(0, 0, manipulationCanvas.width, manipulationCanvas.height);
+                manipulationCtx.drawImage(sampleImage, 50, 25);
+                // Salva i dati dell'immagine originale
+                originalImageData = manipulationCtx.getImageData(50, 25, sampleImage.width, sampleImage.height);
+            }
+            
+            function applyGrayscale() {
+                // Ottieni i dati dell'immagine
+                const imageData = manipulationCtx.getImageData(50, 25, sampleImage.width, sampleImage.height);
+                const data = imageData.data;
+                
+                // Applica filtro scala di grigi
+                for (let i = 0; i < data.length; i += 4) {
+                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    data[i] = avg;     // R
+                    data[i + 1] = avg; // G
+                    data[i + 2] = avg; // B
+                }
+                
+                // Aggiorna l'immagine
+                manipulationCtx.putImageData(imageData, 50, 25);
+                manipulationCtx.font = '14px Arial';
+                manipulationCtx.fillStyle = 'black';
+                manipulationCtx.fillText('Filtro scala di grigi applicato', 50, 340);
+            }
+            
+            function applyInvert() {
+                // Ottieni i dati dell'immagine
+                const imageData = manipulationCtx.getImageData(50, 25, sampleImage.width, sampleImage.height);
+                const data = imageData.data;
+                
+                // Applica filtro inversione colori
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = 255 - data[i];         // R
+                    data[i + 1] = 255 - data[i + 1]; // G
+                    data[i + 2] = 255 - data[i + 2]; // B
+                }
+                
+                // Aggiorna l'immagine
+                manipulationCtx.putImageData(imageData, 50, 25);
+                manipulationCtx.font = '14px Arial';
+                manipulationCtx.fillStyle = 'black';
+                manipulationCtx.fillText('Filtro inversione colori applicato', 50, 340);
+            }
+            
+            function applyBrighten() {
+                // Ottieni i dati dell'immagine
+                const imageData = manipulationCtx.getImageData(50, 25, sampleImage.width, sampleImage.height);
+                const data = imageData.data;
+                
+                // Applica filtro aumento luminosità
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = Math.min(data[i] + 50, 255);         // R
+                    data[i + 1] = Math.min(data[i + 1] + 50, 255); // G
+                    data[i + 2] = Math.min(data[i + 2] + 50, 255); // B
+                }
+                
+                // Aggiorna l'immagine
+                manipulationCtx.putImageData(imageData, 50, 25);
+                manipulationCtx.font = '14px Arial';
+                manipulationCtx.fillStyle = 'black';
+                manipulationCtx.fillText('Filtro aumento luminosità applicato', 50, 340);
+            }
+            
+            function resetManipulation() {
+                // Ripristina l'immagine originale
+                manipulationCtx.putImageData(originalImageData, 50, 25);
+                manipulationCtx.font = '14px Arial';
+                manipulationCtx.fillStyle = 'black';
+                manipulationCtx.fillText('Immagine originale ripristinata', 50, 340);
+            }
+            
+            // Inizializza il canvas di manipolazione
+            initManipulationCanvas();
+            
+            // Aggiungi event listener ai pulsanti
+            document.getElementById('grayscale').addEventListener('click', applyGrayscale);
+            document.getElementById('invert').addEventListener('click', applyInvert);
+            document.getElementById('brighten').addEventListener('click', applyBrighten);
+            document.getElementById('resetImage').addEventListener('click', resetManipulation);
+            
+            // 5. Composizione di immagini
+            const compositeCanvas = document.getElementById('compositeCanvas');
+            const compositeCtx = compositeCanvas.getContext('2d');
+            
+            function drawCompositeDemo(operation) {
+                compositeCtx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+                
+                // Disegna un rettangolo blu
+                compositeCtx.fillStyle = 'blue';
+                compositeCtx.fillRect(50, 50, 200, 150);
+                
+                // Imposta il metodo di composizione
+                compositeCtx.globalCompositeOperation = operation;
+                
+                // Disegna un cerchio rosso sovrapposto
+                compositeCtx.fillStyle = 'red';
+                compositeCtx.beginPath();
+                compositeCtx.arc(200, 125, 100, 0, Math.PI * 2);
+                compositeCtx.fill();
+                
+                // Ripristina il metodo di composizione predefinito
+                compositeCtx.globalCompositeOperation = 'source-over';
+                
+                // Aggiungi testo esplicativo
+                compositeCtx.font = '14px Arial';
+                compositeCtx.fillStyle = 'black';
+                compositeCtx.fillText(`Metodo di composizione: ${operation}`, 50, 340);
+            }
+            
+            // Inizializza con source-over (default)
+            drawCompositeDemo('source-over');
+            
+            // Aggiungi event listener ai pulsanti
+            document.getElementById('sourceOver').addEventListener('click', function() {
+                drawCompositeDemo('source-over');
+            });
+            
+            document.getElementById('multiply').addEventListener('click', function() {
+                drawCompositeDemo('multiply');
+            });
+            
+            document.getElementById('screen').addEventListener('click', function() {
+                drawCompositeDemo('screen');
+            });
+            
+            document.getElementById('overlay').addEventListener('click', function() {
+                drawCompositeDemo('overlay');
+            });
+        });
+    </script>
+</body>
+</html>
