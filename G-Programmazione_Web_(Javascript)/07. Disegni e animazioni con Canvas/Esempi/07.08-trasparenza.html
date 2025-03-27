@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione della Trasparenza in Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        select, input {
+            padding: 6px;
+            margin: 4px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestione della Trasparenza in Canvas</h1>
+        <p>
+            Canvas permette di gestire la trasparenza degli elementi disegnati utilizzando varie tecniche.
+            In questa guida vedremo come utilizzare <code>globalAlpha</code>, colori RGBA e <code>globalCompositeOperation</code>.
+        </p>
+
+        <div class="section">
+            <h2>1. globalAlpha</h2>
+            <p>
+                La proprietà <code>globalAlpha</code> permette di impostare un livello di trasparenza globale per tutti gli elementi disegnati.
+                Il valore varia da 0.0 (completamente trasparente) a 1.0 (completamente opaco).
+            </p>
+
+            <canvas id="alphaCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div>
+                    Trasparenza: <input type="range" id="alphaValue" min="0" max="1" step="0.1" value="1"> <span id="alphaValueDisplay">1.0</span>
+                </div>
+                <button id="applyAlpha">Applica Trasparenza</button>
+                <button id="resetAlpha">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Imposta la trasparenza globale
+ctx.globalAlpha = 0.5; // 50% trasparente
+
+// Disegna un rettangolo
+ctx.fillStyle = 'blue';
+ctx.fillRect(50, 50, 100, 100);
+
+// Disegna un cerchio
+ctx.fillStyle = 'red';
+ctx.beginPath();
+ctx.arc(200, 100, 50, 0, Math.PI * 2);
+ctx.fill();</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Colori RGBA</h2>
+            <p>
+                I colori RGBA permettono di specificare la trasparenza direttamente nel colore.
+                Il valore alpha varia da 0 (completamente trasparente) a 255 (completamente opaco).
+            </p>
+
+            <canvas id="rgbaCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div>
+                    Colore: <input type="color" id="rgbaColor" value="#ff0000">
+                </div>
+                <div>
+                    Trasparenza: <input type="range" id="rgbaAlpha" min="0" max="1" step="0.1" value="1"> <span id="rgbaAlphaDisplay">1.0</span>
+                </div>
+                <button id="applyRgba">Applica Colore RGBA</button>
+                <button id="resetRgba">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Imposta il colore con trasparenza
+ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Rosso con 50% trasparenza
+
+// Disegna un rettangolo
+ctx.fillRect(50, 50, 100, 100);
+
+// Disegna un cerchio
+ctx.beginPath();
+ctx.arc(200, 100, 50, 0, Math.PI * 2);

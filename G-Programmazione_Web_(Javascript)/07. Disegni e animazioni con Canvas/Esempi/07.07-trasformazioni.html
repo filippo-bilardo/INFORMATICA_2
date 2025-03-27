@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trasformazioni in Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[type="range"] {
+            width: 180px;
+            vertical-align: middle;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .infoPanel {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trasformazioni in Canvas</h1>
+        <p>
+            Le trasformazioni in Canvas permettono di traslare, ruotare e scalare il sistema di coordinate,
+            influenzando il modo in cui gli elementi vengono disegnati.
+        </p>
+
+        <div class="section">
+            <h2>1. Traslazione (translate)</h2>
+            <p>
+                La traslazione sposta l'origine del sistema di coordinate, modificando il punto (0,0).
+                È utile per posizionare elementi o creare relazioni tra di essi.
+            </p>
+
+            <canvas id="translateCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div>
+                    Traslazione X: <input type="range" id="translateX" min="0" max="400" value="100"> <span id="translateXValue">100</span>
+                </div>
+                <div>
+                    Traslazione Y: <input type="range" id="translateY" min="0" max="200" value="50"> <span id="translateYValue">50</span>
+                </div>
+                <button id="applyTranslate">Applica Traslazione</button>
+                <button id="resetTranslate">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Salva lo stato del contesto
+ctx.save();
+
+// Applica la traslazione
+ctx.translate(x, y); // Sposta l'origine in (x, y)
+
+// Disegna elementi nel nuovo sistema di coordinate
+// ...
+
+// Ripristina lo stato originale del contesto
+ctx.restore();</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Rotazione (rotate)</h2>
+            <p>
+                La rotazione ruota il sistema di coordinate attorno all'origine. Gli angoli sono espressi in radianti
+                (Math.PI rappresenta 180 gradi).
+            </p>
+
+            <canvas id="rotateCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div>
+                    Rotazione (gradi): <input type="range" id="rotationAngle" min="0" max="360" value="45"> <span id="rotationAngleValue">45°</span>
+                </div>
+                <div>
+                    Centro di rotazione:
+                    <label><input type="radio" name="rotationCenter" value="origin" checked> Origine (0,0)</label>
+                    <label><input type="radio" name="rotationCenter" value="center"> Centro del canvas</label>
+                    <label><input type="radio" name="rotationCenter" value="custom"> Personalizzato</label>
+                </div>
+                <button id="applyRotation">Applica Rotazione</button>
+                <button id="resetRotation">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Salva lo stato del contesto
+ctx.save();
+
+// Per ruotare attorno a un punto specifico
+ctx.translate(centerX, centerY); // Sposta l'origine al punto di rotazione
+ctx.rotate(angle); // Ruota il contesto (angolo in radianti)
+ctx.translate(-centerX, -centerY); // Riporta l'origine alla posizione originale
+
+// Disegna elementi nel sistema di coordinate ruotato
+// ...
+
+// Ripristina lo stato originale del contesto
+ctx.restore();</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Scala (scale)</h2>
+            <p>
+                La scala modifica le dimensioni del sistema di coordinate. Un valore > 1 ingrandisce, un valore < 1 rimpicciolisce.
+                È possibile scalare in modo differente sugli assi X e Y.
+            </p>
+
+            <canvas id="scaleCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div>
+                    Scala X: <input type="range" id="scaleX" min="0.2" max="3" step="0.1" value="1"> <span id="scaleXValue">1.0</span>
+                </div>
+                <div>
+                    Scala Y: <input type="range" id="scaleY" min="0.2" max="3" step="0.1" value="1"> <span id="scaleYValue">1.0</span>
+                </div>
+                <div>
+                    <label><input type="checkbox" id="scaleFromCenter" checked> Scala dal centro</label>
+                </div>
+                <button id="applyScale">Applica Scala</button>
+                <button id="resetScale">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Salva lo stato del contesto
+ctx.save();
+
+// Per scalare dal centro
+ctx.translate(centerX, centerY);
+ctx.scale(scaleX, scaleY);
+ctx.translate(-centerX, -centerY);
+
+// Oppure scala dall'origine
+// ctx.scale(scaleX, scaleY);
+
+// Disegna elementi nel sistema di coordinate scalato
+// ...
+
+// Ripristina lo stato originale del contesto
+ctx.restore();</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Trasformazioni Multiple</h2>
+            <p>
+                Le trasformazioni possono essere combinate in sequenza per ottenere effetti complessi.
+                L'ordine delle operazioni è importante.
+            </p>
+
+            <canvas id="multipleTransformCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div class="transformOrder">
+                    <h3>Ordine delle trasformazioni:</h3>
+                    <div id="transformOrder"></div>
+                    <button id="addTranslate">+ Traslazione</button>
+                    <button id="addRotate">+ Rotazione</button>
+                    <button id="addScale">+ Scala</button>
+                    <button id="clearTransforms">Pulisci</button>
+                </div>
+                <button id="applyMultipleTransforms">Applica Trasformazioni</button>
+                <button id="resetMultipleTransforms">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Salva lo stato del contesto
+ctx.save();
+
+// Applica trasformazioni multiple in sequenza
+ctx.translate(100, 50);   // Prima trasformazione: traslazione
+ctx.rotate(Math.PI / 4);  // Seconda trasformazione: rotazione
+ctx.scale(2, 1.5);        // Terza trasformazione: scala
+
+// Disegna elementi nel sistema di coordinate trasformato
+// ...
+
+// Ripristina lo stato originale del contesto
+ctx.restore();</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. La Matrice di Trasformazione</h2>
+            <p>
+                Canvas utilizza internamente una matrice di trasformazione 3x3. È possibile applicare trasformazioni personalizzate
+                con il metodo <code>transform()</code> o impostare direttamente la matrice con <code>setTransform()</code>.
+            </p>
+
+            <canvas id="matrixCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <div>
+                    <label>a (scala X): <input type="range" id="matrixA" min="-2" max="2" step="0.1" value="1"> <span id="matrixAValue">1.0</span></label><br>
+                    <label>b (skew Y): <input type="range" id="matrixB" min="-2" max="2" step="0.1" value="0"> <span id="matrixBValue">0.0</span></label><br>
+                    <label>c (skew X): <input type="range" id="matrixC" min="-2" max="2" step="0.1" value="0"> <span id="matrixCValue">0.0</span></label><br>
+                    <label>d (scala Y): <input type="range" id="matrixD" min="-2" max="2" step="0.1" value="1"> <span id="matrixDValue">1.0</span></label><br>
+                    <label>e (trasl. X): <input type="range" id="matrixE" min="-300" max="300" value="0"> <span id="matrixEValue">0</span></label><br>
+                    <label>f (trasl. Y): <input type="range" id="matrixF" min="-150" max="150" value="0"> <span id="matrixFValue">0</span></label><br>
+                </div>
+                <button id="applyMatrix">Applica Matrice</button>
+                <button id="resetMatrix">Reset</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Applica una trasformazione personalizzata
+// transform(a, b, c, d, e, f)
+// a: scala orizzontale
+// b: inclinazione orizzontale
+// c: inclinazione verticale
+// d: scala verticale
+// e: traslazione orizzontale
+// f: traslazione verticale
+ctx.transform(1, 0.5, 0.5, 1, 0, 0);  // Esempio di trasformazione skew
+
+// Imposta direttamente la matrice di trasformazione
+// Questo resetta la matrice precedente
+ctx.setTransform(a, b, c, d, e, f);</pre>
+            </div>
+            
+            <div class="note">
+                <p>
+                    <strong>Nota:</strong> Le trasformazioni in Canvas sono cumulative. Ogni nuova trasformazione viene applicata
+                    al sistema di coordinate corrente, non a quello originale. Usare <code>save()</code> e <code>restore()</code>
+                    per gestire lo stato delle trasformazioni.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ------------- Traslazione -------------
+        const translateCanvas = document.getElementById('translateCanvas');
+        const ctxTranslate = translateCanvas.getContext('2d');
+        
+        // Funzione per disegnare una griglia
+        function drawGrid(ctx, width, height, step = 50) {
+            ctx.save();
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 0.5;
+            
+            // Linee verticali
+            for (let x = 0; x <= width; x += step) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+            
+            // Linee orizzontali
+            for (let y = 0; y <= height; y += step) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+            
+            // Assi principali
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2);
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(width / 2, 0);
+            ctx.lineTo(width / 2, height);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        // Funzione per disegnare una forma base
+        function drawBaseShape(ctx) {
+            // Rettangolo
+            ctx.fillStyle = '#3498db';
+            ctx.fillRect(-40, -20, 80, 40);
+            
+            // Cerchio
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(0, 0, 10, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Origine
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('(0,0)', 0, 25);
+        }
+        
+        // Inizializza il canvas di traslazione
+        function initTranslateCanvas() {
+            ctxTranslate.clearRect(0, 0, translateCanvas.width, translateCanvas.height);
+            drawGrid(ctxTranslate, translateCanvas.width, translateCanvas.height);
+            
+            // Disegna la forma all'origine (centro del canvas)
+            ctxTranslate.save();
+            ctxTranslate.translate(translateCanvas.width / 2, translateCanvas.height / 2);
+            drawBaseShape(ctxTranslate);
+            ctxTranslate.restore();
+        }
+        
+        initTranslateCanvas();
+        
+        // Gestione degli slider di traslazione
+        document.getElementById('translateX').addEventListener('input', function() {
+            document.getElementById('translateXValue').textContent = this.value;
+        });
+        
+        document.getElementById('translateY').addEventListener('input', function() {
+            document.getElementById('translateYValue').textContent = this.value;
+        });
+        
+        // Applica traslazione
+        document.getElementById('applyTranslate').addEventListener('click', function() {
+            const translateX = parseInt(document.getElementById('translateX').value);
+            const translateY = parseInt(document.getElementById('translateY').value);
+            
+            // Pulisci e ridisegna
+            ctxTranslate.clearRect(0, 0, translateCanvas.width, translateCanvas.height);
+            drawGrid(ctxTranslate, translateCanvas.width, translateCanvas.height);
+            
+            // Disegna la forma originale con minor opacità
+            ctxTranslate.save();
+            ctxTranslate.translate(translateCanvas.width / 2, translateCanvas.height / 2);
+            ctxTranslate.globalAlpha = 0.3;
+            drawBaseShape(ctxTranslate);
+            ctxTranslate.restore();
+            
+            // Disegna la forma traslata
+            ctxTranslate.save();
+            ctxTranslate.translate(translateCanvas.width / 2 + translateX, translateCanvas.height / 2 + translateY);
+            drawBaseShape(ctxTranslate);
+            ctxTranslate.restore();
+            
+            // Disegna freccia che indica la traslazione
+            const centerX = translateCanvas.width / 2;
+            const centerY = translateCanvas.height / 2;
+            const targetX = centerX + translateX;
+            const targetY = centerY + translateY;
+            
+            ctxTranslate.save();
+            ctxTranslate.strokeStyle = '#2ecc71';
+            ctxTranslate.lineWidth = 2;
+            ctxTranslate.setLineDash([5, 3]);
+            ctxTranslate.beginPath();
+            ctxTranslate.moveTo(centerX, centerY);
+            ctxTranslate.lineTo(targetX, targetY);
+            ctxTranslate.stroke();
+            
+            // Disegna punta della freccia
+            const angle = Math.atan2(targetY - centerY, targetX - centerX);
+            const arrowSize = 10;
+            
+            ctxTranslate.setLineDash([]);
+            ctxTranslate.beginPath();
+            ctxTranslate.moveTo(targetX, targetY);
+            ctxTranslate.lineTo(targetX - arrowSize * Math.cos(angle - Math.PI / 6), targetY - arrowSize * Math.sin(angle - Math.PI / 6));
+            ctxTranslate.lineTo(targetX - arrowSize * Math.cos(angle + Math.PI / 6), targetY - arrowSize * Math.sin(angle + Math.PI / 6));
+            ctxTranslate.closePath();
+            ctxTranslate.fillStyle = '#2ecc71';
+            ctxTranslate.fill();
+            
+            // Mostra l'entità della traslazione
+            ctxTranslate.fillStyle = '#333';
+            ctxTranslate.textAlign = 'center';
+            ctxTranslate.textBaseline = 'middle';
+            ctxTranslate.fillText(`translate(${translateX}, ${translateY})`, (centerX + targetX) / 2, (centerY + targetY) / 2 - 10);
+            ctxTranslate.restore();
+        });
+        
+        // Reset traslazione
+        document.getElementById('resetTranslate').addEventListener('click', initTranslateCanvas);
+        
+        // ------------- Rotazione -------------
+        const rotateCanvas = document.getElementById('rotateCanvas');
+        const ctxRotate = rotateCanvas.getContext('2d');
+        
+        // Inizializza il canvas di rotazione
+        function initRotateCanvas() {
+            ctxRotate.clearRect(0, 0, rotateCanvas.width, rotateCanvas.height);
+            drawGrid(ctxRotate, rotateCanvas.width, rotateCanvas.height);
+            
+            // Disegna la forma al centro del canvas
+            ctxRotate.save();
+            ctxRotate.translate(rotateCanvas.width / 2, rotateCanvas.height / 2);
+            drawBaseShape(ctxRotate);
+            ctxRotate.restore();
+        }
+        
+        initRotateCanvas();
+        
+        // Gestione dello slider di rotazione
+        document.getElementById('rotationAngle').addEventListener('input', function() {
+            document.getElementById('rotationAngleValue').textContent = this.value + '°';
+        });
+        
+        // Applica rotazione
+        document.getElementById('applyRotation').addEventListener('click', function() {
+            const angle = parseInt(document.getElementById('rotationAngle').value);
+            const radians = angle * Math.PI / 180;
+            const centerOption = document.querySelector('input[name="rotationCenter"]:checked').value;
+            
+            // Determina il centro di rotazione
+            let centerX, centerY;
+            if (centerOption === 'origin') {
+                centerX = 0;
+                centerY = 0;
+            } else if (centerOption === 'center') {
+                centerX = rotateCanvas.width / 2;
+                centerY = rotateCanvas.height / 2;
+            } else {
+                centerX = rotateCanvas.width / 2;
+                centerY = rotateCanvas.height / 2;
+            }
+            
+            // Pulisci e ridisegna
+            ctxRotate.clearRect(0, 0, rotateCanvas.width, rotateCanvas.height);
+            drawGrid(ctxRotate, rotateCanvas.width, rotateCanvas.height);
+            
+            // Disegna la forma originale con minor opacità
+            ctxRotate.save();
+            ctxRotate.translate(rotateCanvas.width / 2, rotateCanvas.height / 2);
+            ctxRotate.globalAlpha = 0.3;
+            drawBaseShape(ctxRotate);
+            ctxRotate.restore();
+            
+            // Disegna la forma ruotata
+            ctxRotate.save();
+            
+            if (centerOption === 'origin') {
+                // Rotazione attorno all'origine del canvas (0, 0)
+                ctxRotate.rotate(radians);
+                ctxRotate.translate(rotateCanvas.width / 2, rotateCanvas.height / 2);
+            } else {
+                // Rotazione attorno al centro del canvas o al punto personalizzato
+                ctxRotate.translate(centerX, centerY);
+                ctxRotate.rotate(radians);
+                if (centerOption === 'center') {
+                    // Se ruotiamo attorno al centro, non serve traslazione aggiuntiva
+                } else {
+                    ctxRotate.translate(-centerX + rotateCanvas.width / 2, -centerY + rotateCanvas.height / 2);
+                }
+            }
+            
+            drawBaseShape(ctxRotate);
+            ctxRotate.restore();
+            
+            // Disegna il centro di rotazione
+            ctxRotate.save();
+            ctxRotate.fillStyle = '#e67e22';
+            ctxRotate.beginPath();
+            if (centerOption === 'origin') {
+                ctxRotate.arc(0, 0, 5, 0, Math.PI * 2);
+            } else {
+                ctxRotate.arc(centerX, centerY, 5, 0, Math.PI * 2);
+            }
+            ctxRotate.fill();
+            
+            // Disegna un arco che mostra l'angolo di rotazione
+            const arcRadius = 50;
+            ctxRotate.beginPath();
+            if (centerOption === 'origin') {
+                ctxRotate.arc(0, 0, arcRadius, 0, radians, angle < 0);
+            } else {
+                ctxRotate.arc(centerX, centerY, arcRadius, 0, radians, angle < 0);
+            }
+            ctxRotate.strokeStyle = '#9b59b6';
+            ctxRotate.lineWidth = 2;
+            ctxRotate.stroke();
+            
+            // Mostra l'entità della rotazione
+            ctxRotate.fillStyle = '#333';
+            ctxRotate.textAlign = 'center';
+            ctxRotate.textBaseline = 'middle';
+            if (centerOption === 'origin') {
+                ctxRotate.fillText(`rotate(${angle}°)`, arcRadius / 2, arcRadius / 2);
+            } else {
+                const textX = centerX + Math.cos(radians / 2) * (arcRadius + 20);
+                const textY = centerY + Math.sin(radians / 2) * (arcRadius + 20);
+                ctxRotate.fillText(`rotate(${angle}°)`, textX, textY);
+            }
+            ctxRotate.restore();
+        });
+        
+        // Reset rotazione
+        document.getElementById('resetRotation').addEventListener('click', initRotateCanvas);
+        
+        // ------------- Scala -------------
+        const scaleCanvas = document.getElementById('scaleCanvas');
+        const ctxScale = scaleCanvas.getContext('2d');
+        
+        // Inizializza il canvas di scala
+        function initScaleCanvas() {
+            ctxScale.clearRect(0, 0, scaleCanvas.width, scaleCanvas.height);
+            drawGrid(ctxScale, scaleCanvas.width, scaleCanvas.height);
+            
+            // Disegna la forma al centro del canvas
+            ctxScale.save();
+            ctxScale.translate(scaleCanvas.width / 2, scaleCanvas.height / 2);
+            drawBaseShape(ctxScale);
+            ctxScale.restore();
+        }
+        
+        initScaleCanvas();
+        
+        // Gestione degli slider di scala
+        document.getElementById('scaleX').addEventListener('input', function() {
+            document.getElementById('scaleXValue').textContent = parseFloat(this.value).toFixed(1);
+        });
+        
+        document.getElementById('scaleY').addEventListener('input', function() {
+            document.getElementById('scaleYValue').textContent = parseFloat(this.value).toFixed(1);
+        });
+        
+        // Applica scala
+        document.getElementById('applyScale').addEventListener('click', function() {
+            const scaleX = parseFloat(document.getElementById('scaleX').value);
+            const scaleY = parseFloat(document.getElementById('scaleY').value);
+            const scaleFromCenter = document.getElementById('scaleFromCenter').checked;
+            
+            // Pulisci e ridisegna
+            ctxScale.clearRect(0, 0, scaleCanvas.width, scaleCanvas.height);
+            drawGrid(ctxScale, scaleCanvas.width, scaleCanvas.height);
+            
+            // Disegna la forma originale con minor opacità
+            ctxScale.save();
+            ctxScale.translate(scaleCanvas.width / 2, scaleCanvas.height / 2);
+            ctxScale.globalAlpha = 0.3;
+            drawBaseShape(ctxScale);
+            ctxScale.restore();
+            
+            // Disegna la forma scalata
+            ctxScale.save();
+            
+            if (scaleFromCenter) {
+                // Scala dal centro del canvas
+                ctxScale.translate(scaleCanvas.width / 2, scaleCanvas.height / 2);
+                ctxScale.scale(scaleX, scaleY);
+            } else {
+                // Scala dall'origine
+                ctxScale.scale(scaleX, scaleY);
+                ctxScale.translate(scaleCanvas.width / 2, scaleCanvas.height / 2);
+            }
+            
+            drawBaseShape(ctxScale);
+            ctxScale.restore();
+            
+            // Mostra i fattori di scala
+            ctxScale.fillStyle = '#333';
+            ctxScale.font = '14px Arial';
+            ctxScale.textAlign = 'center';
+            ctxScale.textBaseline = 'middle';
+            
+            const xText = scaleX > 1 ? 'Ingrandimento X' : 'Rimpicciolimento X';
+            const yText = scaleY > 1 ? 'Ingrandimento Y' : 'Rimpicciolimento Y';
+            
+            ctxScale.fillText(`scale(${scaleX.toFixed(1)}, ${scaleY.toFixed(1)})`, scaleCanvas.width / 2, 30);
+            ctxScale.fillText(`${xText}: ${Math.abs(scaleX).toFixed(1)}x, ${yText}: ${Math.abs(scaleY).toFixed(1)}x`, scaleCanvas.width / 2, scaleCanvas.height - 20);
+            
+            // Disegna linee che indicano la scala
+            ctxScale.strokeStyle = '#e67e22';
+            ctxScale.lineWidth = 2;
+            ctxScale.setLineDash([5, 3]);
+            
+            ctxScale.beginPath();
+            ctxScale.moveTo(scaleCanvas.width / 2 - 40, scaleCanvas.height / 2 - 20);
+            ctxScale.lineTo(scaleCanvas.width / 2 - 40 * scaleX, scaleCanvas.height / 2 - 20);
+            ctxScale.stroke();
+            
+            ctxScale.beginPath();
+            ctxScale.moveTo(scaleCanvas.width / 2, scaleCanvas.height / 2 - 20);
+            ctxScale.lineTo(scaleCanvas.width / 2, scaleCanvas.height / 2 - 20 * scaleY);
+            ctxScale.stroke();
+        });
+        
+        // Reset scala
+        document.getElementById('resetScale').addEventListener('click', initScaleCanvas);
+        
+        // ------------- Trasformazioni Multiple -------------
+        const multipleTransformCanvas = document.getElementById('multipleTransformCanvas');
+        const ctxMultiple = multipleTransformCanvas.getContext('2d');
+        
+        // Lista delle trasformazioni
+        let transformations = [];
+        
+        // Inizializza il canvas di trasformazioni multiple
+        function initMultipleTransformCanvas() {
+            ctxMultiple.clearRect(0, 0, multipleTransformCanvas.width, multipleTransformCanvas.height);
+            drawGrid(ctxMultiple, multipleTransformCanvas.width, multipleTransformCanvas.height);
+            
+            // Disegna la forma al centro del canvas
+            ctxMultiple.save();
+            ctxMultiple.translate(multipleTransformCanvas.width / 2, multipleTransformCanvas.height / 2);
+            drawBaseShape(ctxMultiple);
+            ctxMultiple.restore();
+        }
+        
+        // Funzione per aggiornare l'elenco delle trasformazioni
+        function updateTransformList() {
+            const orderDiv = document.getElementById('transformOrder');
+            orderDiv.innerHTML = '';
+            
+            if (transformations.length === 0) {
+                orderDiv.innerHTML = '<p>Nessuna trasformazione aggiunta.</p>';
+                return;
+            }
+            
+            const list = document.createElement('ol');
+            transformations.forEach((transform, index) => {
+                const item = document.createElement('li');
+                
+                if (transform.type === 'translate') {
+                    item.textContent = `Traslazione (${transform.x}, ${transform.y})`;
+                } else if (transform.type === 'rotate') {
+                    item.textContent = `Rotazione ${transform.angle}°`;
+                } else if (transform.type === 'scale') {
+                    item.textContent = `Scala (${transform.x}, ${transform.y})`;
+                }
+                
+                // Pulsante per rimuovere la trasformazione
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Rimuovi';
+                removeBtn.style.marginLeft = '10px';
+                removeBtn.addEventListener('click', () => {
+                    transformations.splice(index, 1);
+                    updateTransformList();
+                });
+                
+                item.appendChild(removeBtn);
+                list.appendChild(item);
+            });
+            
+            orderDiv.appendChild(list);
+        }
+        
+        // Inizializza
+        initMultipleTransformCanvas();
+        updateTransformList();
+        
+        // Gestione dei pulsanti per aggiungere trasformazioni
+        document.getElementById('addTranslate').addEventListener('click', function() {
+            transformations.push({
+                type: 'translate',
+                x: 50,
+                y: 20
+            });
+            updateTransformList();
+        });
+        
+        document.getElementById('addRotate').addEventListener('click', function() {
+            transformations.push({
+                type: 'rotate',
+                angle: 45
+            });
+            updateTransformList();
+        });
+        
+        document.getElementById('addScale').addEventListener('click', function() {
+            transformations.push({
+                type: 'scale',
+                x: 1.5,
+                y: 1.5
+            });
+            updateTransformList();
+        });
+        
+        document.getElementById('clearTransforms').addEventListener('click', function() {
+            transformations = [];
+            updateTransformList();
+        });
+        
+        // Applica trasformazioni multiple
+        document.getElementById('applyMultipleTransforms').addEventListener('click', function() {
+            // Pulisci e ridisegna
+            ctxMultiple.clearRect(0, 0, multipleTransformCanvas.width, multipleTransformCanvas.height);
+            drawGrid(ctxMultiple, multipleTransformCanvas.width, multipleTransformCanvas.height);
+            
+            // Disegna la forma originale con minor opacità
+            ctxMultiple.save();
+            ctxMultiple.translate(multipleTransformCanvas.width / 2, multipleTransformCanvas.height / 2);
+            ctxMultiple.globalAlpha = 0.3;
+            drawBaseShape(ctxMultiple);
+            ctxMultiple.restore();
+            
+            // Applica le trasformazioni e disegna la forma trasformata
+            ctxMultiple.save();
+            
+            // Punto di partenza (centro del canvas)
+            ctxMultiple.translate(multipleTransformCanvas.width / 2, multipleTransformCanvas.height / 2);
+            
+            // Applica ciascuna trasformazione nell'ordine
+            transformations.forEach(transform => {
+                if (transform.type === 'translate') {
+                    ctxMultiple.translate(transform.x, transform.y);
+                } else if (transform.type === 'rotate') {
+                    ctxMultiple.rotate(transform.angle * Math.PI / 180);
+                } else if (transform.type === 'scale') {
+                    ctxMultiple.scale(transform.x, transform.y);
+                }
+            });
+            
+            drawBaseShape(ctxMultiple);
+            ctxMultiple.restore();
+            
+            // Mostra informazioni sulle trasformazioni applicate
+            ctxMultiple.fillStyle = '#333';
+            ctxMultiple.font = '14px Arial';
+            ctxMultiple.textAlign = 'left';
+            ctxMultiple.textBaseline = 'top';
+            
+            if (transformations.length === 0) {
+                ctxMultiple.fillText('Nessuna trasformazione applicata', 10, 10);
+            } else {
+                ctxMultiple.fillText(`${transformations.length} trasformazioni applicate in sequenza`, 10, 10);
+            }
+        });
+        
+        // Reset trasformazioni multiple
+        document.getElementById('resetMultipleTransforms').addEventListener('click', initMultipleTransformCanvas);
+        
+        // ------------- Matrice di Trasformazione -------------
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const ctxMatrix = matrixCanvas.getContext('2d');
+        
+        // Inizializza il canvas della matrice
+        function initMatrixCanvas() {
+            ctxMatrix.clearRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            drawGrid(ctxMatrix, matrixCanvas.width, matrixCanvas.height);
+            
+            // Disegna la forma al centro del canvas
+            ctxMatrix.save();
+            ctxMatrix.translate(matrixCanvas.width / 2, matrixCanvas.height / 2);
+            drawBaseShape(ctxMatrix);
+            ctxMatrix.restore();
+            
+            // Mostra la matrice di identità
+            ctxMatrix.fillStyle = '#333';
+            ctxMatrix.font = '14px Arial';
+            ctxMatrix.textAlign = 'left';
+            ctxMatrix.textBaseline = 'top';
+            ctxMatrix.fillText('Matrice di trasformazione corrente: identità [1, 0, 0, 1, 0, 0]', 10, 10);
+        }
+        
+        initMatrixCanvas();
+        
+        // Gestione degli slider della matrice
+        const matrixParams = ['A', 'B', 'C', 'D', 'E', 'F'];
+        matrixParams.forEach(param => {
+            document.getElementById(`matrix${param}`).addEventListener('input', function() {
+                const value = parseFloat(this.value);
+                document.getElementById(`matrix${param}Value`).textContent = value.toFixed(1);
+            });
+        });
+        
+        // Applica matrice di trasformazione
+        document.getElementById('applyMatrix').addEventListener('click', function() {
+            const a = parseFloat(document.getElementById('matrixA').value);
+            const b = parseFloat(document.getElementById('matrixB').value);
+            const c = parseFloat(document.getElementById('matrixC').value);
+            const d = parseFloat(document.getElementById('matrixD').value);
+            const e = parseFloat(document.getElementById('matrixE').value);
+            const f = parseFloat(document.getElementById('matrixF').value);
+            
+            // Pulisci e ridisegna
+            ctxMatrix.clearRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            drawGrid(ctxMatrix, matrixCanvas.width, matrixCanvas.height);
+            
+            // Disegna la forma originale con minor opacità
+            ctxMatrix.save();
+            ctxMatrix.translate(matrixCanvas.width / 2, matrixCanvas.height / 2);
+            ctxMatrix.globalAlpha = 0.3;
+            drawBaseShape(ctxMatrix);
+            ctxMatrix.restore();
+            
+            // Applica la matrice di trasformazione e disegna la forma
+            ctxMatrix.save();
+            ctxMatrix.translate(matrixCanvas.width / 2, matrixCanvas.height / 2);
+            ctxMatrix.transform(a, b, c, d, e, f);
+            drawBaseShape(ctxMatrix);
+            ctxMatrix.restore();
+            
+            // Mostra la matrice applicata
+            ctxMatrix.fillStyle = '#333';
+            ctxMatrix.font = '14px Arial';
+            ctxMatrix.textAlign = 'left';
+            ctxMatrix.textBaseline = 'top';
+            ctxMatrix.fillText(`transform(${a.toFixed(1)}, ${b.toFixed(1)}, ${c.toFixed(1)}, ${d.toFixed(1)}, ${e.toFixed(0)}, ${f.toFixed(0)})`, 10, 10);
+            
+            // Visualizza l'effetto di ciascun parametro
+            let effects = [];
+            if (a !== 1) effects.push(`Scala X: ${a.toFixed(1)}x`);
+            if (d !== 1) effects.push(`Scala Y: ${d.toFixed(1)}x`);
+            if (b !== 0 || c !== 0) effects.push('Skew (inclinazione)');
+            if (e !== 0) effects.push(`Traslazione X: ${e}px`);
+            if (f !== 0) effects.push(`Traslazione Y: ${f}px`);
+            
+            if (effects.length > 0) {
+                ctxMatrix.fillText('Effetti: ' + effects.join(', '), 10, 30);
+            }
+        });
+        
+        // Reset matrice
+        document.getElementById('resetMatrix').addEventListener('click', function() {
+            // Reimposta tutti i valori degli slider
+            document.getElementById('matrixA').value = 1;
+            document.getElementById('matrixB').value = 0;
+            document.getElementById('matrixC').value = 0;
+            document.getElementById('matrixD').value = 1;
+            document.getElementById('matrixE').value = 0;
+            document.getElementById('matrixF').value = 0;
+            
+            // Aggiorna i valori visualizzati
+            document.getElementById('matrixAValue').textContent = '1.0';
+            document.getElementById('matrixBValue').textContent = '0.0';
+            document.getElementById('matrixCValue').textContent = '0.0';
+            document.getElementById('matrixDValue').textContent = '1.0';
+            document.getElementById('matrixEValue').textContent = '0';
+            document.getElementById('matrixFValue').textContent = '0';
+            
+            // Reinizializza il canvas
+            initMatrixCanvas();
+        });
+    </script>
+</body>
+</html>

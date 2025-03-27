@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animazioni Base con Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input[type="range"] {
+            width: 180px;
+            vertical-align: middle;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .fps-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Animazioni Base con Canvas</h1>
+        <p>
+            Canvas è uno strumento eccellente per creare animazioni. In questa guida vedremo come creare
+            animazioni base utilizzando la funzione <code>requestAnimationFrame</code>, che è il metodo
+            più efficiente per creare animazioni fluide nel browser.
+        </p>
+
+        <div class="section">
+            <h2>1. Animazione con requestAnimationFrame</h2>
+            <p>
+                <code>requestAnimationFrame</code> è un metodo che chiede al browser di eseguire una
+                funzione di animazione prima del successivo ridisegno. Questo metodo è ottimizzato per
+                le animazioni e sincronizzato con il refresh rate del monitor.
+            </p>
+
+            <div style="position: relative;">
+                <canvas id="basicAnimationCanvas" width="600" height="300"></canvas>
+                <div id="basicAnimationFps" class="fps-counter">FPS: 0</div>
+            </div>
+            
+            <div class="controls">
+                <button id="startBasicAnimation">Avvia Animazione</button>
+                <button id="pauseBasicAnimation">Pausa</button>
+                <button id="resetBasicAnimation">Reset</button>
+                <div style="margin-top: 10px;">
+                    Velocità: <input type="range" id="basicSpeed" min="1" max="10" value="5">
+                </div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Variabili per l'animazione
+let animationId;
+let x = 0;
+let speed = 5;
+
+// Funzione di animazione
+function animate() {
+    // Pulisci il canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Aggiorna la posizione
+    x += speed;
+    
+    // Se l'oggetto arriva al bordo, inverti la direzione
+    if (x > canvas.width - 50 || x < 0) {
+        speed = -speed;
+    }
+    
+    // Disegna l'oggetto
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(x, 100, 50, 50);
+    
+    // Richiedi il frame successivo
+    animationId = requestAnimationFrame(animate);
+}
+
+// Avvia l'animazione
+animate();</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Animazione Controllata dal Tempo</h2>
+            <p>
+                Per creare animazioni che si comportino in modo coerente indipendentemente dalla frequenza di aggiornamento del monitor, è importante basare le animazioni sul tempo trascorso tra i frame.
+            </p>
+
+            <div style="position: relative;">
+                <canvas id="timeBasedCanvas" width="600" height="300"></canvas>
+                <div id="timeBasedFps" class="fps-counter">FPS: 0</div>
+            </div>
+            
+            <div class="controls">
+                <button id="startTimeBased">Avvia Animazione</button>
+                <button id="pauseTimeBased">Pausa</button>
+                <button id="resetTimeBased">Reset</button>
+                <div style="margin-top: 10px;">
+                    Velocità: <input type="range" id="timeSpeed" min="50" max="500" value="200">
+                    <span id="timeSpeedValue">200 px/s</span>
+                </div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Variabili per l'animazione
+let animationId;
+let x = 0;
+let speed = 200; // pixel al secondo
+let lastTime = 0;
+
+// Funzione di animazione
+function animate(timestamp) {
+    // Calcola il tempo trascorso dall'ultimo frame in secondi
+    const deltaTime = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+    
+    // Pulisci il canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Aggiorna la posizione in base al tempo
+    x += speed * deltaTime;
+    
+    // Se l'oggetto arriva al bordo, inverti la direzione
+    if (x > canvas.width - 50 || x < 0) {
+        speed = -speed;
+    }
+    
+    // Disegna l'oggetto
+    ctx.fillStyle = 'green';
+    ctx.fillRect(x, 100, 50, 50);
+    
+    // Richiedi il frame successivo
+    animationId = requestAnimationFrame(animate);
+}
+
+// Avvia l'animazione
+lastTime = performance.now();
+animate(lastTime);</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Animazione con Fisica</h2>
+            <p>
+                Aggiungendo semplici concetti di fisica come gravità, attrito e rimbalzo, le animazioni possono diventare molto più realistiche.
+            </p>
+
+            <div style="position: relative;">
+                <canvas id="physicsCanvas" width="600" height="400"></canvas>
+                <div id="physicsFps" class="fps-counter">FPS: 0</div>
+            </div>
+            
+            <div class="controls">
+                <button id="startPhysics">Avvia Animazione</button>
+                <button id="pausePhysics">Pausa</button>
+                <button id="resetPhysics">Reset</button>
+                <button id="addBall">Aggiungi Pallina</button>
+                <div style="margin-top: 10px;">
+                    Gravità: <input type="range" id="gravity" min="0" max="2000" value="980" step="10">
+                    <span id="gravityValue">980 px/s²</span>
+                </div>
+                <div style="margin-top: 10px;">
+                    Rimbalzo: <input type="range" id="bounce" min="0" max="0.95" value="0.7" step="0.05">
+                    <span id="bounceValue">0.7</span>
+                </div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Definizione di una pallina
+class Ball {
+    constructor(x, y, radius, color) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.color = color;
+        this.velocityX = Math.random() * 200 - 100;
+        this.velocityY = Math.random() * 200 - 100;
+    }
+    
+    // Aggiorna la posizione della pallina
+    update(deltaTime, gravity, bounce) {
+        // Applica la gravità
+        this.velocityY += gravity * deltaTime;
+        
+        // Aggiorna la posizione
+        this.x += this.velocityX * deltaTime;
+        this.y += this.velocityY * deltaTime;
+        
+        // Gestisce le collisioni con i bordi
+        if (this.x > canvas.width - this.radius) {
+            this.x = canvas.width - this.radius;
+            this.velocityX *= -bounce;
+        } else if (this.x < this.radius) {
+            this.x = this.radius;
+            this.velocityX *= -bounce;
+        }
+        
+        if (this.y > canvas.height - this.radius) {
+            this.y = canvas.height - this.radius;
+            this.velocityY *= -bounce;
+        } else if (this.y < this.radius) {
+            this.y = this.radius;
+            this.velocityY *= -bounce;
+        }
+    }
+    
+    // Disegna la pallina
+    draw(ctx) {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Animazione di una Scena Complessa</h2>
+            <p>
+                Con Canvas possiamo creare scene complesse combinando diverse animazioni
+                e gestendo autonomamente ciascun elemento della scena.
+            </p>
+
+            <div style="position: relative;">
+                <canvas id="sceneCanvas" width="600" height="400"></canvas>
+                <div id="sceneFps" class="fps-counter">FPS: 0</div>
+            </div>
+            
+            <div class="controls">
+                <button id="startScene">Avvia Animazione</button>
+                <button id="pauseScene">Pausa</button>
+                <button id="resetScene">Reset</button>
+                <div style="margin-top: 10px;">
+                    Numero di stelle: <input type="range" id="starCount" min="10" max="500" value="200">
+                    <span id="starCountValue">200</span>
+                </div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Gestione di una scena con centinaia di oggetti
+class SceneManager {
+    constructor() {
+        this.stars = [];
+        this.planets = [];
+        this.comets = [];
+    }
+    
+    initialize(starCount) {
+        // Crea stelle
+        this.stars = [];
+        for (let i = 0; i < starCount; i++) {
+            this.stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 1,
+                brightness: Math.random() * 0.8 + 0.2,
+                twinkleSpeed: Math.random() * 5 + 1
+            });
+        }
+        
+        // Crea pianeti
+        this.planets = [
+            {
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                radius: 30,
+                color: '#3498db',
+                angle: 0,
+                speed: 0.3
+            },
+            {
+                x: 0,
+                y: 0,
+                radius: 15,
+                color: '#e74c3c',
+                angle: Math.PI / 2,
+                orbitRadius: 120,
+                speed: 0.7
+            }
+        ];
+        
+        // Inizializza comete
+        this.comets = [];
+    }
+    
+    update(deltaTime) {
+        // Aggiorna stelle (effetto brillio)
+        for (let star of this.stars) {
+            star.brightness = 0.2 + Math.abs(Math.sin(deltaTime * star.twinkleSpeed)) * 0.8;
+        }
+        
+        // Aggiorna pianeti
+        for (let planet of this.planets) {
+            if (planet.orbitRadius) {
+                planet.angle += planet.speed * deltaTime;
+                planet.x = this.planets[0].x + Math.cos(planet.angle) * planet.orbitRadius;
+                planet.y = this.planets[0].y + Math.sin(planet.angle) * planet.orbitRadius;
+            }
+        }
+        
+        // Aggiorna comete
+        for (let i = this.comets.length - 1; i >= 0; i--) {
+            const comet = this.comets[i];
+            comet.x += comet.speedX * deltaTime;
+            comet.y += comet.speedY * deltaTime;
+            comet.lifetime -= deltaTime;
+            
+            if (comet.lifetime <= 0 || comet.x < -50 || comet.x > canvas.width + 50 ||
+                comet.y < -50 || comet.y > canvas.height + 50) {
+                this.comets.splice(i, 1);
+            }
+        }
+        
+        // Occasionalmente aggiungi una nuova cometa
+        if (Math.random() < 0.02) {
+            this.addComet();
+        }
+    }
+    
+    addComet() {
+        const side = Math.floor(Math.random() * 4);
+        let x, y, speedX, speedY;
+        
+        switch (side) {
+            case 0: // Top
+                x = Math.random() * canvas.width;
+                y = -20;
+                speedX = Math.random() * 100 - 50;
+                speedY = Math.random() * 100 + 50;
+                break;
+            case 1: // Right
+                x = canvas.width + 20;
+                y = Math.random() * canvas.height;
+                speedX = -(Math.random() * 100 + 50);
+                speedY = Math.random() * 100 - 50;
+                break;
+            case 2: // Bottom
+                x = Math.random() * canvas.width;
+                y = canvas.height + 20;
+                speedX = Math.random() * 100 - 50;
+                speedY = -(Math.random() * 100 + 50);
+                break;
+            case 3: // Left
+                x = -20;
+                y = Math.random() * canvas.height;
+                speedX = Math.random() * 100 + 50;
+                speedY = Math.random() * 100 - 50;
+                break;
+        }
+        
+        this.comets.push({
+            x: x,
+            y: y,
+            speedX: speedX,
+            speedY: speedY,
+            radius: Math.random() * 3 + 2,
+            tailLength: Math.random() * 50 + 20,
+            color: '#f39c12',
+            lifetime: Math.random() * 10 + 5
+        });
+    }
+    
+    draw(ctx) {
+        // Pulisci il canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Sfondo
+        ctx.fillStyle = '#0c0c1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Disegna stelle
+        for (let star of this.stars) {
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Disegna comete
+        for (let comet of this.comets) {
+            // Disegna la coda
+            const gradient = ctx.createLinearGradient(
+                comet.x, comet.y,
+                comet.x - comet.speedX * (comet.tailLength / 100),
+                comet.y - comet.speedY * (comet.tailLength / 100)
+            );
+            gradient.addColorStop(0, `rgba(255, 255, 255, 0.8)`);
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = comet.radius;
+            ctx.beginPath();
+            ctx.moveTo(comet.x, comet.y);
+            ctx.lineTo(
+                comet.x - comet.speedX * (comet.tailLength / 100),
+                comet.y - comet.speedY * (comet.tailLength / 100)
+            );
+            ctx.stroke();
+            
+            // Disegna la testa
+            ctx.fillStyle = comet.color;
+            ctx.beginPath();
+            ctx.arc(comet.x, comet.y, comet.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Disegna pianeti
+        for (let planet of this.planets) {
+            ctx.fillStyle = planet.color;
+            ctx.beginPath();
+            ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Se è un pianeta in orbita, mostra l'orbita
+            if (planet.orbitRadius) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.beginPath();
+                ctx.arc(this.planets[0].x, this.planets[0].y, planet.orbitRadius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+    }
+}</pre>
+            </div>
+        </div>
+
+        <div class="note">
+            <h3>Suggerimenti per Animazioni Performanti</h3>
+            <ul>
+                <li><strong>Usa requestAnimationFrame:</strong> è sincronizzato con il refresh rate del monitor ed è più efficiente rispetto a setInterval o setTimeout.</li>
+                <li><strong>Fai animazioni basate sul tempo:</strong> assicura che la velocità dell'animazione sia coerente su dispositivi diversi.</li>
+                <li><strong>Limita i calcoli:</strong> evita operazioni costose in ogni frame.</li>
+                <li><strong>Ottimizza i disegni:</strong> disegna solo ciò che è cambiato.</li>
+                <li><strong>Gestisci le risorse:</strong> pulisci gli oggetti non più necessari.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ------------- Utility per FPS -------------
+        class FpsCounter {
+            constructor(elementId) {
+                this.element = document.getElementById(elementId);
+                this.frames = 0;
+                this.lastTime = performance.now();
+                this.fps = 0;
+            }
+            
+            update() {
+                this.frames++;
+                const now = performance.now();
+                const elapsed = now - this.lastTime;
+                
+                if (elapsed >= 1000) {
+                    this.fps = Math.round((this.frames * 1000) / elapsed);
+                    this.element.textContent = `FPS: ${this.fps}`;
+                    this.frames = 0;
+                    this.lastTime = now;
+                }
+            }
+        }
+        
+        // ------------- 1. Animazione Base -------------
+        const basicCanvas = document.getElementById('basicAnimationCanvas');
+        const basicCtx = basicCanvas.getContext('2d');
+        const basicFps = new FpsCounter('basicAnimationFps');
+        
+        let basicAnimationId = null;
+        let basicX = 0;
+        let basicSpeed = 5;
+        let basicAnimating = false;
+        
+        function animateBasic() {
+            if (!basicAnimating) return;
+            
+            basicCtx.clearRect(0, 0, basicCanvas.width, basicCanvas.height);
+            
+            // Disegna lo sfondo
+            basicCtx.fillStyle = '#f9f9f9';
+            basicCtx.fillRect(0, 0, basicCanvas.width, basicCanvas.height);
+            
+            // Aggiorna posizione
+            basicX += basicSpeed;
+            
+            // Controllo bordi
+            if (basicX > basicCanvas.width - 50 || basicX < 0) {
+                basicSpeed = -basicSpeed;
+            }
+            
+            // Disegna quadrato
+            basicCtx.fillStyle = '#3498db';
+            basicCtx.fillRect(basicX, 125, 50, 50);
+            
+            // Aggiorna FPS
+            basicFps.update();
+            
+            // Richiedi il prossimo frame
+            basicAnimationId = requestAnimationFrame(animateBasic);
+        }
+        
+        // Gestione dei controlli di animazione
+        document.getElementById('startBasicAnimation').addEventListener('click', function() {
+            if (!basicAnimating) {
+                basicAnimating = true;
+                animateBasic();
+            }
+        });
+        
+        document.getElementById('pauseBasicAnimation').addEventListener('click', function() {
+            basicAnimating = false;
+            if (basicAnimationId) {
+                cancelAnimationFrame(basicAnimationId);
+                basicAnimationId = null;
+            }
+        });
+        
+        document.getElementById('resetBasicAnimation').addEventListener('click', function() {
+            basicAnimating = false;
+            if (basicAnimationId) {
+                cancelAnimationFrame(basicAnimationId);
+                basicAnimationId = null;
+            }
+            basicX = 0;
+            basicSpeed = Math.abs(basicSpeed);
+            
+            basicCtx.clearRect(0, 0, basicCanvas.width, basicCanvas.height);
+            basicCtx.fillStyle = '#f9f9f9';
+            basicCtx.fillRect(0, 0, basicCanvas.width, basicCanvas.height);
+            basicCtx.fillStyle = '#3498db';
+            basicCtx.fillRect(basicX, 125, 50, 50);
+        });
+        
+        document.getElementById('basicSpeed').addEventListener('input', function() {
+            basicSpeed = parseInt(this.value) * (basicSpeed < 0 ? -1 : 1);
+        });
+        
+        // Inizializza canvas
+        basicCtx.fillStyle = '#f9f9f9';
+        basicCtx.fillRect(0, 0, basicCanvas.width, basicCanvas.height);
+        basicCtx.fillStyle = '#3498db';
+        basicCtx.fillRect(basicX, 125, 50, 50);
+        
+        // ------------- 2. Animazione Basata sul Tempo -------------
+        const timeCanvas = document.getElementById('timeBasedCanvas');
+        const timeCtx = timeCanvas.getContext('2d');
+        const timeFps = new FpsCounter('timeBasedFps');
+        
+        let timeAnimationId = null;
+        let timeX = 0;
+        let timeSpeed = 200; // pixel al secondo
+        let lastTime = 0;
+        let timeAnimating = false;
+        
+        function animateTime(timestamp) {
+            if (!timeAnimating) return;
+            
+            // Calcola delta time in secondi
+            const deltaTime = lastTime ? (timestamp - lastTime) / 1000 : 0;
+            lastTime = timestamp;
+            
+            timeCtx.clearRect(0, 0, timeCanvas.width, timeCanvas.height);
+            
+            // Disegna sfondo
+            timeCtx.fillStyle = '#f9f9f9';
+            timeCtx.fillRect(0, 0, timeCanvas.width, timeCanvas.height);
+            
+            // Aggiorna posizione basata sul tempo
+            timeX += timeSpeed * deltaTime;
+            
+            // Controllo bordi
+            if (timeX > timeCanvas.width - 50 || timeX < 0) {
+                timeSpeed = -timeSpeed;
+            }
+            
+            // Disegna quadrato
+            timeCtx.fillStyle = '#2ecc71';
+            timeCtx.fillRect(timeX, 125, 50, 50);
+            
+            // Aggiorna FPS
+            timeFps.update();
+            
+            // Richiedi il prossimo frame
+            timeAnimationId = requestAnimationFrame(animateTime);
+        }
+        
+        // Gestione dei controlli di animazione
+        document.getElementById('startTimeBased').addEventListener('click', function() {
+            if (!timeAnimating) {
+                lastTime = 0;
+                timeAnimating = true;
+                animateTime(performance.now());
+            }
+        });
+        
+        document.getElementById('pauseTimeBased').addEventListener('click', function() {
+            timeAnimating = false;
+            if (timeAnimationId) {
+                cancelAnimationFrame(timeAnimationId);
+                timeAnimationId = null;
+            }
+        });
+        
+        document.getElementById('resetTimeBased').addEventListener('click', function() {
+            timeAnimating = false;
+            if (timeAnimationId) {
+                cancelAnimationFrame(timeAnimationId);
+                timeAnimationId = null;
+            }
+            timeX = 0;
+            timeSpeed = Math.abs(timeSpeed);
+            lastTime = 0;
+            
+            timeCtx.clearRect(0, 0, timeCanvas.width, timeCanvas.height);
+            timeCtx.fillStyle = '#f9f9f9';
+            timeCtx.fillRect(0, 0, timeCanvas.width, timeCanvas.height);
+            timeCtx.fillStyle = '#2ecc71';
+            timeCtx.fillRect(timeX, 125, 50, 50);
+        });
+        
+        document.getElementById('timeSpeed').addEventListener('input', function() {
+            timeSpeed = parseInt(this.value) * (timeSpeed < 0 ? -1 : 1);
+            document.getElementById('timeSpeedValue').textContent = Math.abs(timeSpeed) + ' px/s';
+        });
+        
+        // Inizializza canvas
+        timeCtx.fillStyle = '#f9f9f9';
+        timeCtx.fillRect(0, 0, timeCanvas.width, timeCanvas.height);
+        timeCtx.fillStyle = '#2ecc71';
+        timeCtx.fillRect(timeX, 125, 50, 50);
+        
+        // ------------- 3. Animazione con Fisica -------------
+        const physicsCanvas = document.getElementById('physicsCanvas');
+        const physicsCtx = physicsCanvas.getContext('2d');
+        const physicsFps = new FpsCounter('physicsFps');
+        
+        let physicsAnimationId = null;
+        let physicsLastTime = 0;
+        let physicsAnimating = false;
+        let gravity = 980; // pixel/s²
+        let bounce = 0.7; // coefficiente di rimbalzo
+        let balls = [];
+        
+        class Ball {
+            constructor(x, y, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.velocityX = Math.random() * 300 - 150; // velocità casuale
+                this.velocityY = Math.random() * 200 - 100;
+                this.friction = 0.99; // attrito
+            }
+            
+            update(deltaTime) {
+                // Applica gravità
+                this.velocityY += gravity * deltaTime;
+                
+                // Applica attrito
+                this.velocityX *= this.friction;
+                
+                // Aggiorna posizione
+                this.x += this.velocityX * deltaTime;
+                this.y += this.velocityY * deltaTime;
+                
+                // Gestisce le collisioni con i bordi
+                if (this.x > physicsCanvas.width - this.radius) {
+                    this.x = physicsCanvas.width - this.radius;
+                    this.velocityX *= -bounce;
+                } else if (this.x < this.radius) {
+                    this.x = this.radius;
+                    this.velocityX *= -bounce;
+                }
+                
+                if (this.y > physicsCanvas.height - this.radius) {
+                    this.y = physicsCanvas.height - this.radius;
+                    this.velocityY *= -bounce;
+                } else if (this.y < this.radius) {
+                    this.y = this.radius;
+                    this.velocityY *= -bounce;
+                }
+            }
+            
+            draw() {
+                physicsCtx.fillStyle = this.color;
+                physicsCtx.beginPath();
+                physicsCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                physicsCtx.fill();
+            }
+        }
+        
+        function animatePhysics(timestamp) {
+            if (!physicsAnimating) return;
+            
+            // Calcola delta time in secondi
+            const deltaTime = physicsLastTime ? Math.min((timestamp - physicsLastTime) / 1000, 0.1) : 0;
+            physicsLastTime = timestamp;
+            
+            physicsCtx.clearRect(0, 0, physicsCanvas.width, physicsCanvas.height);
+            
+            // Disegna sfondo
+            physicsCtx.fillStyle = '#f9f9f9';
+            physicsCtx.fillRect(0, 0, physicsCanvas.width, physicsCanvas.height);
+            
+            // Aggiorna e disegna le palline
+            for (let ball of balls) {
+                ball.update(deltaTime);
+                ball.draw();
+            }
+            
+            // Aggiorna FPS
+            physicsFps.update();
+            
+            // Richiedi il prossimo frame
+            physicsAnimationId = requestAnimationFrame(animatePhysics);
+        }
+        
+        // Aggiunge una pallina casuale
+        function addBall() {
+            const radius = Math.random() * 15 + 10;
+            const x = Math.random() * (physicsCanvas.width - 2 * radius) + radius;
+            const y = Math.random() * (physicsCanvas.height - 2 * radius) + radius;
+            const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            balls.push(new Ball(x, y, radius, color));
+        }
+        
+        // Gestione dei controlli di animazione
+        document.getElementById('startPhysics').addEventListener('click', function() {
+            if (!physicsAnimating) {
+                if (balls.length === 0) {
+                    for (let i = 0; i < 5; i++) {
+                        addBall();
+                    }
+                }
+                physicsLastTime = 0;
+                physicsAnimating = true;
+                animatePhysics(performance.now());
+            }
+        });
+        
+        document.getElementById('pausePhysics').addEventListener('click', function() {
+            physicsAnimating = false;
+            if (physicsAnimationId) {
+                cancelAnimationFrame(physicsAnimationId);
+                physicsAnimationId = null;
+            }
+        });
+        
+        document.getElementById('resetPhysics').addEventListener('click', function() {
+            physicsAnimating = false;
+            if (physicsAnimationId) {
+                cancelAnimationFrame(physicsAnimationId);
+                physicsAnimationId = null;
+            }
+            balls = [];
+            
+            physicsCtx.clearRect(0, 0, physicsCanvas.width, physicsCanvas.height);
+            physicsCtx.fillStyle = '#f9f9f9';
+            physicsCtx.fillRect(0, 0, physicsCanvas.width, physicsCanvas.height);
+        });
+        
+        document.getElementById('addBall').addEventListener('click', function() {
+            addBall();
+            if (!physicsAnimating && balls.length > 0) {
+                physicsCtx.clearRect(0, 0, physicsCanvas.width, physicsCanvas.height);
+                physicsCtx.fillStyle = '#f9f9f9';
+                physicsCtx.fillRect(0, 0, physicsCanvas.width, physicsCanvas.height);
+                
+                for (let ball of balls) {
+                    ball.draw();
+                }
+            }
+        });
+        
+        document.getElementById('gravity').addEventListener('input', function() {
+            gravity = parseInt(this.value);
+            document.getElementById('gravityValue').textContent = gravity + ' px/s²';
+        });
+        
+        document.getElementById('bounce').addEventListener('input', function() {
+            bounce = parseFloat(this.value);
+            document.getElementById('bounceValue').textContent = bounce.toFixed(2);
+        });
+        
+        // Inizializza canvas
+        physicsCtx.fillStyle = '#f9f9f9';
+        physicsCtx.fillRect(0, 0, physicsCanvas.width, physicsCanvas.height);
+        
+        // ------------- 4. Animazione di una Scena Complessa -------------
+        const sceneCanvas = document.getElementById('sceneCanvas');
+        const sceneCtx = sceneCanvas.getContext('2d');
+        const sceneFps = new FpsCounter('sceneFps');
+        
+        let sceneAnimationId = null;
+        let sceneLastTime = 0;
+        let sceneAnimating = false;
+        let scene = null;
+        let starCount = 200;
+        
+        class SceneManager {
+            constructor() {
+                this.stars = [];
+                this.planets = [];
+                this.comets = [];
+                this.timeElapsed = 0;
+            }
+            
+            initialize(starCount) {
+                // Crea stelle
+                this.stars = [];
+                for (let i = 0; i < starCount; i++) {
+                    this.stars.push({
+                        x: Math.random() * sceneCanvas.width,
+                        y: Math.random() * sceneCanvas.height,
+                        radius: Math.random() * 2 + 1,
+                        brightness: Math.random() * 0.8 + 0.2,
+                        twinkleSpeed: Math.random() * 5 + 1
+                    });
+                }
+                
+                // Crea pianeti
+                this.planets = [
+                    {
+                        x: sceneCanvas.width / 2,
+                        y: sceneCanvas.height / 2,
+                        radius: 30,
+                        color: '#3498db',
+                        angle: 0,
+                        speed: 0.3
+                    },
+                    {
+                        x: 0,
+                        y: 0,
+                        radius: 15,
+                        color: '#e74c3c',
+                        angle: Math.PI / 2,
+                        orbitRadius: 120,
+                        speed: 0.7
+                    }
+                ];
+                
+                // Inizializza comete
+                this.comets = [];
+                this.timeElapsed = 0;
+            }
+            
+            update(deltaTime) {
+                this.timeElapsed += deltaTime;
+                
+                // Aggiorna stelle (effetto brillio)
+                for (let star of this.stars) {
+                    star.brightness = 0.2 + Math.abs(Math.sin(this.timeElapsed * star.twinkleSpeed)) * 0.8;
+                }
+                
+                // Aggiorna pianeti
+                for (let planet of this.planets) {
+                    if (planet.orbitRadius) {
+                        planet.angle += planet.speed * deltaTime;
+                        planet.x = this.planets[0].x + Math.cos(planet.angle) * planet.orbitRadius;
+                        planet.y = this.planets[0].y + Math.sin(planet.angle) * planet.orbitRadius;
+                    }
+                }
+                
+                // Aggiorna comete
+                for (let i = this.comets.length - 1; i >= 0; i--) {
+                    const comet = this.comets[i];
+                    comet.x += comet.speedX * deltaTime;
+                    comet.y += comet.speedY * deltaTime;
+                    comet.lifetime -= deltaTime;
+                    
+                    if (comet.lifetime <= 0 || comet.x < -50 || comet.x > sceneCanvas.width + 50 ||
+                        comet.y < -50 || comet.y > sceneCanvas.height + 50) {
+                        this.comets.splice(i, 1);
+                    }
+                }
+                
+                // Occasionalmente aggiungi una nuova cometa
+                if (Math.random() < deltaTime * 2) {
+                    this.addComet();
+                }
+            }
+            
+            addComet() {
+                const side = Math.floor(Math.random() * 4);
+                let x, y, speedX, speedY;
+                
+                switch (side) {
+                    case 0: // Top
+                        x = Math.random() * sceneCanvas.width;
+                        y = -20;
+                        speedX = Math.random() * 100 - 50;
+                        speedY = Math.random() * 100 + 50;
+                        break;
+                    case 1: // Right
+                        x = sceneCanvas.width + 20;
+                        y = Math.random() * sceneCanvas.height;
+                        speedX = -(Math.random() * 100 + 50);
+                        speedY = Math.random() * 100 - 50;
+                        break;
+                    case 2: // Bottom
+                        x = Math.random() * sceneCanvas.width;
+                        y = sceneCanvas.height + 20;
+                        speedX = Math.random() * 100 - 50;
+                        speedY = -(Math.random() * 100 + 50);
+                        break;
+                    case 3: // Left
+                        x = -20;
+                        y = Math.random() * sceneCanvas.height;
+                        speedX = Math.random() * 100 + 50;
+                        speedY = Math.random() * 100 - 50;
+                        break;
+                }
+                
+                this.comets.push({
+                    x: x,
+                    y: y,
+                    speedX: speedX,
+                    speedY: speedY,
+                    radius: Math.random() * 3 + 2,
+                    tailLength: Math.random() * 50 + 20,
+                    color: '#f39c12',
+                    lifetime: Math.random() * 10 + 5
+                });
+            }
+            
+            draw(ctx) {
+                // Pulisci il canvas
+                ctx.clearRect(0, 0, sceneCanvas.width, sceneCanvas.height);
+                
+                // Sfondo
+                ctx.fillStyle = '#0c0c1a';
+                ctx.fillRect(0, 0, sceneCanvas.width, sceneCanvas.height);
+                
+                // Disegna stelle
+                for (let star of this.stars) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness})`;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Disegna comete
+                for (let comet of this.comets) {
+                    // Disegna la coda
+                    const gradient = ctx.createLinearGradient(
+                        comet.x, comet.y,
+                        comet.x - comet.speedX * (comet.tailLength / 100),
+                        comet.y - comet.speedY * (comet.tailLength / 100)
+                    );
+                    gradient.addColorStop(0, `rgba(255, 255, 255, 0.8)`);
+                    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = comet.radius;
+                    ctx.beginPath();
+                    ctx.moveTo(comet.x, comet.y);
+                    ctx.lineTo(
+                        comet.x - comet.speedX * (comet.tailLength / 100),
+                        comet.y - comet.speedY * (comet.tailLength / 100)
+                    );
+                    ctx.stroke();
+                    
+                    // Disegna la testa
+                    ctx.fillStyle = comet.color;
+                    ctx.beginPath();
+                    ctx.arc(comet.x, comet.y, comet.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Disegna pianeti
+                for (let planet of this.planets) {
+                    ctx.fillStyle = planet.color;
+                    ctx.beginPath();
+                    ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Se è un pianeta in orbita, mostra l'orbita
+                    if (planet.orbitRadius) {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                        ctx.beginPath();
+                        ctx.arc(this.planets[0].x, this.planets[0].y, planet.orbitRadius, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        function animateScene(timestamp) {
+            if (!sceneAnimating) return;
+            
+            // Calcola delta time in secondi
+            const deltaTime = sceneLastTime ? Math.min((timestamp - sceneLastTime) / 1000, 0.1) : 0;
+            sceneLastTime = timestamp;
+            
+            // Aggiorna e disegna la scena
+            scene.update(deltaTime);
+            scene.draw(sceneCtx);
+            
+            // Aggiorna FPS
+            sceneFps.update();
+            
+            // Richiedi il prossimo frame
+            sceneAnimationId = requestAnimationFrame(animateScene);
+        }
+        
+        // Gestione dei controlli di animazione
+        document.getElementById('startScene').addEventListener('click', function() {
+            if (!sceneAnimating) {
+                if (!scene) {
+                    scene = new SceneManager();
+                    scene.initialize(starCount);
+                }
+                sceneLastTime = 0;
+                sceneAnimating = true;
+                animateScene(performance.now());
+            }
+        });
+        
+        document.getElementById('pauseScene').addEventListener('click', function() {
+            sceneAnimating = false;
+            if (sceneAnimationId) {
+                cancelAnimationFrame(sceneAnimationId);
+                sceneAnimationId = null;
+            }
+        });
+        
+        document.getElementById('resetScene').addEventListener('click', function() {
+            sceneAnimating = false;
+            if (sceneAnimationId) {
+                cancelAnimationFrame(sceneAnimationId);
+                sceneAnimationId = null;
+            }
+            
+            scene = new SceneManager();
+            scene.initialize(starCount);
+            scene.draw(sceneCtx);
+        });
+        
+        document.getElementById('starCount').addEventListener('input', function() {
+            starCount = parseInt(this.value);
+            document.getElementById('starCountValue').textContent = starCount;
+            
+            if (scene) {
+                scene.initialize(starCount);
+                if (!sceneAnimating) {
+                    scene.draw(sceneCtx);
+                }
+            }
+        });
+        
+        // Inizializza la scena
+        scene = new SceneManager();
+        scene.initialize(starCount);
+        scene.draw(sceneCtx);
+    </script>
+</body>
+</html>
