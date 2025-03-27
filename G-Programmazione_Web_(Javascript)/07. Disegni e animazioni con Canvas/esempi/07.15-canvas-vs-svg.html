@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas vs SVG - Esempio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+
+        .comparison > div {
+            width: 48%;
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        canvas, svg {
+            border: 1px solid #999;
+            margin-top: 10px;
+        }
+
+        .controls {
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .zoom {
+            margin-top: 20px;
+        }
+        
+        .zoom button {
+            background-color: #2196F3;
+        }
+        
+        .zoom button:hover {
+            background-color: #0b7dda;
+        }
+        
+        #performance {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Canvas vs SVG: Confronto pratico</h1>
+    
+    <p>Questo esempio mostra le differenze pratiche tra Canvas e SVG in termini di rendering, eventi e scalabilità.</p>
+    
+    <h2>Esempio 1: Disegno di base</h2>
+    <div class="comparison">
+        <div>
+            <h3>Canvas</h3>
+            <canvas id="basicCanvas" width="300" height="200"></canvas>
+        </div>
+        <div>
+            <h3>SVG</h3>
+            <svg id="basicSvg" width="300" height="200">
+                <rect x="50" y="50" width="100" height="100" fill="red" />
+                <circle cx="200" cy="100" r="40" fill="blue" />
+            </svg>
+        </div>
+    </div>
+    
+    <h2>Esempio 2: Interazione con eventi</h2>
+    <div class="comparison">
+        <div>
+            <h3>Canvas (click da qualsiasi parte)</h3>
+            <canvas id="eventsCanvas" width="300" height="200"></canvas>
+            <p>Conteggio click: <span id="canvasClicks">0</span></p>
+        </div>
+        <div>
+            <h3>SVG (click sugli elementi)</h3>
+            <svg id="eventsSvg" width="300" height="200">
+                <rect id="svgRect" x="50" y="50" width="100" height="100" fill="green" />
+                <circle id="svgCircle" cx="200" cy="100" r="40" fill="purple" />
+            </svg>
+            <p>Conteggio click rettangolo: <span id="rectClicks">0</span></p>
+            <p>Conteggio click cerchio: <span id="circleClicks">0</span></p>
+        </div>
+    </div>
+    
+    <h2>Esempio 3: Scalabilità</h2>
+    <div class="comparison zoom">
+        <div>
+            <h3>Canvas</h3>
+            <canvas id="zoomCanvas" width="300" height="200"></canvas>
+            <div class="controls">
+                <button onclick="zoomCanvas(2)">Zoom In (2x)</button>
+                <button onclick="zoomCanvas(1)">Reset Zoom</button>
+            </div>
+        </div>
+        <div>
+            <h3>SVG</h3>
+            <svg id="zoomSvg" width="300" height="200" viewBox="0 0 300 200">
+                <rect x="75" y="50" width="150" height="100" fill="orange" stroke="black" stroke-width="2" />
+                <text x="150" y="100" text-anchor="middle" font-size="20">Testo SVG</text>
+            </svg>
+            <div class="controls">
+                <button onclick="zoomSvg(2)">Zoom In (2x)</button>
+                <button onclick="zoomSvg(1)">Reset Zoom</button>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Esempio 4: Test di performance</h2>
+    <div id="performance">
+        <button onclick="runPerformanceTest()">Esegui test di performance</button>
+        <div id="performanceResults"></div>
+    </div>
+
+    <script>
+        // Esempio 1: Disegno di base con Canvas
+        const basicCanvas = document.getElementById('basicCanvas');
+        const basicCtx = basicCanvas.getContext('2d');
+        
+        // Disegna un rettangolo rosso
+        basicCtx.fillStyle = 'red';
+        basicCtx.fillRect(50, 50, 100, 100);
+        
+        // Disegna un cerchio blu
+        basicCtx.fillStyle = 'blue';
+        basicCtx.beginPath();
+        basicCtx.arc(200, 100, 40, 0, Math.PI * 2);
+        basicCtx.fill();
+        
+        // Esempio 2: Eventi Canvas
+        const eventsCanvas = document.getElementById('eventsCanvas');
+        const eventsCtx = eventsCanvas.getContext('2d');
+        let canvasClicks = 0;
+        
+        // Disegna forme sul canvas per eventi
+        eventsCtx.fillStyle = 'green';
+        eventsCtx.fillRect(50, 50, 100, 100);
+        
+        eventsCtx.fillStyle = 'purple';
+        eventsCtx.beginPath();
+        eventsCtx.arc(200, 100, 40, 0, Math.PI * 2);
+        eventsCtx.fill();
+        
+        // Gestione eventi Canvas (tutto il canvas)
+        eventsCanvas.addEventListener('click', function() {
+            canvasClicks++;
+            document.getElementById('canvasClicks').textContent = canvasClicks;
+        });
+        
+        // Gestione eventi SVG (per elemento)
+        let rectClicks = 0;
+        let circleClicks = 0;
+        
+        document.getElementById('svgRect').addEventListener('click', function(e) {
+            rectClicks++;
+            document.getElementById('rectClicks').textContent = rectClicks;
+            e.stopPropagation();
+        });
+        
+        document.getElementById('svgCircle').addEventListener('click', function(e) {
+            circleClicks++;
+            document.getElementById('circleClicks').textContent = circleClicks;
+            e.stopPropagation();
+        });
+        
+        // Esempio 3: Scalabilità
+        const zoomCanvas = document.getElementById('zoomCanvas');
+        const zoomCtx = zoomCanvas.getContext('2d');
+        
+        function drawZoomCanvas() {
+            zoomCtx.clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
+            zoomCtx.fillStyle = 'orange';
+            zoomCtx.strokeStyle = 'black';
+            zoomCtx.lineWidth = 2;
+            
+            // Rettangolo
+            zoomCtx.fillRect(75, 50, 150, 100);
+            zoomCtx.strokeRect(75, 50, 150, 100);
+            
+            // Testo
+            zoomCtx.fillStyle = 'black';
+            zoomCtx.font = '20px Arial';
+            zoomCtx.textAlign = 'center';
+            zoomCtx.fillText('Testo Canvas', 150, 100);
+        }
+        
+        drawZoomCanvas();
+        
+        function zoomCanvas(scale) {
+            const canvas = document.getElementById('zoomCanvas');
+            canvas.style.width = (300 * scale) + 'px';
+            canvas.style.height = (200 * scale) + 'px';
+        }
+        
+        function zoomSvg(scale) {
+            const svg = document.getElementById('zoomSvg');
+            svg.style.width = (300 * scale) + 'px';
+            svg.style.height = (200 * scale) + 'px';
+        }
+        
+        // Esempio 4: Test di performance
+        function runPerformanceTest() {
+            const results = document.getElementById('performanceResults');
+            results.innerHTML = '<p>Esecuzione test di performance...</p>';
+            
+            setTimeout(() => {
+                // Crea canvas per il test
+                const perfCanvas = document.createElement('canvas');
+                perfCanvas.width = 600;
+                perfCanvas.height = 400;
+                const ctx = perfCanvas.getContext('2d');
+                
+                // Crea SVG per il test
+                const perfSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                perfSvg.setAttribute('width', '600');
+                perfSvg.setAttribute('height', '400');
+                document.body.appendChild(perfSvg);
+                
+                // Numero di forme
+                const numShapes = 1000;
+                
+                // Test Canvas
+                const canvasStartTime = performance.now();
+                
+                for (let i = 0; i < numShapes; i++) {
+                    const x = Math.random() * 600;
+                    const y = Math.random() * 400;
+                    const radius = 5 + Math.random() * 10;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+                    ctx.fill();
+                }
+                
+                const canvasEndTime = performance.now();
+                const canvasTime = canvasEndTime - canvasStartTime;
+                
+                // Test SVG
+                const svgStartTime = performance.now();
+                
+                for (let i = 0; i < numShapes; i++) {
+                    const x = Math.random() * 600;
+                    const y = Math.random() * 400;
+                    const radius = 5 + Math.random() * 10;
+                    
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', x);
+                    circle.setAttribute('cy', y);
+                    circle.setAttribute('r', radius);
+                    circle.setAttribute('fill', `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`);
+                    perfSvg.appendChild(circle);
+                }
+                
+                const svgEndTime = performance.now();
+                const svgTime = svgEndTime - svgStartTime;
+                
+                // Rimuovi SVG di test
+                document.body.removeChild(perfSvg);
+                
+                // Mostra risultati
+                results.innerHTML = `
+                    <h3>Risultati per ${numShapes} cerchi</h3>
+                    <p><strong>Canvas:</strong> ${canvasTime.toFixed(2)} ms</p>
+                    <p><strong>SVG:</strong> ${svgTime.toFixed(2)} ms</p>
+                    <p><strong>Rapporto:</strong> SVG è ${(svgTime / canvasTime).toFixed(2)}x più lento di Canvas</p>
+                    <p><em>Nota: I risultati possono variare in base al browser e al dispositivo</em></p>
+                `;
+            }, 100);
+        }
+    </script>
+</body>
+</html>
