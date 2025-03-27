@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Ottimizzazione Canvas per Dispositivi Mobili</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            overflow: hidden;
+            touch-action: none;
+        }
+        
+        #container {
+            position: relative;
+        }
+        
+        canvas {
+            display: block;
+            touch-action: none;
+            background-color: #000;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        button:active {
+            background-color: #2980b9;
+        }
+        
+        .device-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 12px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 12px;
+            border-radius: 5px;
+            max-width: 200px;
+        }
+        
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-family: monospace;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            width: 250px;
+            z-index: 100;
+        }
+        
+        .performance-mode {
+            position: fixed;
+            top: 170px;
+            left: 10px;
+            padding: 8px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .performance-mode label {
+            margin: 5px 0;
+        }
+        
+        .touch-indicator {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 2px solid white;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        
+        .instructions {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+        }
+        
+        .instructions button {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    
+    <div class="device-info" id="deviceInfo">
+        Caricamento informazioni dispositivo...
+    </div>
+    
+    <div class="debug-panel" id="debugPanel"></div>
+    
+    <div class="performance-mode">
+        <label>
+            <input type="radio" name="performance" value="high" checked> Alta qualità
+        </label>
+        <label>
+            <input type="radio" name="performance" value="medium"> Media qualità
+        </label>
+        <label>
+            <input type="radio" name="performance" value="low"> Risparmio batteria
+        </label>
+    </div>
+    
+    <div class="controls">
+        <button id="addParticles">Aggiungi Particelle</button>
+        <button id="clearParticles">Pulisci</button>
+        <button id="togglePause">Pausa</button>
+    </div>
+    
+    <div class="instructions" id="instructions">
+        <h2>Demo Ottimizzazione Mobile</h2>
+        <p>Questa demo mostra tecniche di ottimizzazione Canvas per dispositivi mobili</p>
+        <ul style="text-align: left; margin: 15px 0;">
+            <li>Ridimensionamento responsive</li>
+            <li>Gestione DPI per schermi ad alta densità</li>
+            <li>Supporto multi-touch</li>
+            <li>Ottimizzazione delle prestazioni</li>
+            <li>Debug mobile integrato</li>
+        </ul>
+        <p>Tocca o fai click per interagire</p>
+        <button id="startDemo">Inizia Demo</button>
+    </div>
+    
+    <script>
+        // Configurazione e variabili globali
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const debugPanel = document.getElementById('debugPanel');
+        const deviceInfo = document.getElementById('deviceInfo');
+        
+        let particles = [];
+        let paused = false;
+        let lastFrameTime = 0;
+        let fps = 0;
+        let fpsHistory = [];
+        let frameCount = 0;
+        let lastFpsUpdate = 0;
+        let hiDpiSupported = false;
+        let pixelRatio = 1;
+        let performanceMode = 'high';
+        let touchIndicators = [];
+        
+        // Classe Particella
+        class Particle {
+            constructor(x, y, size, speed, color) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.originalSize = size;
+                this.speed = speed;
+                this.color = color;
+                this.angle = Math.random() * Math.PI * 2;
+                this.vx = Math.sin(this.angle) * this.speed;
+                this.vy = Math.cos(this.angle) * this.speed;
+                this.rotation = 0;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.2;
+                this.opacity = 1;
+                this.wind = 0;
+                this.gravity = 0.05 + Math.random() * 0.05;
+            }
+            
+            update() {
+                // Aggiorna posizione con vento e gravità
+                this.x += this.vx + this.wind;
+                this.y += this.vy + this.gravity;
+                this.rotation += this.rotationSpeed;
+                
+                // Collisione con i bordi
+                if (this.x < this.size || this.x > canvas.width - this.size) {
+                    this.vx *= -0.8;
+                    this.x = Math.max(this.size, Math.min(this.x, canvas.width - this.size));
+                }
+                
+                if (this.y < this.size) {
+                    this.vy *= -0.8;
+                    this.y = this.size;
+                }
+                
+                if (this.y > canvas.height - this.size) {
+                    this.vy *= -0.6;
+                    this.y = canvas.height - this.size;
+                    this.vx *= 0.98; // attrito
+                }
+                
+                // Modifica dimensione in base al performanceMode
+                if (performanceMode === 'low' && this.size > 10) {
+                    this.size = this.originalSize * 0.7;
+                } else if (performanceMode === 'medium') {
+                    this.size = this.originalSize * 0.85;
+                } else {
+                    this.size = this.originalSize;
+                }
+            }
+            
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                // Semplifica il rendering in modalità a basse prestazioni
+                if (performanceMode === 'low') {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Rendering di alta qualità con ombra e bagliore
+                    if (performanceMode === 'high') {
+                        ctx.shadowColor = this.color;
+                        ctx.shadowBlur = this.size * 0.5;
+                    }
+                    
+                    // Gradiente radiale
+                    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
+                    gradient.addColorStop(0, 'white');
+                    gradient.addColorStop(0.4, this.color);
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+            }
+        }
+        
+        // Inizializzazione e responsive canvas
+        function initCanvas() {
+            // Imposta dimensioni canvas
+            resizeCanvas();
+            
+            // Aggiungi listener per ridimensionamento e orientamento
+            window.addEventListener('resize', resizeCanvas);
+            window.addEventListener('orientationchange', resizeCanvas);
+            
+            // Gestione interazioni
+            setupEventListeners();
+            
+            // Avvia il loop di gioco
+            requestAnimationFrame(gameLoop);
+            
+            // Mostra informazioni dispositivo
+            showDeviceInfo();
+            
+            // Verifica supporto batteria
+            checkBatterySupport();
+        }
+        
+        // Gestione del ridimensionamento responsive del canvas
+        function resizeCanvas() {
+            // Ottieni dimensioni finestra
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // Imposta dimensioni canvas
+            canvas.style.width = windowWidth + 'px';
+            canvas.style.height = windowHeight + 'px';
+            
+            // Ottimizzazione per display ad alta densità
+            pixelRatio = hiDpiSupported ? window.devicePixelRatio || 1 : 1;
+            
+            // Imposta dimensioni effettive del buffer
+            canvas.width = windowWidth * pixelRatio;
+            canvas.height = windowHeight * pixelRatio;
+            
+            // Scala per mantenere rapporto 1:1 con i pixel CSS
+            ctx.scale(pixelRatio, pixelRatio);
+            
+            // Log di debug
+            debug(`Canvas ridimensionato: ${windowWidth}x${windowHeight}, Pixel Ratio: ${pixelRatio}`);
+        }
+        
+        // Setup degli event listener
+        function setupEventListeners() {
+            // Touch events
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', handleTouchEnd);
+            
+            // Mouse events (fallback per desktop)
+            canvas.addEventListener('mousedown', handleMouseDown);
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', handleMouseUp);
+            
+            // Controlli UI
+            document.getElementById('addParticles').addEventListener('click', () => {
+                addParticleGroup(canvas.width / 2, canvas.height / 2, 20);
+            });
+            
+            document.getElementById('clearParticles').addEventListener('click', () => {
+                particles = [];
+                debug("Particelle rimosse");
+            });
+            
+            document.getElementById('togglePause').addEventListener('click', () => {
+                paused = !paused;
+                debug(paused ? "Animazione in pausa" : "Animazione ripresa");
+            });
+            
+            // Selezione modalità prestazioni
+            document.querySelectorAll('input[name="performance"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    performanceMode = this.value;
+                    debug(`Modalità prestazioni: ${performanceMode}`);
+                    
+                    // Aggiorna il FPS target
+                    switch (performanceMode) {
+                        case 'low':
+                            targetFPS = 30;
+                            break;
+                        case 'medium':
+                            targetFPS = 45;
+                            break;
+                        case 'high':
+                            targetFPS = 60;
+                            break;
+                    }
+                });
+            });
+            
+            // Pulsante di avvio demo
+            document.getElementById('startDemo').addEventListener('click', () => {
+                document.getElementById('instructions').style.display = 'none';
+                addParticleGroup(canvas.width / 2, canvas.height / 2, 30);
+            });
+        }
+        
+        // Gestione degli eventi touch
+        function handleTouchStart(e) {
+            e.preventDefault();
+            
+            // Gestisci ogni punto di tocco
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                const touch = e.changedTouches[i];
+                const touchX = touch.clientX;
+                const touchY = touch.clientY;
+                
+                // Aggiungi particelle dove l'utente ha toccato
+                addParticleGroup(touchX, touchY, 10);
+                
+                // Crea indicatore di tocco
+                createTouchIndicator(touch.identifier, touchX, touchY);
+            }
+        }
+        
+        function handleTouchMove(e) {
+            e.preventDefault();
+            
+            // Aggiorna la posizione degli indicatori di tocco
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                const touch = e.changedTouches[i];
+                updateTouchIndicator(touch.identifier, touch.clientX, touch.clientY);
+                
+                // Opzionalmente, aggiungi una scia di particelle
+                if (Math.random() < 0.3) { // Non aggiungere troppe particelle per mantenere le prestazioni
+                    addParticleGroup(touch.clientX, touch.clientY, 2);
+                }
+            }
+        }
+        
+        function handleTouchEnd(e) {
+            e.preventDefault();
+            
+            // Rimuovi gli indicatori di tocco
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                removeTouchIndicator(e.changedTouches[i].identifier);
+            }
+        }
+        
+        // Gestione eventi mouse (per desktop)
+        function handleMouseDown(e) {
+            addParticleGroup(e.clientX, e.clientY, 10);
+        }
+        
+        function handleMouseMove(e) {
+            // Emulare il vento in base al movimento del mouse
+            if (e.buttons === 1) {
+                const windStrength = (e.movementX / 50);
+                particles.forEach(p => p.wind = windStrength);
+                
+                if (Math.random() < 0.3) {
+                    addParticleGroup(e.clientX, e.clientY, 1);
+                }
+            }
+        }
+        
+        function handleMouseUp(e) {
+            // Ridurre gradualmente l'effetto vento
+            setTimeout(() => {
+                particles.forEach(p => p.wind = 0);
+            }, 500);
+        }
+        
+        // Touch indicators
+        function createTouchIndicator(id, x, y) {
+            // Rimuovi l'indicatore esistente se c'è
+            removeTouchIndicator(id);
+            
+            // Crea un nuovo indicatore
+            const indicator = document.createElement('div');
+            indicator.className = 'touch-indicator';
+            indicator.id = 'touch-' + id;
+            indicator.style.left = x + 'px';
+            indicator.style.top = y + 'px';
+            document.getElementById('container').appendChild(indicator);
+            
+            // Registra l'indicatore
+            touchIndicators.push({ id, element: indicator });
+        }
+        
+        function updateTouchIndicator(id, x, y) {
+            const indicator = touchIndicators.find(i => i.id === id);
+            if (indicator && indicator.element) {
+                indicator.element.style.left = x + 'px';
+                indicator.element.style.top = y + 'px';
+            }
+        }
+        
+        function removeTouchIndicator(id) {
+            const indicator = touchIndicators.find(i => i.id === id);
+            if (indicator && indicator.element) {
+                indicator.element.remove();
+                touchIndicators = touchIndicators.filter(i => i.id !== id);
+            }
+        }
+        
+        // Aggiungi un gruppo di particelle alla posizione specificata
+        function addParticleGroup(x, y, count) {
+            // Limita il numero di particelle in base al mode
+            const maxParticles = {
+                'high': 500,
+                'medium': 300,
+                'low': 150
+            };
+            
+            // Se abbiamo già troppe particelle, rimuovi le più vecchie
+            if (particles.length > maxParticles[performanceMode]) {
+                particles = particles.slice(-maxParticles[performanceMode] + count);
+            }
+            
+            // Crea nuove particelle
+            for (let i = 0; i < count; i++) {
+                const size = 5 + Math.random() * 20;
+                const speed = 1 + Math.random() * 3;
+                
+                // Colori vivaci per le particelle
+                const colors = [
+                    '#FF5252', '#FF4081', '#E040FB', '#7C4DFF',
+                    '#536DFE', '#448AFF', '#40C4FF', '#18FFFF',
+                    '#64FFDA', '#69F0AE', '#B2FF59', '#EEFF41'
+                ];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                particles.push(new Particle(
+                    x + (Math.random() - 0.5) * 20,
+                    y + (Math.random() - 0.5) * 20,
+                    size,
+                    speed,
+                    color
+                ));
+            }
+            
+            debug(`Aggiunte ${count} particelle. Totale: ${particles.length}`);
+        }
+        
+        // Game loop principale
+        function gameLoop(timestamp) {
+            requestAnimationFrame(gameLoop);
+            
+            // Calcola deltaTime e FPS
+            if (!lastFrameTime) {
+                lastFrameTime = timestamp;
+            }
+            const deltaTime = timestamp - lastFrameTime;
+            lastFrameTime = timestamp;
+            
+            // Aggiorna FPS
+            if (timestamp - lastFpsUpdate > 1000) {
+                fps = frameCount;
+                frameCount = 0;
+                lastFpsUpdate = timestamp;
+                
+                // Aggiorna la history FPS
+                fpsHistory.push(fps);
+                if (fpsHistory.length > 10) {
+                    fpsHistory.shift();
+                }
+                
+                // Mostra FPS nel debug panel
+                const avgFps = fpsHistory.reduce((sum, val) => sum + val, 0) / fpsHistory.length;
+                debug(`FPS: ${fps.toFixed(0)} (avg: ${avgFps.toFixed(1)})`);
+            }
+            frameCount++;
+            
+            // Se in pausa, non aggiornare lo stato
+            if (paused) return;
+            
+            // Aggiorna le particelle
+            particles.forEach(particle => particle.update());
+            
+            // Rimuovi particelle che sono uscite dallo schermo o ferme
+            particles = particles.filter(p => 
+                p.y < canvas.height + p.size * 2 && 
+                p.x > -p.size * 2 && 
+                p.x < canvas.width + p.size * 2
+            );
+            
+            // Disegna la scena
+            draw();
+        }
+        
+        // Funzione di disegno principale
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
+            
+            // Se stiamo utilizzando il mode ad alta qualità, aggiungiamo un effetto sfocato allo sfondo
+            if (performanceMode === 'high') {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
+            }
+            
+            // Disegna le particelle
+            for (const particle of particles) {
+                particle.draw(ctx);
+            }
+            
+            // Disegna statistiche FPS
+            ctx.fillStyle = 'white';
+            ctx.font = '14px Arial';
+            ctx.fillText(`Particelle: ${particles.length}`, 10, canvas.height / pixelRatio - 20);
+        }
+        
+        // Pannello di debug
+        function debug(message) {
+            const entry = document.createElement('div');
+            entry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            debugPanel.appendChild(entry);
+            
+            // Limita il numero di messaggi
+            while (debugPanel.children.length > 8) {
+                debugPanel.removeChild(debugPanel.firstChild);
+            }
+            
+            // Scrolla alla fine
+            debugPanel.scrollTop = debugPanel.scrollHeight;
+        }
+        
+        // Informazioni sul dispositivo
+        function showDeviceInfo() {
+            const info = [];
+            
+            // Rilevamento tipo dispositivo
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            info.push(`Dispositivo: ${isMobile ? 'Mobile' : 'Desktop'}`);
+            
+            // Schermo
+            info.push(`Schermo: ${window.screen.width} x ${window.screen.height}`);
+            info.push(`Viewport: ${window.innerWidth} x ${window.innerHeight}`);
+            
+            // Device pixel ratio (per schermi HiDPI)
+            pixelRatio = window.devicePixelRatio || 1;
+            hiDpiSupported = pixelRatio > 1;
+            info.push(`Pixel Ratio: ${pixelRatio}`);
+            
+            // Touch support
+            info.push(`Touch Support: ${('ontouchstart' in window) ? 'Sì' : 'No'}`);
+            
+            // Rendering info
+            info.push(`Canvas: ${canvas.width} x ${canvas.height}`);
+            
+            // Mostra le info
+            deviceInfo.innerHTML = info.join('<br>');
+        }
+        
+        // Verifica supporto Battery API
+        function checkBatterySupport() {
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(battery => {
+                    debug(`Livello batteria: ${Math.round(battery.level * 100)}%`);
+                    debug(`Stato batteria: ${battery.charging ? 'In carica' : 'Non in carica'}`);
+                    
+                    // Addizionale: imposta modalità a risparmio energetico se la batteria è scarica
+                    if (battery.level < 0.2 && !battery.charging) {
+                        debug('Livello batteria basso - passaggio a modalità risparmio energetico');
+                        document.querySelector('input[value="low"]').checked = true;
+                        performanceMode = 'low';
+                    }
+                });
+            } else {
+                debug('Battery API non supportata');
+            }
+        }
+        
+        // Avvio all'evento DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', initCanvas);
+    </script>
+</body>
+</html>

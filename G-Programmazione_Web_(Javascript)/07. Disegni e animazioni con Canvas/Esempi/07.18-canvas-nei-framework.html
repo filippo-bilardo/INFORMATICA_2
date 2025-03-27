@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas nei Framework Moderni</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1000px;
+        }
+        
+        .framework-section {
+            background-color: #fff;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .framework-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .framework-logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            object-fit: contain;
+        }
+        
+        canvas {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: block;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .code-section {
+            margin-top: 20px;
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .code-toggle {
+            background-color: #e7f3ff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            color: #0d6efd;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-left: 4px solid #4caf50;
+            border-radius: 0 5px 5px 0;
+            overflow-x: auto;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .react-color {
+            background-color: #61dafb;
+            color: #282c34;
+        }
+        
+        .vue-color {
+            background-color: #42b883;
+            color: white;
+        }
+        
+        .angular-color {
+            background-color: #dd1b16;
+            color: white;
+        }
+        
+        .btn-framework {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .btn-framework:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Canvas nei Framework Moderni</h1>
+        <p class="lead">
+            Questa pagina dimostra come sarebbe l'integrazione del Canvas HTML5 con i principali framework JavaScript moderni:
+            React, Vue.js e Angular. Gli esempi simulano il comportamento e il ciclo di vita di questi framework.
+        </p>
+        
+        <!-- React Section -->
+        <div class="framework-section">
+            <div class="framework-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React Logo" class="framework-logo">
+                <h2>React + Canvas</h2>
+            </div>
+            
+            <p>React utilizza <code>useRef</code> per accedere al DOM e <code>useEffect</code> per gestire il ciclo di vita del componente.</p>
+            
+            <canvas id="react-canvas" width="500" height="300"></canvas>
+            
+            <div>
+                <button class="btn-framework react-color" onclick="reactDemo.addCircle()">Aggiungi Cerchio</button>
+                <button class="btn-framework react-color" onclick="reactDemo.toggleAnimation()">Play/Pause</button>
+                <button class="btn-framework react-color" onclick="reactDemo.clear()">Reset</button>
+            </div>
+            
+            <div class="code-section">
+                <button class="code-toggle" onclick="toggleCode('react-code')">Mostra/Nascondi Codice React</button>
+                <pre id="react-code" class="language-jsx hidden">
+import React, { useRef, useEffect, useState } from 'react';
+
+const CanvasComponent = () => {
+  const canvasRef = useRef(null);
+  const [isAnimating, setIsAnimating] = useState(true);
+  const [circles, setCircles] = useState([
+    { x: 50, y: 50, radius: 20, color: '#61dafb', dx: 2, dy: 1 }
+  ]);
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    
+    const render = () => {
+      // Pulisci il canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Disegna e anima i cerchi
+      circles.forEach(circle => {
+        // Aggiorna posizione
+        circle.x += circle.dx;
+        circle.y += circle.dy;
+        
+        // Gestisci rimbalzi
+        if (circle.x < circle.radius || circle.x > canvas.width - circle.radius) {
+          circle.dx = -circle.dx;
+        }
+        if (circle.y < circle.radius || circle.y > canvas.height - circle.radius) {
+          circle.dy = -circle.dy;
+        }
+        
+        // Disegna il cerchio
+        ctx.beginPath();
+        ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = circle.color;
+        ctx.fill();
+      });
+      
+      // Continua l'animazione se attiva
+      if (isAnimating) {
+        animationFrameId = window.requestAnimationFrame(render);
+      }
+    };
+    
+    render();
+    
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [circles, isAnimating]);
+  
+  const handleAddCircle = () => {
+    setCircles([...circles, {
+      x: Math.random() * canvasRef.current.width,
+      y: Math.random() * canvasRef.current.height,
+      radius: 10 + Math.random() * 20,
+      color: `rgb(${Math.floor(Math.random() * 255)}, 
+              ${Math.floor(Math.random() * 255)}, 
+              ${Math.floor(Math.random() * 255)})`,
+      dx: -2 + Math.random() * 4,
+      dy: -2 + Math.random() * 4
+    }]);
+  };
+  
+  const handleToggleAnimation = () => {
+    setIsAnimating(!isAnimating);
+  };
+  
+  const handleClear = () => {
+    setCircles([]);
+  };
+  
+  return (
+    <div>
+      <canvas 
+        ref={canvasRef} 
+        width={500} 
+        height={300}
+      />
+      <div>
+        <button onClick={handleAddCircle}>Aggiungi Cerchio</button>
+        <button onClick={handleToggleAnimation}>
+          {isAnimating ? 'Pause' : 'Play'}
+        </button>
+        <button onClick={handleClear}>Reset</button>
+      </div>
+    </div>
+  );
+};
+
+export default CanvasComponent;</pre>
+            </div>
+        </div>
+        
+        <!-- Vue Section -->
+        <div class="framework-section">
+            <div class="framework-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg" alt="Vue Logo" class="framework-logo">
+                <h2>Vue.js + Canvas</h2>
+            </div>
+            
+            <p>Vue.js utilizza <code>refs</code> per accedere al DOM e i metodi del ciclo di vita come <code>mounted</code> e <code>beforeDestroy</code>.</p>
+            
+            <canvas id="vue-canvas" width="500" height="300"></canvas>
+            
+            <div>
+                <button class="btn-framework vue-color" onclick="vueDemo.changeShape()">Cambia Forma</button>
+                <button class="btn-framework vue-color" onclick="vueDemo.toggleAnimation()">Play/Pause</button>
+                <button class="btn-framework vue-color" onclick="vueDemo.changeColor()">Cambia Colore</button>
+            </div>
+            
+            <div class="code-section">
+                <button class="code-toggle" onclick="toggleCode('vue-code')">Mostra/Nascondi Codice Vue</button>
+                <pre id="vue-code" class="language-vue hidden">
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;canvas 
+      ref="canvas" 
+      :width="width" 
+      :height="height"
+    &gt;&lt;/canvas&gt;
+    &lt;div&gt;
+      &lt;button @click="changeShape" class="vue-color"&gt;Cambia Forma&lt;/button&gt;
+      &lt;button @click="toggleAnimation" class="vue-color"&gt;{{ isAnimating ? 'Pause' : 'Play' }}&lt;/button&gt;
+      &lt;button @click="changeColor" class="vue-color"&gt;Cambia Colore&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      width: 500,
+      height: 300,
+      isAnimating: true,
+      animationId: null,
+      shape: 'rectangle',
+      color: '#42b883',
+      rotation: 0
+    }
+  },
+  mounted() {
+    this.ctx = this.$refs.canvas.getContext('2d');
+    this.startAnimation();
+  },
+  beforeDestroy() {
+    this.stopAnimation();
+  },
+  methods: {
+    startAnimation() {
+      if (this.isAnimating) {
+        this.draw();
+        this.animationId = requestAnimationFrame(this.startAnimation);
+      }
+    },
+    stopAnimation() {
+      if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+        this.animationId = null;
+      }
+    },
+    draw() {
+      // Clear canvas
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      
+      // Update rotation
+      this.rotation += 0.01;
+      
+      // Save context state
+      this.ctx.save();
+      
+      // Move to center of canvas
+      this.ctx.translate(this.width / 2, this.height / 2);
+      this.ctx.rotate(this.rotation);
+      
+      // Draw shape
+      this.ctx.fillStyle = this.color;
+      
+      if (this.shape === 'rectangle') {
+        this.ctx.fillRect(-50, -50, 100, 100);
+      } else if (this.shape === 'circle') {
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, 50, 0, Math.PI * 2);
+        this.ctx.fill();
+      } else if (this.shape === 'triangle') {
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -50);
+        this.ctx.lineTo(-50, 50);
+        this.ctx.lineTo(50, 50);
+        this.ctx.closePath();
+        this.ctx.fill();
+      }
+      
+      // Restore context state
+      this.ctx.restore();
+    },
+    toggleAnimation() {
+      this.isAnimating = !this.isAnimating;
+      if (this.isAnimating) {
+        this.startAnimation();
+      } else {
+        this.stopAnimation();
+      }
+    },
+    changeShape() {
+      const shapes = ['rectangle', 'circle', 'triangle'];
+      const currentIndex = shapes.indexOf(this.shape);
+      const nextIndex = (currentIndex + 1) % shapes.length;
+      this.shape = shapes[nextIndex];
+    },
+    changeColor() {
+      const colors = ['#42b883', '#35495e', '#41b883', '#273849', '#34495e'];
+      const currentIndex = colors.indexOf(this.color);
+      const nextIndex = (currentIndex + 1) % colors.length;
+      this.color = colors[nextIndex];
+    }
+  }
+}
+&lt;/script&gt;</pre>
+            </div>
+        </div>
+        
+        <!-- Angular Section -->
+        <div class="framework-section">
+            <div class="framework-header">
+                <img src="https://angular.io/assets/images/logos/angular/angular.svg" alt="Angular Logo" class="framework-logo">
+                <h2>Angular + Canvas</h2>
+            </div>
+            
+            <p>Angular utilizza <code>ViewChild</code> per accedere al DOM e i metodi del ciclo di vita come <code>AfterViewInit</code> e <code>OnDestroy</code>.</p>
+            
+            <canvas id="angular-canvas" width="500" height="300"></canvas>
+            
+            <div>
+                <button class="btn-framework angular-color" onclick="angularDemo.rain()">Pioggia</button>
+                <button class="btn-framework angular-color" onclick="angularDemo.snow()">Neve</button>
+                <button class="btn-framework angular-color" onclick="angularDemo.stars()">Stelle</button>
+                <button class="btn-framework angular-color" onclick="angularDemo.clear()">Reset</button>
+            </div>
+            
+            <div class="code-section">
+                <button class="code-toggle" onclick="toggleCode('angular-code')">Mostra/Nascondi Codice Angular</button>
+                <pre id="angular-code" class="language-typescript hidden">
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+
+@Component({
+  selector: 'app-canvas-demo',
+  template: `
+    &lt;canvas #canvas width="500" height="300">&lt;/canvas>
+    &lt;div>
+      &lt;button (click)="rain()" class="angular-color">Pioggia&lt;/button>
+      &lt;button (click)="snow()" class="angular-color">Neve&lt;/button>
+      &lt;button (click)="stars()" class="angular-color">Stelle&lt;/button>
+      &lt;button (click)="clear()" class="angular-color">Reset&lt;/button>
+    &lt;/div>
+  `
+})
+export class CanvasDemoComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('canvas') canvasRef: ElementRef<HTMLCanvasElement>;
+  
+  private ctx: CanvasRenderingContext2D;
+  private animationId: number;
+  private particles: Particle[] = [];
+  private mode: 'rain' | 'snow' | 'stars' = null;
+  
+  ngAfterViewInit() {
+    const canvas = this.canvasRef.nativeElement;
+    this.ctx = canvas.getContext('2d');
+    this.clear();
+  }
+  
+  ngOnDestroy() {
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+    }
+  }
+  
+  rain() {
+    this.clear();
+    this.mode = 'rain';
+    
+    // Create initial raindrops
+    for (let i = 0; i < 100; i++) {
+      this.particles.push({
+        x: Math.random() * this.canvasRef.nativeElement.width,
+        y: Math.random() * this.canvasRef.nativeElement.height,
+        size: 2 + Math.random() * 3,
+        speed: 10 + Math.random() * 10,
+        color: 'rgba(255, 255, 255, 0.8)'
+      });
+    }
+    
+    this.animate();
+  }
+  
+  snow() {
+    this.clear();
+    this.mode = 'snow';
+    
+    // Create initial snowflakes
+    for (let i = 0; i < 100; i++) {
+      this.particles.push({
+        x: Math.random() * this.canvasRef.nativeElement.width,
+        y: Math.random() * this.canvasRef.nativeElement.height,
+        size: 3 + Math.random() * 5,
+        speed: 1 + Math.random() * 3,
+        color: 'rgba(255, 255, 255, 0.8)',
+        wind: Math.random() - 0.5
+      });
+    }
+    
+    this.animate();
+  }
+  
+  stars() {
+    this.clear();
+    this.mode = 'stars';
+    
+    const canvas = this.canvasRef.nativeElement;
+    
+    // Create stars
+    for (let i = 0; i < 200; i++) {
+      this.particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: 0.5 + Math.random() * 2,
+        speed: 0.1 + Math.random() * 0.5,
+        color: `rgba(255, 255, ${Math.floor(Math.random() * 100) + 155}, ${Math.random() * 0.8 + 0.2})`,
+        pulse: Math.random() * 0.1,
+        initialSize: 0.5 + Math.random() * 2
+      });
+    }
+    
+    this.animate();
+  }
+  
+  clear() {
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+    }
+    
+    const canvas = this.canvasRef.nativeElement;
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.particles = [];
+    this.mode = null;
+  }
+  
+  private animate() {
+    const canvas = this.canvasRef.nativeElement;
+    
+    // Clear canvas with semi-transparent background for trail effect
+    this.ctx.fillStyle = 'rgba(0, 0, 50, 0.3)';
+    this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Update and draw particles
+    this.particles.forEach((p, index) => {
+      if (this.mode === 'rain') {
+        p.y += p.speed;
+        p.x += 1;
+        
+        if (p.y > canvas.height) {
+          p.y = 0;
+          p.x = Math.random() * canvas.width;
+        }
+        
+        // Draw raindrop
+        this.ctx.beginPath();
+        this.ctx.moveTo(p.x, p.y);
+        this.ctx.lineTo(p.x - 1, p.y - p.size * 2);
+        this.ctx.strokeStyle = p.color;
+        this.ctx.lineWidth = p.size / 2;
+        this.ctx.stroke();
+      } else if (this.mode === 'snow') {
+        p.y += p.speed;
+        p.x += p.wind;
+        
+        if (p.y > canvas.height) {
+          p.y = 0;
+          p.x = Math.random() * canvas.width;
+        }
+        
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        
+        // Draw snowflake
+        this.ctx.beginPath();
+        this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        this.ctx.fillStyle = p.color;
+        this.ctx.fill();
+      } else if (this.mode === 'stars') {
+        // Make stars twinkle
+        p.size = p.initialSize + Math.sin(Date.now() * p.pulse) * p.initialSize * 0.5;
+        
+        // Draw star
+        this.ctx.beginPath();
+        this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        this.ctx.fillStyle = p.color;
+        this.ctx.fill();
+      }
+    });
+    
+    this.animationId = requestAnimationFrame(() => this.animate());
+  }
+}
+
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speed: number;
+  color: string;
+  wind?: number;
+  pulse?: number;
+  initialSize?: number;
+}</pre>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-4">
+            <h3>Nota Importante</h3>
+            <p>Questi esempi simulano i framework JavaScript moderni senza richiederli effettivamente. In un'applicazione reale:</p>
+            <ul>
+                <li>Utilizzeresti un ambiente di sviluppo appropriato (Create React App, Vue CLI, Angular CLI)</li>
+                <li>I componenti sarebbero organizzati in file separati</li>
+                <li>Gli eventi del ciclo di vita verrebbero gestiti direttamente dal framework</li>
+                <li>La gestione degli stati sarebbe più robusta (Redux, Vuex, NGRX)</li>
+            </ul>
+            <p>La cosa più importante da ricordare quando si usa Canvas con questi framework è gestire correttamente il ciclo di vita dei componenti e fare pulizia delle risorse quando necessario.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Funzione per mostrare/nascondere il codice
+        function toggleCode(id) {
+            const codeBlock = document.getElementById(id);
+            if (codeBlock.classList.contains('hidden')) {
+                codeBlock.classList.remove('hidden');
+            } else {
+                codeBlock.classList.add('hidden');
+            }
+        }
+        
+        // Simulazione React
+        const reactDemo = (() => {
+            const canvas = document.getElementById('react-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let circles = [
+                { x: 50, y: 50, radius: 20, color: '#61dafb', dx: 2, dy: 1 }
+            ];
+            
+            let isAnimating = true;
+            let animationFrameId;
+            
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Sfondo React leggero
+                ctx.fillStyle = 'rgba(40, 44, 52, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Disegna e anima i cerchi
+                circles.forEach(circle => {
+                    // Aggiorna posizione
+                    circle.x += circle.dx;
+                    circle.y += circle.dy;
+                    
+                    // Gestisci rimbalzi
+                    if (circle.x < circle.radius || circle.x > canvas.width - circle.radius) {
+                        circle.dx = -circle.dx;
+                    }
+                    if (circle.y < circle.radius || circle.y > canvas.height - circle.radius) {
+                        circle.dy = -circle.dy;
+                    }
+                    
+                    // Disegna il cerchio
+                    ctx.beginPath();
+                    ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = circle.color;
+                    ctx.fill();
+                });
+                
+                if (isAnimating) {
+                    animationFrameId = requestAnimationFrame(render);
+                }
+            }
+            
+            // Avvia l'animazione iniziale
+            render();
+            
+            return {
+                addCircle: function() {
+                    circles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: 10 + Math.random() * 20,
+                        color: `rgb(${Math.floor(Math.random() * 255)}, 
+                               ${Math.floor(Math.random() * 255)}, 
+                               ${Math.floor(Math.random() * 255)})`,
+                        dx: -2 + Math.random() * 4,
+                        dy: -2 + Math.random() * 4
+                    });
+                },
+                toggleAnimation: function() {
+                    isAnimating = !isAnimating;
+                    if (isAnimating) render();
+                },
+                clear: function() {
+                    circles = [];
+                }
+            };
+        })();
+        
+        // Simulazione Vue.js
+        const vueDemo = (() => {
+            const canvas = document.getElementById('vue-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let isAnimating = true;
+            let animationId;
+            let rotation = 0;
+            let shape = 'rectangle';
+            let color = '#42b883'; // Verde Vue.js
+            
+            function draw() {
+                // Pulisci canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Aggiorna rotazione
+                rotation += 0.01;
+                
+                // Salva stato contesto
+                ctx.save();
+                
+                // Sposta al centro del canvas
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(rotation);
+                
+                // Disegna forma
+                ctx.fillStyle = color;
+                
+                if (shape === 'rectangle') {
+                    ctx.fillRect(-50, -50, 100, 100);
+                } else if (shape === 'circle') {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 50, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (shape === 'triangle') {
+                    ctx.beginPath();
+                    ctx.moveTo(0, -50);
+                    ctx.lineTo(-50, 50);
+                    ctx.lineTo(50, 50);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                
+                // Ripristina stato contesto
+                ctx.restore();
+                
+                if (isAnimating) {
+                    animationId = requestAnimationFrame(draw);
+                }
+            }
+            
+            // Avvia l'animazione iniziale
+            draw();
+            
+            return {
+                toggleAnimation: function() {
+                    isAnimating = !isAnimating;
+                    if (isAnimating) draw();
+                },
+                changeShape: function() {
+                    const shapes = ['rectangle', 'circle', 'triangle'];
+                    const currentIndex = shapes.indexOf(shape);
+                    shape = shapes[(currentIndex + 1) % shapes.length];
+                },
+                changeColor: function() {
+                    const colors = ['#42b883', '#35495e', '#4fc08d', '#2c3e50', '#00d1b2'];
+                    const currentIndex = colors.indexOf(color);
+                    color = colors[(currentIndex + 1) % colors.length];
+                }
+            };
+        })();
+        
+        // Simulazione Angular
+        const angularDemo = (() => {
+            const canvas = document.getElementById('angular-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let particles = [];
+            let animationId;
+            let mode = null;
+            
+            // Colore di sfondo Angular-like
+            ctx.fillStyle = 'rgba(51, 51, 77, 1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            function animate() {
+                // Effetto scia con sfondo semi-trasparente
+                ctx.fillStyle = 'rgba(51, 51, 77, 0.3)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Aggiorna e disegna le particelle
+                particles.forEach((p, index) => {
+                    if (mode === 'rain') {
+                        p.y += p.speed;
+                        p.x += 1;
+                        
+                        if (p.y > canvas.height) {
+                            p.y = 0;
+                            p.x = Math.random() * canvas.width;
+                        }
+                        
+                        // Disegna goccia di pioggia
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p.x - 1, p.y - p.size * 2);
+                        ctx.strokeStyle = p.color;
+                        ctx.lineWidth = p.size / 2;
+                        ctx.stroke();
+                    } else if (mode === 'snow') {
+                        p.y += p.speed;
+                        p.x += p.wind;
+                        
+                        if (p.y > canvas.height) {
+                            p.y = 0;
+                            p.x = Math.random() * canvas.width;
+                        }
+                        
+                        if (p.x < 0) p.x = canvas.width;
+                        if (p.x > canvas.width) p.x = 0;
+                        
+                        // Disegna fiocco di neve
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+                    } else if (mode === 'stars') {
+                        // Fa "pulsare" le stelle
+                        p.size = p.initialSize + Math.sin(Date.now() * p.pulse) * p.initialSize * 0.5;
+                        
+                        // Disegna stella
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+                    }
+                });
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            return {
+                rain: function() {
+                    // Ferma animazioni precedenti
+                    this.clear();
+                    
+                    mode = 'rain';
+                    
+                    // Crea gocce di pioggia iniziali
+                    for (let i = 0; i < 100; i++) {
+                        particles.push({
+                            x: Math.random() * canvas.width,
+                            y: Math.random() * canvas.height,
+                            size: 2 + Math.random() * 3,
+                            speed: 8 + Math.random() * 10,
+                            color: 'rgba(255, 255, 255, 0.8)'
+                        });
+                    }
+                    
+                    // Avvia animazione
+                    animate();
+                },
+                snow: function() {
+                    // Ferma animazioni precedenti
+                    this.clear();
+                    
+                    mode = 'snow';
+                    
+                    // Crea fiocchi di neve iniziali
+                    for (let i = 0; i < 100; i++) {
+                        particles.push({
+                            x: Math.random() * canvas.width,
+                            y: Math.random() * canvas.height,
+                            size: 3 + Math.random() * 5,
+                            speed: 1 + Math.random() * 3,
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            wind: Math.random() - 0.5
+                        });
+                    }
+                    
+                    // Avvia animazione
+                    animate();
+                },
+                stars: function() {
+                    // Ferma animazioni precedenti
+                    this.clear();
+                    
+                    mode = 'stars';
+                    
+                    // Crea stelle
+                    for (let i = 0; i < 200; i++) {
+                        particles.push({
+                            x: Math.random() * canvas.width,
+                            y: Math.random() * canvas.height,
+                            size: 0.5 + Math.random() * 2,
+                            initialSize: 0.5 + Math.random() * 2,
+                            color: `rgba(255, 255, ${Math.floor(Math.random() * 100) + 155}, ${Math.random() * 0.8 + 0.2})`,
+                            pulse: Math.random() * 0.1
+                        });
+                    }
+                    
+                    // Avvia animazione
+                    animate();
+                },
+                clear: function() {
+                    // Ferma l'animazione
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                    }
+                    
+                    // Pulisci canvas
+                    ctx.fillStyle = 'rgba(51, 51, 77, 1)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Reset delle particelle
+                    particles = [];
+                    mode = null;
+                }
+            };
+        })();
+    </script>
+</body>
+</html>
