@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventi e Listener di Eventi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .demo-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        #eventi-mouse-area {
+            width: 300px;
+            height: 150px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #tastiera-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .log-area {
+            height: 150px;
+            overflow-y: auto;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+        }
+        #prop-parent {
+            padding: 15px;
+            background-color: #e6f7ff;
+        }
+        #prop-child {
+            padding: 15px;
+            background-color: #ffffcc;
+        }
+        #prop-grandchild {
+            padding: 15px;
+            background-color: #ffcccc;
+        }
+        .highlight {
+            background-color: yellow !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Eventi e Listener di Eventi in JavaScript</h1>
+    
+    <div class="section">
+        <h2>1. Metodi di registrazione degli eventi</h2>
+        
+        <div class="demo-box">
+            <button id="btn-inline">Evento Inline (onclick)</button>
+            <button id="btn-property">Proprietà .onclick</button>
+            <button id="btn-listener">addEventListener</button>
+            <button id="btn-multiple">Multiple Listeners</button>
+            <button id="btn-remove">Rimuovi Listener</button>
+            
+            <div id="reg-log" class="log-area"></div>
+            
+            <script>
+                const regLog = document.getElementById('reg-log');
+                
+                function logEvent(message) {
+                    regLog.innerHTML += `<div>${new Date().toLocaleTimeString()} - ${message}</div>`;
+                    regLog.scrollTop = regLog.scrollHeight;
+                }
+                
+                // Metodo 1: Attributo HTML inline
+                document.getElementById('btn-inline').onclick = function() {
+                    logEvent('Cliccato pulsante con evento inline');
+                };
+                
+                // Metodo 2: Proprietà JavaScript
+                const btnProperty = document.getElementById('btn-property');
+                btnProperty.onclick = function() {
+                    logEvent('Cliccato pulsante con proprietà .onclick');
+                };
+                
+                // Metodo 3: addEventListener (preferito)
+                const btnListener = document.getElementById('btn-listener');
+                function handleClick() {
+                    logEvent('Cliccato pulsante con addEventListener');
+                }
+                btnListener.addEventListener('click', handleClick);
+                
+                // Listener multipli
+                const btnMultiple = document.getElementById('btn-multiple');
+                btnMultiple.addEventListener('click', function() {
+                    logEvent('Primo listener su multiple');
+                });
+                btnMultiple.addEventListener('click', function() {
+                    logEvent('Secondo listener su multiple');
+                });
+                
+                // Rimuovere listener
+                const btnRemove = document.getElementById('btn-remove');
+                function removeHandler() {
+                    logEvent('Cliccato pulsante remove - questo messaggio apparirà solo una volta');
+                    btnRemove.removeEventListener('click', removeHandler);
+                }
+                btnRemove.addEventListener('click', removeHandler);
+            </script>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>2. Eventi del mouse</h2>
+        
+        <div class="demo-box">
+            <div id="eventi-mouse-area">
+                Interagisci con quest'area
+            </div>
+            
+            <div id="mouse-log" class="log-area"></div>
+            
+            <script>
+                const mouseLog = document.getElementById('mouse-log');
+                const mouseArea = document.getElementById('eventi-mouse-area');
+                
+                function logMouseEvent(event) {
+                    mouseLog.innerHTML += `<div>${event.type} - X:${event.clientX}, Y:${event.clientY}</div>`;
+                    mouseLog.scrollTop = mouseLog.scrollHeight;
+                }
+                
+                mouseArea.addEventListener('click', logMouseEvent);
+                mouseArea.addEventListener('dblclick', logMouseEvent);
+                mouseArea.addEventListener('mousedown', logMouseEvent);
+                mouseArea.addEventListener('mouseup', logMouseEvent);
+                mouseArea.addEventListener('mousemove', function(event) {
+                    // Per mousemove aggiorniamo solo un contatore per non riempire il log
+                    const lastChild = mouseLog.lastChild;
+                    if (lastChild && lastChild.textContent.includes("mousemove")) {
+                        const count = parseInt(lastChild.dataset.count || 1) + 1;
+                        lastChild.textContent = `mousemove - X:${event.clientX}, Y:${event.clientY} (${count} eventi)`;
+                        lastChild.dataset.count = count;
+                    } else {
+                        const newDiv = document.createElement('div');
+                        newDiv.textContent = `mousemove - X:${event.clientX}, Y:${event.clientY} (1 eventi)`;
+                        newDiv.dataset.count = 1;
+                        mouseLog.appendChild(newDiv);
+                    }
+                    mouseLog.scrollTop = mouseLog.scrollHeight;
+                });
+                mouseArea.addEventListener('mouseenter', logMouseEvent);
+                mouseArea.addEventListener('mouseleave', logMouseEvent);
+            </script>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>3. Eventi della tastiera</h2>
+        
+        <div class="demo-box">
+            <input type="text" id="tastiera-input" placeholder="Digita qualcosa qui...">
+            
+            <div id="tastiera-log" class="log-area"></div>
+            
+            <script>
+                const tastieraLog = document.getElementById('tastiera-log');
+                const tastieraInput = document.getElementById('tastiera-input');
+                
+                function logKeyEvent(event) {
+                    let message = `${event.type} - Tasto: ${event.key}, Codice: ${event.code}`;
+                    if (event.shiftKey) message += " [Shift]";
+                    if (event.ctrlKey) message += " [Ctrl]";
+                    if (event.altKey) message += " [Alt]";
+                    
+                    tastieraLog.innerHTML += `<div>${message}</div>`;
+                    tastieraLog.scrollTop = tastieraLog.scrollHeight;
+                }
+                
+                tastieraInput.addEventListener('keydown', logKeyEvent);
+                tastieraInput.addEventListener('keyup', logKeyEvent);
+                tastieraInput.addEventListener('keypress', logKeyEvent);
+            </script>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>4. Propagazione degli eventi</h2>
+        
+        <div class="demo-box">
+            <div id="prop-parent">
+                Elemento Genitore
+                <div id="prop-child">
+                    Elemento Figlio
+                    <div id="prop-grandchild">
+                        Elemento Nipote
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="toggle-bubbling">Toggle Bubbling</button>
+                <button id="toggle-capture">Toggle Capture</button>
+                <button id="stop-propagation">Stop Propagation</button>
+            </div>
+            
+            <div id="prop-log" class="log-area"></div>
+            
+            <script>
+                const propLog = document.getElementById('prop-log');
+                const parent = document.getElementById('prop-parent');
+                const child = document.getElementById('prop-child');
+                const grandchild = document.getElementById('prop-grandchild');
+                
+                let useBubbling = true;
+                let useCapture = false;
+                let stopProp = false;
+                
+                function logPropEvent(event) {
+                    const target = event.currentTarget.id;
+                    propLog.innerHTML += `<div>${event.type} su ${target} (fase: ${useCapture ? 'cattura' : 'bubbling'})</div>`;
+                    propLog.scrollTop = propLog.scrollHeight;
+                    
+                    event.currentTarget.classList.add('highlight');
+                    setTimeout(() => {
+                        event.currentTarget.classList.remove('highlight');
+                    }, 300);
+                    
+                    if (stopProp && target === 'prop-child') {
+                        event.stopPropagation();
+                        propLog.innerHTML += `<div>Propagazione fermata a ${target}</div>`;
+                    }
+                }
+                
+                function setupEventListeners() {
+                    // Rimuovi tutti i listener esistenti
+                    parent.removeEventListener('click', logPropEvent, true);
+                    child.removeEventListener('click', logPropEvent, true);
+                    grandchild.removeEventListener('click', logPropEvent, true);
+                    parent.removeEventListener('click', logPropEvent, false);
+                    child.removeEventListener('click', logPropEvent, false);
+                    grandchild.removeEventListener('click', logPropEvent, false);
+                    
+                    // Imposta nuovi listener in base alle impostazioni
+                    if (useBubbling) {
+                        parent.addEventListener('click', logPropEvent, false);
+                        child.addEventListener('click', logPropEvent, false);
+                        grandchild.addEventListener('click', logPropEvent, false);
+                    }
+                    
+                    if (useCapture) {
+                        parent.addEventListener('click', logPropEvent, true);
+                        child.addEventListener('click', logPropEvent, true);
+                        grandchild.addEventListener('click', logPropEvent, true);
+                    }
+                    
+                    propLog.innerHTML += `<div>Listener impostati: Bubbling=${useBubbling}, Capture=${useCapture}, StopProp=${stopProp}</div>`;
+                }
+                
+                document.getElementById('toggle-bubbling').addEventListener('click', function() {
+                    useBubbling = !useBubbling;
+                    setupEventListeners();
+                });
+                
+                document.getElementById('toggle-capture').addEventListener('click', function() {
+                    useCapture = !useCapture;
+                    setupEventListeners();
+                });
+                
+                document.getElementById('stop-propagation').addEventListener('click', function() {
+                    stopProp = !stopProp;
+                    setupEventListeners();
+                });
+                
+                // Setup iniziale
+                setupEventListeners();
+            </script>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>5. Eventi del form</h2>
+        
+        <div class="demo-box">
+            <form id="demo-form">
+                <div>
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome">
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div>
+                    <label for="opzioni">Opzione:</label>
+                    <select id="opzioni" name="opzioni">
+                        <option value="1">Opzione 1</option>
+                        <option value="2">Opzione 2</option>
+                        <option value="3">Opzione 3</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit">Invia</button>
+                    <button type="reset">Reset</button>
+                </div>
+            </form>
+            
+            <div id="form-log" class="log-area"></div>
+            
+            <script>
+                const formLog = document.getElementById('form-log');
+                const form = document.getElementById('demo-form');
+                const nomeInput = document.getElementById('nome');
+                const emailInput = document.getElementById('email');
+                const opzioniSelect = document.getElementById('opzioni');
+                
+                function logFormEvent(event) {
+                    formLog.innerHTML += `<div>${event.type} su ${event.target.name || event.target.id}</div>`;
+                    formLog.scrollTop = formLog.scrollHeight;
+                }
+                
+                // Form events
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Previene l'invio effettivo
+                    logFormEvent(event);
+                    formLog.innerHTML += `<div>Dati form: ${new FormData(form).get('nome')}, ${new FormData(form).get('email')}, ${new FormData(form).get('opzioni')}</div>`;
+                });
+                
+                form.addEventListener('reset', logFormEvent);
+                
+                // Input events
+                nomeInput.addEventListener('focus', logFormEvent);
+                nomeInput.addEventListener('blur', logFormEvent);
+                nomeInput.addEventListener('change', logFormEvent);
+                nomeInput.addEventListener('input', logFormEvent);
+                
+                emailInput.addEventListener('focus', logFormEvent);
+                emailInput.addEventListener('blur', logFormEvent);
+                emailInput.addEventListener('change', logFormEvent);
+                
+                // Select events
+                opzioniSelect.addEventListener('change', logFormEvent);
+            </script>
+        </div>
+    </div>
+</body>
+</html>
