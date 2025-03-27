@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interattività e Gestione Eventi in Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .color-picker {
+            display: flex;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+        .active-swatch {
+            border: 2px solid black;
+            transform: scale(1.1);
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interattività e Gestione Eventi in Canvas</h1>
+        <p>
+            Canvas di per sé non è interattivo, ma possiamo gestire gli eventi del mouse e della tastiera
+            per creare applicazioni interattive. Questo esempio mostra come implementare l'interattività
+            in diverse applicazioni Canvas.
+        </p>
+
+        <div class="section">
+            <h2>1. Rilevamento dei Click in Canvas</h2>
+            <p>
+                Il rilevamento dei click in Canvas richiede la conversione delle coordinate del mouse
+                dalle coordinate dello schermo alle coordinate del canvas.
+            </p>
+
+            <canvas id="clickCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="clearClickCanvas">Pulisci Canvas</button>
+                <div class="status" id="clickStatus">Clicca all'interno del canvas per creare cerchi</div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Gestire i click su Canvas
+canvas.addEventListener('click', function(event) {
+    // Ottieni le coordinate del mouse relative al canvas
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    // Usa le coordinate per fare qualcosa nel canvas
+    drawCircle(x, y);
+});</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Drag and Drop di Elementi</h2>
+            <p>
+                Per implementare il drag and drop in Canvas, è necessario tracciare gli elementi disegnati
+                e gestire gli eventi <code>mousedown</code>, <code>mousemove</code> e <code>mouseup</code>.
+            </p>
+
+            <canvas id="dragCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="addSquare">Aggiungi Quadrato</button>
+                <button id="addCircle">Aggiungi Cerchio</button>
+                <button id="clearDragCanvas">Pulisci Canvas</button>
+                <div class="status" id="dragStatus">Trascina le forme con il mouse</div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Implementazione del Drag and Drop
+let isDragging = false;
+let selectedShape = null;
+
+// Evento mousedown: seleziona una forma se il mouse è sopra
+canvas.addEventListener('mousedown', function(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    // Controlla se il punto (x, y) è all'interno di qualche forma
+    for (let shape of shapes) {
+        if (isPointInShape(x, y, shape)) {
+            selectedShape = shape;
+            isDragging = true;
+            // Salva l'offset per un trascinamento più naturale
+            selectedShape.offsetX = x - shape.x;
+            selectedShape.offsetY = y - shape.y;
+            break;
+        }
+    }
+});
+
+// Evento mousemove: trascina la forma selezionata
+canvas.addEventListener('mousemove', function(event) {
+    if (isDragging && selectedShape) {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        
+        // Aggiorna la posizione della forma
+        selectedShape.x = x - selectedShape.offsetX;
+        selectedShape.y = y - selectedShape.offsetY;
+        
+        // Ridisegna il canvas
+        drawAllShapes();
+    }
+});
+
+// Evento mouseup: termina il trascinamento
+canvas.addEventListener('mouseup', function() {
+    isDragging = false;
+});</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Applicazione di Disegno</h2>
+            <p>
+                Un'applicazione di disegno richiede la gestione degli eventi del mouse per tracciare
+                quando l'utente tiene premuto il tasto del mouse e lo muove.
+            </p>
+
+            <canvas id="drawingCanvas" width="600" height="400"></canvas>
+            
+            <div class="controls">
+                <div>
+                    <label>Spessore linea: <input type="range" id="lineWidth" min="1" max="30" value="5"></label>
+                    <span id="lineWidthValue">5</span>px
+                </div>
+                <div>
+                    <label>Colori:</label>
+                    <div class="color-picker">
+                        <div class="color-swatch active-swatch" data-color="#000000" style="background-color: #000000;"></div>
+                        <div class="color-swatch" data-color="#FF0000" style="background-color: #FF0000;"></div>
+                        <div class="color-swatch" data-color="#00FF00" style="background-color: #00FF00;"></div>
+                        <div class="color-swatch" data-color="#0000FF" style="background-color: #0000FF;"></div>
+                        <div class="color-swatch" data-color="#FFFF00" style="background-color: #FFFF00;"></div>
+                        <div class="color-swatch" data-color="#FF00FF" style="background-color: #FF00FF;"></div>
+                        <div class="color-swatch" data-color="#00FFFF" style="background-color: #00FFFF;"></div>
+                    </div>
+                </div>
+                <div>
+                    <button id="clearDrawing">Pulisci</button>
+                    <button id="saveDrawing">Salva Immagine</button>
+                </div>
+                <div class="status" id="drawingStatus">Disegna tenendo premuto il tasto del mouse</div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Applicazione di disegno
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+
+// Inizia a disegnare quando l'utente preme il tasto del mouse
+canvas.addEventListener('mousedown', function(event) {
+    isDrawing = true;
+    
+    const rect = canvas.getBoundingClientRect();
+    lastX = event.clientX - rect.left;
+    lastY = event.clientY - rect.top;
+});
+
+// Disegna quando l'utente muove il mouse con il tasto premuto
+canvas.addEventListener('mousemove', function(event) {
+    if (!isDrawing) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const currentX = event.clientX - rect.left;
+    const currentY = event.clientY - rect.top;
+    
+    // Disegna una linea
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(currentX, currentY);
+    ctx.stroke();
+    
+    // Aggiorna le coordinate
+    lastX = currentX;
+    lastY = currentY;
+});
+
+// Smetti di disegnare quando l'utente rilascia il tasto del mouse
+canvas.addEventListener('mouseup', function() {
+    isDrawing = false;
+});
+
+// Evita problemi se l'utente esce dal canvas mentre disegna
+canvas.addEventListener('mouseout', function() {
+    isDrawing = false;
+});</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Rilevamento delle Hover e Cursori</h2>
+            <p>
+                Con Canvas possiamo anche rilevare quando il mouse passa sopra gli elementi
+                e cambiare il cursore per migliorare l'esperienza utente.
+            </p>
+
+            <canvas id="hoverCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="addHoverElements">Aggiungi Elementi</button>
+                <button id="clearHoverCanvas">Pulisci Canvas</button>
+                <div class="status" id="hoverStatus">Passa il mouse sopra gli elementi per vedere gli effetti hover</div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Gestione dell'hover e dei cursori
+canvas.addEventListener('mousemove', function(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    let hoverDetected = false;
+    
+    // Controlla se il mouse è sopra qualche elemento
+    for (let element of elements) {
+        if (isPointInElement(x, y, element)) {
+            hoverDetected = true;
+            
+            // Cambia il cursore
+            canvas.style.cursor = 'pointer';
+            
+            // Evidenzia l'elemento (ridisegna tutto il canvas)
+            drawElements(element);
+            break;
+        }
+    }
+    
+    // Se non è sopra nessun elemento, ripristina lo stato normale
+    if (!hoverDetected) {
+        canvas.style.cursor = 'default';
+        drawElements();
+    }
+});</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. Gestione degli Eventi da Tastiera</h2>
+            <p>
+                Gestire gli eventi da tastiera può rendere le applicazioni Canvas più interattive,
+                permettendo di controllare gli elementi con i tasti direzionali o altri comandi.
+            </p>
+
+            <canvas id="keyboardCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="startKeyboardDemo">Avvia Demo</button>
+                <button id="resetKeyboardDemo">Reset</button>
+                <div class="status" id="keyboardStatus">Usa i tasti freccia per muovere il quadrato (clicca prima sul canvas)</div>
+            </div>
+            
+            <div class="code-container">
+<pre>// Gestione degli eventi da tastiera
+const keys = {};
+
+// Rileva quando un tasto viene premuto
+window.addEventListener('keydown', function(event) {
+    keys[event.key] = true;
+});
+
+// Rileva quando un tasto viene rilasciato
+window.addEventListener('keyup', function(event) {
+    keys[event.key] = false;
+});
+
+// Funzione di aggiornamento che controlla i tasti premuti
+function update() {
+    // Sposta a sinistra se la freccia sinistra è premuta
+    if (keys['ArrowLeft'] || keys['Left']) {
+        player.x -= player.speed;
+    }
+    
+    // Sposta a destra se la freccia destra è premuta
+    if (keys['ArrowRight'] || keys['Right']) {
+        player.x += player.speed;
+    }
+    
+    // Sposta in alto se la freccia su è premuta
+    if (keys['ArrowUp'] || keys['Up']) {
+        player.y -= player.speed;
+    }
+    
+    // Sposta in basso se la freccia giù è premuta
+    if (keys['ArrowDown'] || keys['Down']) {
+        player.y += player.speed;
+    }
+    
+    // Altre azioni in base ai tasti
+    if (keys[' ']) {
+        // Spazio premuto
+        player.action();
+    }
+}</pre>
+            </div>
+        </div>
+
+        <div class="note">
+            <h3>Suggerimenti per l'Interattività in Canvas</h3>
+            <ul>
+                <li><strong>Mantieni una struttura dati:</strong> Gli elementi disegnati in Canvas non sono oggetti interagibili di per sé. Mantieni una struttura dati che rappresenta gli elementi e le loro proprietà.</li>
+                <li><strong>Ottimizza i ridisegni:</strong> Disegna solo quando necessario per mantenere le prestazioni.</li>
+                <li><strong>Gestisci la perdita di focus:</strong> Assicurati che gli eventi di rilascio (mouseup, keyup) siano gestiti correttamente anche quando l'utente esce dal canvas durante un'azione.</li>
+                <li><strong>Fornisci feedback visivi:</strong> Cambia il cursore, evidenzia gli elementi selezionabili, e mostra uno stato attivo per migliorare l'usabilità.</li>
+                <li><strong>Usa delegazione degli eventi:</strong> Invece di aggiungere listener a ogni elemento, usa un solo listener sul canvas e determina quale elemento ha ricevuto l'evento.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ------------- 1. Rilevamento dei Click -------------
+        const clickCanvas = document.getElementById('clickCanvas');
+        const clickCtx = clickCanvas.getContext('2d');
+        const clickStatus = document.getElementById('clickStatus');
+        
+        // Inizializza il canvas con un colore di sfondo
+        clickCtx.fillStyle = 'white';
+        clickCtx.fillRect(0, 0, clickCanvas.width, clickCanvas.height);
+        
+        // Aggiungi testo di guida
+        clickCtx.fillStyle = '#333';
+        clickCtx.font = '16px Arial';
+        clickCtx.textAlign = 'center';
+        clickCtx.fillText('Clicca ovunque per disegnare cerchi colorati', clickCanvas.width / 2, 30);
+        
+        // Gestisci i click sul canvas
+        clickCanvas.addEventListener('click', function(event) {
+            // Ottieni le coordinate del mouse relative al canvas
+            const rect = clickCanvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            // Disegna un cerchio colorato nella posizione del click
+            const radius = 10 + Math.random() * 20;
+            const hue = Math.random() * 360;
+            
+            clickCtx.fillStyle = `hsl(${hue}, 70%, 60%)`;
+            clickCtx.beginPath();
+            clickCtx.arc(x, y, radius, 0, Math.PI * 2);
+            clickCtx.fill();
+            
+            // Aggiorna lo status
+            clickStatus.textContent = `Cerchio disegnato in (${Math.round(x)}, ${Math.round(y)}) con raggio ${Math.round(radius)}`;
+        });
+        
+        // Pulisci il canvas
+        document.getElementById('clearClickCanvas').addEventListener('click', function() {
+            clickCtx.fillStyle = 'white';
+            clickCtx.fillRect(0, 0, clickCanvas.width, clickCanvas.height);
+            
+            // Ripristina il testo di guida
+            clickCtx.fillStyle = '#333';
+            clickCtx.font = '16px Arial';
+            clickCtx.textAlign = 'center';
+            clickCtx.fillText('Clicca ovunque per disegnare cerchi colorati', clickCanvas.width / 2, 30);
+            
+            // Aggiorna lo status
+            clickStatus.textContent = 'Canvas pulito. Clicca per disegnare cerchi';
+        });
+        
+        // ------------- 2. Drag and Drop -------------
+        const dragCanvas = document.getElementById('dragCanvas');
+        const dragCtx = dragCanvas.getContext('2d');
+        const dragStatus = document.getElementById('dragStatus');
+        
+        // Inizializza il canvas
+        dragCtx.fillStyle = 'white';
+        dragCtx.fillRect(0, 0, dragCanvas.width, dragCanvas.height);
+        
+        // Aggiungi testo di guida
+        dragCtx.fillStyle = '#333';
+        dragCtx.font = '16px Arial';
+        dragCtx.textAlign = 'center';
+        dragCtx.fillText('Aggiungi forme e trascinale con il mouse', dragCanvas.width / 2, 30);
+        
+        // Array per tenere traccia delle forme disegnate
+        const shapes = [];
+        
+        // Variabili per il drag and drop
+        let isDragging = false;
+        let selectedShape = null;
+        
+        // Funzione per disegnare tutte le forme
+        function drawShapes() {
+            // Pulisci il canvas
+            dragCtx.fillStyle = 'white';
+            dragCtx.fillRect(0, 0, dragCanvas.width, dragCanvas.height);
+            
+            // Disegna il testo di guida
+            dragCtx.fillStyle = '#333';
+            dragCtx.font = '16px Arial';
+            dragCtx.textAlign = 'center';
+            dragCtx.fillText('Aggiungi forme e trascinale con il mouse', dragCanvas.width / 2, 30);
+            
+            // Disegna tutte le forme
+            shapes.forEach(function(shape) {
+                if (shape.type === 'square') {
+                    dragCtx.fillStyle = shape.color;
+                    dragCtx.fillRect(shape.x - shape.size / 2, shape.y - shape.size / 2, shape.size, shape.size);
+                } else if (shape.type === 'circle') {
+                    dragCtx.fillStyle = shape.color;
+                    dragCtx.beginPath();
+                    dragCtx.arc(shape.x, shape.y, shape.size / 2, 0, Math.PI * 2);
+                    dragCtx.fill();
+                }
+            });
+        }
+        
+        // Funzione per verificare se un punto è all'interno di una forma
+        function isPointInShape(x, y, shape) {
+            if (shape.type === 'square') {
+                return x >= shape.x - shape.size / 2 && 
+                       x <= shape.x + shape.size / 2 && 
+                       y >= shape.y - shape.size / 2 && 
+                       y <= shape.y + shape.size / 2;
+            } else if (shape.type === 'circle') {
+                const dx = x - shape.x;
+                const dy = y - shape.y;
+                return dx * dx + dy * dy <= (shape.size / 2) * (shape.size / 2);
+            }
+            return false;
+        }
+        
+        // Aggiungi un quadrato
+        document.getElementById('addSquare').addEventListener('click', function() {
+            const size = 40 + Math.random() * 30;
+            const x = 100 + Math.random() * (dragCanvas.width - 200);
+            const y = 100 + Math.random() * (dragCanvas.height - 200);
+            const hue = Math.random() * 360;
+            
+            shapes.push({
+                type: 'square',
+                x: x,
+                y: y,
+                size: size,
+                color: `hsl(${hue}, 70%, 60%)`
+            });
+            
+            drawShapes();
+            dragStatus.textContent = 'Quadrato aggiunto';
+        });
+        
+        // Aggiungi un cerchio
+        document.getElementById('addCircle').addEventListener('click', function() {
+            const size = 40 + Math.random() * 30;
+            const x = 100 + Math.random() * (dragCanvas.width - 200);
+            const y = 100 + Math.random() * (dragCanvas.height - 200);
+            const hue = Math.random() * 360;
+            
+            shapes.push({
+                type: 'circle',
+                x: x,
+                y: y,
+                size: size,
+                color: `hsl(${hue}, 70%, 60%)`
+            });
+            
+            drawShapes();
+            dragStatus.textContent = 'Cerchio aggiunto';
+        });
+        
+        // Pulisci il canvas
+        document.getElementById('clearDragCanvas').addEventListener('click', function() {
+            shapes.length = 0;
+            drawShapes();
+            dragStatus.textContent = 'Canvas pulito';
+        });
+        
+        // Gestisci gli eventi del mouse per il drag and drop
+        dragCanvas.addEventListener('mousedown', function(event) {
+            const rect = dragCanvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            // Verifica se il mouse è sopra una forma (partendo dall'ultima disegnata)
+            for (let i = shapes.length - 1; i >= 0; i--) {
+                const shape = shapes[i];
+                if (isPointInShape(x, y, shape)) {
+                    // Seleziona la forma
+                    selectedShape = shape;
+                    isDragging = true;
+                    
+                    // Sposta la forma selezionata in cima alla lista (per renderla visibile sopra le altre)
+                    shapes.splice(i, 1);
+                    shapes.push(selectedShape);
+                    
+                    // Calcola l'offset per un trascinamento più naturale
+                    selectedShape.offsetX = x - shape.x;
+                    selectedShape.offsetY = y - shape.y;
+                    
+                    dragStatus.textContent = `${shape.type === 'square' ? 'Quadrato' : 'Cerchio'} selezionato`;
+                    break;
+                }
+            }
+        });
+        
+        dragCanvas.addEventListener('mousemove', function(event) {
+            if (isDragging && selectedShape) {
+                const rect = dragCanvas.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                // Aggiorna la posizione della forma
+                selectedShape.x = x - selectedShape.offsetX;
+                selectedShape.y = y - selectedShape.offsetY;
+                
+                // Ridisegna tutte le forme
+                drawShapes();
+                
+                dragStatus.textContent = `Trascinando ${selectedShape.type === 'square' ? 'quadrato' : 'cerchio'} in (${Math.round(selectedShape.x)}, ${Math.round(selectedShape.y)})`;
+            }
+        });
+        
+        dragCanvas.addEventListener('mouseup', function() {
+            if (isDragging && selectedShape) {
+                dragStatus.textContent = `${selectedShape.type === 'square' ? 'Quadrato' : 'Cerchio'} rilasciato`;
+            }
+            isDragging = false;
+            selectedShape = null;
+        });
+        
+        dragCanvas.addEventListener('mouseleave', function() {
+            if (isDragging) {
+                dragStatus.textContent = 'Trascinamento terminato (uscito dal canvas)';
+            }
+            isDragging = false;
+            selectedShape = null;
+        });
+        
+        // ------------- 3. Applicazione di Disegno -------------
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const drawingCtx = drawingCanvas.getContext('2d');
+        const drawingStatus = document.getElementById('drawingStatus');
+        
+        // Inizializza il canvas con un colore di sfondo
+        drawingCtx.fillStyle = 'white';
+        drawingCtx.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        
+        // Aggiungi testo di guida
+        drawingCtx.fillStyle = '#333';
+        drawingCtx.font = '16px Arial';
+        drawingCtx.textAlign = 'center';
+        drawingCtx.fillText('Disegna tenendo premuto il tasto del mouse', drawingCanvas.width / 2, 30);
+        
+        // Variabili per il disegno
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let currentColor = '#000000';
+        let currentLineWidth = 5;
+        
+        // Imposta le proprietà del contesto
+        drawingCtx.lineJoin = 'round';
+        drawingCtx.lineCap = 'round';
+        drawingCtx.strokeStyle = currentColor;
+        drawingCtx.lineWidth = currentLineWidth;
+        
+        // Gestisci gli eventi del mouse per il disegno
+        drawingCanvas.addEventListener('mousedown', function(event) {
+            isDrawing = true;
+            
+            const rect = drawingCanvas.getBoundingClientRect();
+            lastX = event.clientX - rect.left;
+            lastY = event.clientY - rect.top;
+            
+            drawingStatus.textContent = `Disegno iniziato in (${Math.round(lastX)}, ${Math.round(lastY)})`;
+        });
+        
+        drawingCanvas.addEventListener('mousemove', function(event) {
+            if (!isDrawing) return;
+            
+            const rect = drawingCanvas.getBoundingClientRect();
+            const currentX = event.clientX - rect.left;
+            const currentY = event.clientY - rect.top;
+            
+            // Disegna una linea
+            drawingCtx.beginPath();
+            drawingCtx.moveTo(lastX, lastY);
+            drawingCtx.lineTo(currentX, currentY);
+            drawingCtx.stroke();
+            
+            // Aggiorna le coordinate
+            lastX = currentX;
+            lastY = currentY;
+            
+            drawingStatus.textContent = `Disegnando... (${Math.round(currentX)}, ${Math.round(currentY)})`;
+        });
+        
+        drawingCanvas.addEventListener('mouseup', function() {
+            isDrawing = false;
+            drawingStatus.textContent = 'Disegno terminato';
+        });
+        
+        drawingCanvas.addEventListener('mouseout', function() {
+            if (isDrawing) {
+                drawingStatus.textContent = 'Disegno interrotto (uscito dal canvas)';
+            }
+            isDrawing = false;
+        });
+        
+        // Gestisci lo spessore della linea
+        document.getElementById('lineWidth').addEventListener('input', function() {
+            currentLineWidth = parseInt(this.value);
+            drawingCtx.lineWidth = currentLineWidth;
+            document.getElementById('lineWidthValue').textContent = currentLineWidth;
+            
+            drawingStatus.textContent = `Spessore linea impostato a ${currentLineWidth}px`;
+        });
+        
+        // Gestisci la selezione del colore
+        document.querySelectorAll('.color-swatch').forEach(function(swatch) {
+            swatch.addEventListener('click', function() {
+                // Rimuovi la classe active da tutti i swatch
+                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active-swatch'));
+                
+                // Aggiungi la classe active a questo swatch
+                this.classList.add('active-swatch');
+                
+                // Imposta il colore corrente
+                currentColor = this.getAttribute('data-color');
+                drawingCtx.strokeStyle = currentColor;
+                
+                drawingStatus.textContent = `Colore impostato a ${currentColor}`;
+            });
+        });
+        
+        // Pulisci il canvas
+        document.getElementById('clearDrawing').addEventListener('click', function() {
+            drawingCtx.fillStyle = 'white';
+            drawingCtx.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            
+            // Aggiungi nuovamente il testo di guida
+            drawingCtx.fillStyle = '#333';
+            drawingCtx.font = '16px Arial';
+            drawingCtx.textAlign = 'center';
+            drawingCtx.fillText('Disegna tenendo premuto il tasto del mouse', drawingCanvas.width / 2, 30);
+            
+            drawingStatus.textContent = 'Canvas pulito';
+        });
+        
+        // Salva l'immagine
+        document.getElementById('saveDrawing').addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.download = 'disegno.png';
+            link.href = drawingCanvas.toDataURL('image/png');
+            link.click();
+            
+            drawingStatus.textContent = 'Immagine salvata come "disegno.png"';
+        });
+        
+        // ------------- 4. Rilevamento delle Hover -------------
+        const hoverCanvas = document.getElementById('hoverCanvas');
+        const hoverCtx = hoverCanvas.getContext('2d');
+        const hoverStatus = document.getElementById('hoverStatus');
+        
+        // Inizializza il canvas
+        hoverCtx.fillStyle = 'white';
+        hoverCtx.fillRect(0, 0, hoverCanvas.width, hoverCanvas.height);
+        
+        // Aggiungi testo di guida
+        hoverCtx.fillStyle = '#333';
+        hoverCtx.font = '16px Arial';
+        hoverCtx.textAlign = 'center';
+        hoverCtx.fillText('Passa il mouse sopra gli elementi per vedere gli effetti hover', hoverCanvas.width / 2, 30);
+        
+        // Array per tenere traccia degli elementi
+        const elements = [];
+        
+        // Funzione per disegnare tutti gli elementi
+        function drawElements(hoveredElement = null) {
+            // Pulisci il canvas
+            hoverCtx.fillStyle = 'white';
+            hoverCtx.fillRect(0, 0, hoverCanvas.width, hoverCanvas.height);
+            
+            // Disegna il testo di guida
+            hoverCtx.fillStyle = '#333';
+            hoverCtx.font = '16px Arial';
+            hoverCtx.textAlign = 'center';
+            hoverCtx.fillText('Passa il mouse sopra gli elementi per vedere gli effetti hover', hoverCanvas.width / 2, 30);
+            
+            // Disegna tutti gli elementi
+            elements.forEach(function(element) {
+                const isHovered = element === hoveredElement;
+                
+                // Disegna l'elemento
+                if (element.type === 'button') {
+                    // Disegna il bottone
+                    hoverCtx.fillStyle = isHovered ? '#3498db' : '#7f8c8d';
+                    hoverCtx.fillRect(element.x, element.y, element.width, element.height);
+                    
+                    // Disegna il testo del bottone
+                    hoverCtx.fillStyle = 'white';
+                    hoverCtx.font = '14px Arial';
+                    hoverCtx.textAlign = 'center';
+                    hoverCtx.textBaseline = 'middle';
+                    hoverCtx.fillText(element.text, element.x + element.width / 2, element.y + element.height / 2);
+                } else if (element.type === 'icon') {
+                    // Disegna l'icona
+                    hoverCtx.fillStyle = isHovered ? '#e74c3c' : '#95a5a6';
+                    hoverCtx.beginPath();
+                    hoverCtx.moveTo(element.x, element.y);
+                    hoverCtx.lineTo(element.x + element.size, element.y + element.size);
+                    hoverCtx.lineTo(element.x + element.size / 2, element.y - element.size / 2);
+                    hoverCtx.closePath();
+                    hoverCtx.fill();
+                }
+            });
+        }
+        
+        // Funzione per verificare se un punto è all'interno di un elemento
+        function isPointInElement(x, y, element) {
+            if (element.type === 'button') {
+                return x >= element.x && x <= element.x + element.width &&
+                       y >= element.y && y <= element.y + element.height;
+            } else if (element.type === 'icon') {
+                // Semplificazione: controlla se il punto è all'interno di un quadrato che contiene l'icona
+                return x >= element.x - element.size / 2 && x <= element.x + element.size * 1.5 &&
+                       y >= element.y - element.size / 2 && y <= element.y + element.size * 1.5;
+            }
+            return false;
+        }
+        
+        // Aggiungi elementi al canvas
+        document.getElementById('addHoverElements').addEventListener('click', function() {
+            // Pulisci l'array degli elementi
+            elements.length = 0;
+            
+            // Aggiungi alcuni bottoni
+            for (let i = 0; i < 3; i++) {
+                elements.push({
+                    type: 'button',
+                    x: 50 + i * 150,
+                    y: 100,
+                    width: 120,
+                    height: 40,
+                    text: `Bottone ${i + 1}`
+                });
+            }
+            
+            // Aggiungi alcune icone
+            for (let i = 0; i < 5; i++) {
+                elements.push({
+                    type: 'icon',
+                    x: 70 + i * 100,
+                    y: 200,
+                    size: 30
+                });
+            }
+            
+            // Disegna tutti gli elementi
+            drawElements();
+            hoverStatus.textContent = 'Elementi aggiunti';
+        });
+        
+        // Pulisci il canvas
+        document.getElementById('clearHoverCanvas').addEventListener('click', function() {
+            elements.length = 0;
+            drawElements();
+            hoverStatus.textContent = 'Canvas pulito';
+        });
+        
+        // Gestisci gli eventi del mouse per l'hover
+        hoverCanvas.addEventListener('mousemove', function(event) {
+            const rect = hoverCanvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            let hoveredElement = null;
+            
+            // Controlla se il mouse è sopra un elemento
+            for (let element of elements) {
+                if (isPointInElement(x, y, element)) {
+                    hoveredElement = element;
+                    
+                    // Cambia il cursore
+                    hoverCanvas.style.cursor = 'pointer';
+                    
+                    // Aggiorna lo status
+                    hoverStatus.textContent = element.type === 'button' 
+                        ? `Hover su bottone: ${element.text}` 
+                        : `Hover su icona in (${Math.round(element.x)}, ${Math.round(element.y)})`;
+                    
+                    break;
+                }
+            }
+            
+            // Se non è sopra nessun elemento, ripristina lo stato normale
+            if (!hoveredElement) {
+                hoverCanvas.style.cursor = 'default';
+                hoverStatus.textContent = 'Passa il mouse sopra gli elementi per vedere gli effetti hover';
+            }
+            
+            // Ridisegna con l'elemento evidenziato
+            drawElements(hoveredElement);
+        });
+        
+        // ------------- 5. Gestione degli Eventi da Tastiera -------------
+        const keyboardCanvas = document.getElementById('keyboardCanvas');
+        const keyboardCtx = keyboardCanvas.getContext('2d');
+        const keyboardStatus = document.getElementById('keyboardStatus');
+        
+        // Inizializza il canvas
+        keyboardCtx.fillStyle = 'white';
+        keyboardCtx.fillRect(0, 0, keyboardCanvas.width, keyboardCanvas.height);
+        
+        // Aggiungi testo di guida
+        keyboardCtx.fillStyle = '#333';
+        keyboardCtx.font = '16px Arial';
+        keyboardCtx.textAlign = 'center';
+        keyboardCtx.fillText('Clicca "Avvia Demo" e usa i tasti freccia per muovere il quadrato', keyboardCanvas.width / 2, 30);
+        
+        // Player
+        const player = {
+            x: keyboardCanvas.width / 2,
+            y: keyboardCanvas.height / 2,
+            width: 50,
+            height: 50,
+            speed: 5,
+            color: '#3498db'
+        };
+        
+        // Tracciamento dei tasti premuti
+        const keys = {};
+        
+        // Variabili per l'animazione
+        let keyboardAnimationId = null;
+        let keyboardAnimating = false;
+        
+        // Funzione per disegnare il player
+        function drawPlayer() {
+            // Pulisci il canvas
+            keyboardCtx.fillStyle = 'white';
+            keyboardCtx.fillRect(0, 0, keyboardCanvas.width, keyboardCanvas.height);
+            
+            // Disegna il testo di guida
+            keyboardCtx.fillStyle = '#333';
+            keyboardCtx.font = '16px Arial';
+            keyboardCtx.textAlign = 'center';
+            keyboardCtx.fillText('Usa i tasti freccia per muovere il quadrato', keyboardCanvas.width / 2, 30);
+            
+            // Disegna il player
+            keyboardCtx.fillStyle = player.color;
+            keyboardCtx.fillRect(player.x - player.width / 2, player.y - player.height / 2, player.width, player.height);
+            
+            // Disegna quali tasti sono premuti
+            keyboardCtx.fillStyle = '#333';
+            keyboardCtx.font = '12px Arial';
+            keyboardCtx.textAlign = 'left';
+            keyboardCtx.fillText(`Posizione: (${Math.round(player.x)}, ${Math.round(player.y)})`, 10, 60);
+            
+            // Visualizza i tasti premuti
+            let pressedKeys = [];
+            if (keys['ArrowUp'] || keys['Up']) pressedKeys.push('↑');
+            if (keys['ArrowDown'] || keys['Down']) pressedKeys.push('↓');
+            if (keys['ArrowLeft'] || keys['Left']) pressedKeys.push('←');
+            if (keys['ArrowRight'] || keys['Right']) pressedKeys.push('→');
+            if (keys[' ']) pressedKeys.push('Spazio');
+            
+            if (pressedKeys.length > 0) {
+                keyboardCtx.fillText(`Tasti premuti: ${pressedKeys.join(', ')}`, 10, 80);
+            } else {
+                keyboardCtx.fillText('Nessun tasto premuto', 10, 80);
+            }
+        }
+        
+        // Funzione di aggiornamento
+        function updateKeyboardDemo() {
+            if (!keyboardAnimating) return;
+            
+            // Aggiorna la posizione del player in base ai tasti premuti
+            if (keys['ArrowLeft'] || keys['Left']) {
+                player.x = Math.max(player.width / 2, player.x - player.speed);
+            }
+            if (keys['ArrowRight'] || keys['Right']) {
+                player.x = Math.min(keyboardCanvas.width - player.width / 2, player.x + player.speed);
+            }
+            if (keys['ArrowUp'] || keys['Up']) {
+                player.y = Math.max(player.height / 2, player.y - player.speed);
+            }
+            if (keys['ArrowDown'] || keys['Down']) {
+                player.y = Math.min(keyboardCanvas.height - player.height / 2, player.y + player.speed);
+            }
+            
+            // Cambia il colore se si preme la barra spaziatrice
+            if (keys[' ']) {
+                player.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            }
+            
+            // Disegna il player
+            drawPlayer();
+            
+            // Continua l'animazione
+            keyboardAnimationId = requestAnimationFrame(updateKeyboardDemo);
+        }
+        
+        // Gestisci gli eventi da tastiera
+        window.addEventListener('keydown', function(event) {
+            // Impedisci lo scrolling della pagina con i tasti freccia
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
+                event.preventDefault();
+            }
+            
+            keys[event.key] = true;
+            
+            keyboardStatus.textContent = `Tasto premuto: ${event.key}`;
+        });
+        
+        window.addEventListener('keyup', function(event) {
+            keys[event.key] = false;
+            
+            keyboardStatus.textContent = `Tasto rilasciato: ${event.key}`;
+        });
+        
+        // Avvia la demo
+        document.getElementById('startKeyboardDemo').addEventListener('click', function() {
+            if (!keyboardAnimating) {
+                // Richiedi il focus sul canvas
+                keyboardCanvas.tabIndex = 1;
+                keyboardCanvas.focus();
+                
+                // Avvia l'animazione
+                keyboardAnimating = true;
+                updateKeyboardDemo();
+                
+                keyboardStatus.textContent = 'Demo avviata';
+            }
+        });
+        
+        // Reset demo
+        document.getElementById('resetKeyboardDemo').addEventListener('click', function() {
+            keyboardAnimating = false;
+            
+            if (keyboardAnimationId) {
+                cancelAnimationFrame(keyboardAnimationId);
+                keyboardAnimationId = null;
+            }
+            
+            // Reimposta la posizione del player
+            player.x = keyboardCanvas.width / 2;
+            player.y = keyboardCanvas.height / 2;
+            player.color = '#3498db';
+            
+            // Pulisci tutti i tasti premuti
+            for (let key in keys) {
+                keys[key] = false;
+            }
+            
+            // Ridisegna il player
+            drawPlayer();
+            
+            keyboardStatus.textContent = 'Demo resettata';
+        });
+        
+        // Aggiungi un ascoltatore di focus per il canvas
+        keyboardCanvas.addEventListener('click', function() {
+            if (keyboardAnimating) {
+                this.focus();
+                keyboardStatus.textContent = 'Canvas ha il focus';
+            }
+        });
+        
+        // Al caricamento
+        window.addEventListener('load', function() {
+            // Aggiungi elementi hover di default
+            document.getElementById('addHoverElements').click();
+            
+            // Aggiungi alcune forme per il drag and drop
+            document.getElementById('addSquare').click();
+            document.getElementById('addCircle').click();
+        });
+    </script>
+</body>
+</html>
