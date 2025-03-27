@@ -5,31 +5,31 @@ Benvenuti al modulo dedicato al **Canvas HTML5**, uno strumento potente che cons
 ## 📑 Indice dei contenuti
 
 ### Fondamenti
-01. [Introduzione a Canvas](<07.01 Introduzione a Canvas.md>)
-02. [Debugging di applicazioni Canvas](<07.02 Debugging di applicazioni Canvas.md>)
-03. [Disegno di forme semplici](<07.03 Disegno di forme semplici.md>)
-04. [Colore e Riempimento](<07.04 Colore e Riempimento.md>)
-05. [Lavorare con il testo](<07.05 Lavorare con il testo.md>)
+01. [Introduzione a Canvas](<07.01 Introduzione a Canvas.md>) | [Esempio](<Esempi/07.01-introduzione-canvas.html>)
+02. [Debugging di applicazioni Canvas](<07.02 Debugging di applicazioni Canvas.md>) | [Esempio](<Esempi/07.02-debugging-canvas.html>)
+03. [Disegno di forme semplici](<07.03 Disegno di forme semplici.md>) | [Esempio](<Esempi/07.03-forme-semplici.html>)
+04. [Colore e Riempimento](<07.04 Colore e Riempimento.md>) | [Esempio](<Esempi/07.04-colore-riempimento.html>)
+05. [Lavorare con il testo](<07.05 Lavorare con il testo.md>) | [Esempio](<Esempi/07.05-testo-canvas.html>)
 
 ### Tecniche Avanzate
-06. [Curve di Bézier e archi, Combinare tracciati con clip](<07.06 Curve di Bezier e archi, Combinare tracciati con clip.md>)
-07. [Trasformazioni](<07.07 Trasformazioni.md>)
-08. [Gestione della trasparenza](<07.08 Gestione della trasparenza.md>)
-09. [Gestione delle immagini](<07.09 Gestione delle immagini.md>)
-10. [Canvas vs SVG: quando usare l'uno o l'altro](<07.15 Canvas vs SVG.md>)
+06. [Curve di Bézier e archi, Combinare tracciati con clip](<07.06 Curve di Bezier e archi, Combinare tracciati con clip.md>) | [Esempio](<Esempi/07.06-curve-tracciati.html>)
+07. [Trasformazioni](<07.07 Trasformazioni.md>) | [Esempio](<Esempi/07.07-trasformazioni.html>)
+08. [Gestione della trasparenza](<07.08 Gestione della trasparenza.md>) | [Esempio](<Esempi/07.08-trasparenza.html>)
+09. [Gestione delle immagini](<07.09 Gestione delle immagini.md>) | [Esempio](<Esempi/07.09-immagini.html>)
+10. [Canvas vs SVG: quando usare l'uno o l'altro](<07.15 Canvas vs SVG.md>) | [Esempio comparativo](<Esempi/07.15-canvas-vs-svg.html>)
 
 ### Interattività e Animazione
-11. [Gestione degli eventi - Click e movimento del mouse](<07.10 Gestione degli eventi - Click e movimento del mouse.md>)
-12. [Gestione degli eventi - Gestione del touch](<07.11 Gestione degli eventi - Gestione del touch.md>)
-13. [Animazioni con Canvas](<07.12 Animazioni con Canvas.md>)
-14. [Audio per applicazioni Canvas](<07.16 Audio per applicazioni Canvas.md>)
+11. [Gestione degli eventi - Click e movimento del mouse](<07.10 Gestione degli eventi - Click e movimento del mouse.md>) | [Esempio](<Esempi/07.10-eventi-mouse.html>)
+12. [Gestione degli eventi - Gestione del touch](<07.11 Gestione degli eventi - Gestione del touch.md>) | [Esempio](<Esempi/07.11-eventi-touch.html>)
+13. [Animazioni con Canvas](<07.12 Animazioni con Canvas.md>) | [Esempio](<Esempi/07.12-animazioni.html>)
+14. [Audio per applicazioni Canvas](<07.16 Audio per applicazioni Canvas.md>) | [Esempio](<Esempi/07.16-audio-canvas.html>)
 
 ### Ottimizzazione e Esplorazione
-15. [Ottimizzazione delle prestazioni](<07.13 Ottimizzazione delle prestazioni.md>)
-16. [Framework e librerie Canvas](<07.14 Framework e librerie Canvas.md>)
-17. [Introduzione a WebGL](<07.17 Introduzione a WebGL.md>)
-18. [Canvas nei framework moderni (React, Vue, Angular)](<07.18 Canvas nei framework moderni.md>)
-19. [Ottimizzazione per dispositivi mobili](<07.19 Ottimizzazione per dispositivi mobili.md>)
+15. [Ottimizzazione delle prestazioni](<07.13 Ottimizzazione delle prestazioni.md>) | [Esempio](<Esempi/07.13-ottimizzazione.html>)
+16. [Framework e librerie Canvas](<07.14 Framework e librerie Canvas.md>) | [Esempio](<Esempi/07.14-librerie-canvas.html>)
+17. [Introduzione a WebGL](<07.17 Introduzione a WebGL.md>) | [Esempio](<Esempi/07.17-intro-webgl.html>)
+18. [Canvas nei framework moderni (React, Vue, Angular)](<07.18 Canvas nei framework moderni.md>) | [Esempio](<Esempi/07.18-canvas-nei-framework.html>)
+19. [Ottimizzazione per dispositivi mobili](<07.19 Ottimizzazione per dispositivi mobili.md>) | [Esempio](<Esempi/07.19-ottimizzazione-mobile.html>)
 
 ## 🧪 Esercitazioni Pratiche
 

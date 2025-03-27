@@ -394,7 +394,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@ang
       &lt;button (click)="snow()" class="angular-color">Neve&lt;/button>
       &lt;button (click)="stars()" class="angular-color">Stelle&lt;/button>
       &lt;button (click)="clear()" class="angular-color">Reset&lt;/button>
-    &lt;/div>
+    &lt;/div&gt;
   `
 })
 export class CanvasDemoComponent implements AfterViewInit, OnDestroy {
@@ -568,6 +568,17 @@ interface Particle {
                 <li>La gestione degli stati sarebbe più robusta (Redux, Vuex, NGRX)</li>
             </ul>
             <p>La cosa più importante da ricordare quando si usa Canvas con questi framework è gestire correttamente il ciclo di vita dei componenti e fare pulizia delle risorse quando necessario.</p>
+        </div>
+        
+        <!-- Collegamenti a risorse esterne utili -->
+        <div class="mt-5 mb-4">
+            <h3>Risorse Utili</h3>
+            <ul>
+                <li><a href="https://reactjs.org/docs/hooks-reference.html#useref" target="_blank">React useRef Hook</a> - Per accedere all'elemento canvas</li>
+                <li><a href="https://vuejs.org/guide/extras/rendering-mechanism.html" target="_blank">Vue.js Rendering Mechanism</a> - Comprensione del ciclo di rendering di Vue</li>
+                <li><a href="https://angular.io/api/core/ViewChild" target="_blank">Angular ViewChild</a> - Per accedere agli elementi del DOM</li>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API" target="_blank">MDN Canvas API</a> - Documentazione completa su Canvas</li>
+            </ul>
         </div>
     </div>
     
@@ -872,6 +883,15 @@ interface Particle {
                 }
             };
         })();
+
+        // Inizializza i tooltips di Bootstrap se presenti
+        document.addEventListener('DOMContentLoaded', () => {
+            // Controlla se Bootstrap è caricato e ha la funzione tooltip
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+            }
+        });
     </script>
 </body>
 </html>

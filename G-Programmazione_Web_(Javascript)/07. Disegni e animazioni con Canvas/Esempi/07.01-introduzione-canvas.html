@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduzione a Canvas HTML5</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            background-color: white;
+            display: block;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Introduzione a Canvas HTML5</h1>
+        <p>
+            L'elemento <code>&lt;canvas&gt;</code> è un componente HTML che permette di disegnare grafica e animazioni 
+            utilizzando JavaScript. È stato introdotto con HTML5 ed è ampiamente supportato dai browser moderni.
+        </p>
+
+        <h2>Il tuo primo Canvas</h2>
+        <p>Ecco un canvas base con una dimensione di 400x200 pixel:</p>
+        
+        <canvas id="primoCanvas" width="400" height="200"></canvas>
+        
+        <div class="code-container">
+            <pre><code>&lt;canvas id="primoCanvas" width="400" height="200"&gt;&lt;/canvas&gt;</code></pre>
+        </div>
+
+        <h2>Disegnare sul Canvas</h2>
+        <p>
+            Per disegnare sul canvas, è necessario ottenere il suo contesto di rendering. Il più comune è il contesto 2D,
+            che consente di disegnare forme bidimensionali, testo, immagini e altro.
+        </p>
+
+        <canvas id="secondoCanvas" width="400" height="200"></canvas>
+        
+        <div class="controls">
+            <button id="disegnaRettangolo">Disegna Rettangolo</button>
+            <button id="disegnaCircolo">Disegna Cerchio</button>
+            <button id="pulisciCanvas">Pulisci Canvas</button>
+        </div>
+
+        <div class="code-container">
+            <pre><code>// Ottieni il contesto 2D del canvas
+const canvas = document.getElementById('secondoCanvas');
+const ctx = canvas.getContext('2d');
+
+// Disegna un rettangolo
+function disegnaRettangolo() {
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(50, 50, 150, 100);
+}
+
+// Disegna un cerchio
+function disegnaCircolo() {
+    ctx.beginPath();
+    ctx.arc(300, 100, 70, 0, Math.PI * 2);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+}</code></pre>
+        </div>
+
+        <h2>Canvas responsive</h2>
+        <p>
+            Per rendere il canvas responsive, è possibile utilizzare CSS per impostare la larghezza al 100% 
+            e calcolare l'altezza proporzionalmente tramite JavaScript.
+        </p>
+
+        <canvas id="responsiveCanvas" width="800" height="400" style="width: 100%; height: auto;"></canvas>
+        
+        <div class="note">
+            <strong>Nota importante:</strong> Quando si ridimensiona un canvas con CSS, è necessario tenere conto 
+            del rapporto tra le dimensioni in pixel del canvas (width e height) e le dimensioni di visualizzazione.
+        </div>
+
+        <h2>Considerazioni sulla compatibilità</h2>
+        <p>
+            Sebbene il supporto per Canvas sia eccellente nei browser moderni, è sempre buona pratica fornire
+            contenuto alternativo per browser più vecchi o situazioni in cui JavaScript è disabilitato.
+        </p>
+        
+        <div class="code-container">
+            <pre><code>&lt;canvas id="myCanvas" width="400" height="200"&gt;
+    Il tuo browser non supporta l'elemento Canvas.
+    Ecco un'immagine statica al suo posto.
+    &lt;img src="fallback-image.png" alt="Alternativa al canvas"&gt;
+&lt;/canvas&gt;</code></pre>
+        </div>
+    </div>
+
+    <script>
+        // Primo canvas - disegno semplice
+        const primoCanvas = document.getElementById('primoCanvas');
+        const ctx1 = primoCanvas.getContext('2d');
+        
+        // Disegno sfondo grigio chiaro
+        ctx1.fillStyle = '#f0f0f0';
+        ctx1.fillRect(0, 0, primoCanvas.width, primoCanvas.height);
+        
+        // Testo informativo
+        ctx1.fillStyle = '#333';
+        ctx1.font = '18px Arial';
+        ctx1.textAlign = 'center';
+        ctx1.fillText('Questo è un elemento canvas vuoto', primoCanvas.width/2, primoCanvas.height/2);
+        ctx1.font = '14px Arial';
+        ctx1.fillText('(400 × 200 pixel)', primoCanvas.width/2, primoCanvas.height/2 + 30);
+
+        // Secondo canvas - interattivo
+        const secondoCanvas = document.getElementById('secondoCanvas');
+        const ctx2 = secondoCanvas.getContext('2d');
+        
+        // Disegno bordo
+        ctx2.strokeStyle = '#ddd';
+        ctx2.lineWidth = 2;
+        ctx2.strokeRect(0, 0, secondoCanvas.width, secondoCanvas.height);
+        
+        // Handler per i pulsanti
+        document.getElementById('disegnaRettangolo').addEventListener('click', function() {
+            ctx2.fillStyle = 'rgba(30, 144, 255, 0.7)'; // Dodger blue con trasparenza
+            ctx2.fillRect(50, 50, 150, 100);
+        });
+        
+        document.getElementById('disegnaCircolo').addEventListener('click', function() {
+            ctx2.beginPath();
+            ctx2.arc(300, 100, 70, 0, Math.PI * 2);
+            ctx2.fillStyle = 'rgba(220, 20, 60, 0.7)'; // Crimson con trasparenza
+            ctx2.fill();
+        });
+        
+        document.getElementById('pulisciCanvas').addEventListener('click', function() {
+            ctx2.clearRect(0, 0, secondoCanvas.width, secondoCanvas.height);
+            // Ridisegna il bordo
+            ctx2.strokeStyle = '#ddd';
+            ctx2.lineWidth = 2;
+            ctx2.strokeRect(0, 0, secondoCanvas.width, secondoCanvas.height);
+        });
+
+        // Canvas responsive
+        const responsiveCanvas = document.getElementById('responsiveCanvas');
+        const ctx3 = responsiveCanvas.getContext('2d');
+        
+        function disegnaCanvasResponsive() {
+            // Pulisci il canvas
+            ctx3.clearRect(0, 0, responsiveCanvas.width, responsiveCanvas.height);
+            
+            // Disegna un pattern che evidenzia la dimensione reale del canvas
+            for (let x = 0; x < responsiveCanvas.width; x += 50) {
+                for (let y = 0; y < responsiveCanvas.height; y += 50) {
+                    ctx3.fillStyle = (x + y) % 100 === 0 ? '#f5f5f5' : '#e9e9e9';
+                    ctx3.fillRect(x, y, 50, 50);
+                }
+            }
+            
+            // Disegna il testo informativo
+            ctx3.fillStyle = '#333';
+            ctx3.font = '24px Arial';
+            ctx3.textAlign = 'center';
+            ctx3.fillText('Canvas Responsive', responsiveCanvas.width/2, responsiveCanvas.height/2 - 15);
+            ctx3.font = '16px Arial';
+            ctx3.fillText(`Dimensione interna: ${responsiveCanvas.width} × ${responsiveCanvas.height} pixel`, 
+                         responsiveCanvas.width/2, responsiveCanvas.height/2 + 20);
+            ctx3.fillText(`Dimensione visualizzata: ${responsiveCanvas.clientWidth} × ${responsiveCanvas.clientHeight} pixel`, 
+                         responsiveCanvas.width/2, responsiveCanvas.height/2 + 50);
+        }
+        
+        // Ridisegna quando cambia la dimensione della finestra
+        window.addEventListener('resize', disegnaCanvasResponsive);
+        
+        // Disegna iniziale
+        disegnaCanvasResponsive();
+    </script>
+</body>
+</html>

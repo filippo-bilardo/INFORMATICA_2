@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disegno di Forme Semplici - Canvas HTML5</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .example-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Disegno di Forme Semplici in Canvas</h1>
+
+        <div class="example-section">
+            <h2>1. Rettangoli</h2>
+            <p>I rettangoli sono le forme più semplici da disegnare in Canvas.</p>
+            
+            <canvas id="rettangoliCanvas" width="600" height="200"></canvas>
+            
+            <div class="controls">
+                <button id="drawRect">Disegna Rettangolo</button>
+                <button id="drawStrokeRect">Rettangolo con Bordo</button>
+                <button id="drawClearRect">Clear Rect</button>
+                <button id="clearRectangles">Pulisci Tutto</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Rettangolo pieno
+ctx.fillStyle = 'blue';
+ctx.fillRect(x, y, width, height);
+
+// Rettangolo con solo bordo
+ctx.strokeStyle = 'red';
+ctx.lineWidth = 2;
+ctx.strokeRect(x, y, width, height);
+
+// Cancella un'area rettangolare
+ctx.clearRect(x, y, width, height);</pre>
+            </div>
+        </div>
+
+        <div class="example-section">
+            <h2>2. Linee</h2>
+            <p>Le linee si disegnano definendo un percorso (path) e poi tracciandolo.</p>
+            
+            <canvas id="lineeCanvas" width="600" height="200"></canvas>
+            
+            <div class="controls">
+                <button id="drawStraight">Linea Retta</button>
+                <button id="drawAngled">Linea Spezzata</button>
+                <button id="drawDashed">Linea Tratteggiata</button>
+                <button id="clearLines">Pulisci</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Inizio un nuovo percorso
+ctx.beginPath();
+
+// Sposto il "pennino" in posizione iniziale
+ctx.moveTo(x1, y1);
+
+// Traccio la linea fino al punto finale
+ctx.lineTo(x2, y2);
+
+// Imposto lo stile della linea
+ctx.strokeStyle = 'black';
+ctx.lineWidth = 2;
+
+// Disegno effettivamente la linea
+ctx.stroke();</pre>
+            </div>
+        </div>
+
+        <div class="example-section">
+            <h2>3. Cerchi e Archi</h2>
+            <p>Cerchi e archi si creano con il metodo <code>arc()</code>.</p>
+            
+            <canvas id="cerchiCanvas" width="600" height="250"></canvas>
+            
+            <div class="controls">
+                <button id="drawCircle">Cerchio Pieno</button>
+                <button id="drawRing">Cerchio Vuoto</button>
+                <button id="drawSemicircle">Semicerchio</button>
+                <button id="drawPacman">Pacman</button>
+                <button id="clearCircles">Pulisci</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Inizio un nuovo percorso
+ctx.beginPath();
+
+// Disegno un cerchio
+// arc(x, y, raggio, angolo iniziale, angolo finale, antiorario)
+ctx.arc(x, y, radius, 0, Math.PI * 2);
+
+// Riempio il cerchio
+ctx.fillStyle = 'orange';
+ctx.fill();
+
+// Oppure disegno solo il bordo
+ctx.strokeStyle = 'blue';
+ctx.lineWidth = 3;
+ctx.stroke();</pre>
+            </div>
+        </div>
+
+        <div class="example-section">
+            <h2>4. Poligoni</h2>
+            <p>I poligoni vengono creati definendo i loro vertici come un percorso.</p>
+            
+            <canvas id="poligoniCanvas" width="600" height="250"></canvas>
+            
+            <div class="controls">
+                <button id="drawTriangle">Triangolo</button>
+                <button id="drawSquare">Quadrato</button>
+                <button id="drawPentagon">Pentagono</button>
+                <button id="drawStar">Stella</button>
+                <button id="clearPolygons">Pulisci</button>
+            </div>
+            
+            <div class="code-container">
+<pre>// Inizio un nuovo percorso
+ctx.beginPath();
+
+// Definisco i vertici
+ctx.moveTo(x1, y1); // Primo vertice
+ctx.lineTo(x2, y2); // Secondo vertice
+ctx.lineTo(x3, y3); // Terzo vertice
+// ...altri vertici...
+
+// Chiudo il percorso tornando al punto iniziale
+ctx.closePath();
+
+// Riempio il poligono
+ctx.fillStyle = 'purple';
+ctx.fill();
+
+// Opzionalmente disegno anche il bordo
+ctx.strokeStyle = 'black';
+ctx.lineWidth = 1;
+ctx.stroke();</pre>
+            </div>
+        </div>
+
+        <div class="example-section">
+            <h2>5. Disegno Libero</h2>
+            <p>Prova a disegnare liberamente sulle canvas seguenti:</p>
+            
+            <canvas id="disegnoLiberoCanvas" width="600" height="300"></canvas>
+            
+            <div class="controls">
+                Spessore: 
+                <input type="range" id="brushSize" min="1" max="50" value="5">
+                Colore: 
+                <div style="display: inline-block;">
+                    <div class="color-btn" style="background-color: black;" data-color="black"></div>
+                    <div class="color-btn" style="background-color: red;" data-color="red"></div>
+                    <div class="color-btn" style="background-color: blue;" data-color="blue"></div>
+                    <div class="color-btn" style="background-color: green;" data-color="green"></div>
+                    <div class="color-btn" style="background-color: yellow;" data-color="yellow"></div>
+                    <div class="color-btn" style="background-color: purple;" data-color="purple"></div>
+                </div>
+                <button id="clearFreeDrawing">Pulisci</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ------------- Rettangoli -------------
+        const rettangoliCanvas = document.getElementById('rettangoliCanvas');
+        const ctxRect = rettangoliCanvas.getContext('2d');
+        
+        // Disegna sfondo iniziale
+        ctxRect.fillStyle = '#f9f9f9';
+        ctxRect.fillRect(0, 0, rettangoliCanvas.width, rettangoliCanvas.height);
+        
+        // Istruzioni
+        ctxRect.fillStyle = '#333';
+        ctxRect.font = '14px Arial';
+        ctxRect.textAlign = 'center';
+        ctxRect.fillText('Clicca i pulsanti sotto per disegnare i rettangoli', rettangoliCanvas.width/2, 30);
+        
+        document.getElementById('drawRect').addEventListener('click', function() {
+            const x = 50 + Math.random() * 400;
+            const y = 50 + Math.random() * 100;
+            ctxRect.fillStyle = `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)})`;
+            ctxRect.fillRect(x, y, 80, 50);
+        });
+        
+        document.getElementById('drawStrokeRect').addEventListener('click', function() {
+            const x = 50 + Math.random() * 400;
+            const y = 50 + Math.random() * 100;
+            ctxRect.strokeStyle = `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)})`;
+            ctxRect.lineWidth = 2 + Math.random() * 4;
+            ctxRect.strokeRect(x, y, 100, 60);
+        });
+        
+        document.getElementById('drawClearRect').addEventListener('click', function() {
+            const x = 50 + Math.random() * 400;
+            const y = 50 + Math.random() * 100;
+            ctxRect.clearRect(x, y, 60, 60);
+        });
+        
+        document.getElementById('clearRectangles').addEventListener('click', function() {
+            ctxRect.clearRect(0, 0, rettangoliCanvas.width, rettangoliCanvas.height);
+            // Ridisegna sfondo e istruzioni
+            ctxRect.fillStyle = '#f9f9f9';
+            ctxRect.fillRect(0, 0, rettangoliCanvas.width, rettangoliCanvas.height);
+            ctxRect.fillStyle = '#333';
+            ctxRect.font = '14px Arial';
+            ctxRect.textAlign = 'center';
+            ctxRect.fillText('Clicca i pulsanti sotto per disegnare i rettangoli', rettangoliCanvas.width/2, 30);
+        });
+        
+        // ------------- Linee -------------
+        const lineeCanvas = document.getElementById('lineeCanvas');
+        const ctxLine = lineeCanvas.getContext('2d');
+        
+        // Disegna sfondo iniziale
+        ctxLine.fillStyle = '#f9f9f9';
+        ctxLine.fillRect(0, 0, lineeCanvas.width, lineeCanvas.height);
+        
+        // Istruzioni
+        ctxLine.fillStyle = '#333';
+        ctxLine.font = '14px Arial';
+        ctxLine.textAlign = 'center';
+        ctxLine.fillText('Clicca i pulsanti sotto per disegnare le linee', lineeCanvas.width/2, 30);
+        
+        document.getElementById('drawStraight').addEventListener('click', function() {
+            const x1 = 50 + Math.random() * 100;
+            const y1 = 50 + Math.random() * 100;
+            const x2 = 350 + Math.random() * 200;
+            const y2 = 50 + Math.random() * 100;
+            
+            ctxLine.beginPath();
+            ctxLine.moveTo(x1, y1);
+            ctxLine.lineTo(x2, y2);
+            ctxLine.strokeStyle = `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)})`;
+            ctxLine.lineWidth = 2 + Math.random() * 3;
+            ctxLine.stroke();
+        });
+        
+        document.getElementById('drawAngled').addEventListener('click', function() {
+            const x1 = 50 + Math.random() * 100;
+            const y1 = 50 + Math.random() * 100;
+            const x2 = 200 + Math.random() * 100;
+            const y2 = 150 + Math.random() * 30;
+            const x3 = 350 + Math.random() * 200;
+            const y3 = 50 + Math.random() * 100;
+            
+            ctxLine.beginPath();
+            ctxLine.moveTo(x1, y1);
+            ctxLine.lineTo(x2, y2);
+            ctxLine.lineTo(x3, y3);
+            ctxLine.strokeStyle = `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)})`;
+            ctxLine.lineWidth = 2 + Math.random() * 3;
+            ctxLine.stroke();
+        });
+        
+        document.getElementById('drawDashed').addEventListener('click', function() {
+            const x1 = 50 + Math.random() * 100;
+            const y1 = 50 + Math.random() * 100;
+            const x2 = 350 + Math.random() * 200;
+            const y2 = 50 + Math.random() * 100;
+            
+            ctxLine.beginPath();
+            ctxLine.setLineDash([5, 10]);
+            ctxLine.moveTo(x1, y1);
+            ctxLine.lineTo(x2, y2);
+            ctxLine.strokeStyle = `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)})`;
+            ctxLine.lineWidth = 2;
+            ctxLine.stroke();
+            ctxLine.setLineDash([]); // Reset
+        });
+        
+        document.getElementById('clearLines').addEventListener('click', function() {
+            ctxLine.clearRect(0, 0, lineeCanvas.width, lineeCanvas.height);
+            // Ridisegna sfondo e istruzioni
+            ctxLine.fillStyle = '#f9f9f9';
+            ctxLine.fillRect(0, 0, lineeCanvas.width, lineeCanvas.height);
+            ctxLine.fillStyle = '#333';
+            ctxLine.font = '14px Arial';
+            ctxLine.textAlign = 'center';
+            ctxLine.fillText('Clicca i pulsanti sotto per disegnare le linee', lineeCanvas.width/2, 30);
+        });
+        
+        // ------------- Cerchi e Archi -------------
+        const cerchiCanvas = document.getElementById('cerchiCanvas');
+        const ctxCircle = cerchiCanvas.getContext('2d');
+        
+        // Disegna sfondo iniziale
+        ctxCircle.fillStyle = '#f9f9f9';
+        ctxCircle.fillRect(0, 0, cerchiCanvas.width, cerchiCanvas.height);
+        
+        // Istruzioni
+        ctxCircle.fillStyle = '#333';
+        ctxCircle.font = '14px Arial';
+        ctxCircle.textAlign = 'center';
+        ctxCircle.fillText('Clicca i pulsanti sotto per disegnare cerchi e archi', cerchiCanvas.width/2, 30);
+        
+        document.getElementById('drawCircle').addEventListener('click', function() {
+            const x = 100 + Math.random() * 400;
+            const y = 80 + Math.random() * 100;
+            const radius = 20 + Math.random() * 40;
+            
+            ctxCircle.beginPath();
+            ctxCircle.arc(x, y, radius, 0, Math.PI * 2);
+            ctxCircle.fillStyle = `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.7)`;
+            ctxCircle.fill();
+        });
+        
+        document.getElementById('drawRing').addEventListener('click', function() {
+            const x = 100 + Math.random() * 400;
+            const y = 80 + Math.random() * 100;
+            const radius = 20 + Math.random() * 40;
+            
+            ctxCircle.beginPath();
+            ctxCircle.arc(x, y, radius, 0, Math.PI * 2);
+            ctxCircle.strokeStyle = `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)})`;
+            ctxCircle.lineWidth = 2 + Math.random() * 4;
+            ctxCircle.stroke();
+        });
+        
+        document.getElementById('drawSemicircle').addEventListener('click', function() {
+            const x = 100 + Math.random() * 400;
+            const y = 80 + Math.random() * 100;
+            const radius = 20 + Math.random() * 40;
+            const startAngle = Math.random() * Math.PI;
+            
+            ctxCircle.beginPath();
+            ctxCircle.arc(x, y, radius, startAngle, startAngle + Math.PI);
+            ctxCircle.fillStyle = `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.7)`;
+            ctxCircle.fill();
+        });
+        
+        document.getElementById('drawPacman').addEventListener('click', function() {
+            const x = 100 + Math.random() * 400;
+            const y = 80 + Math.random() * 100;
+            const radius = 30 + Math.random() * 20;
+            const mouthSize = Math.PI / 4 + Math.random() * (Math.PI / 2);
+            
+            ctxCircle.beginPath();
+            ctxCircle.arc(x, y, radius, mouthSize / 2, Math.PI * 2 - mouthSize / 2);
+            ctxCircle.lineTo(x, y);
+            ctxCircle.closePath();
+            ctxCircle.fillStyle = 'yellow';
+            ctxCircle.fill();
+            
+            // Occhio
+            ctxCircle.beginPath();
+            ctxCircle.arc(x, y - radius/2, 3, 0, Math.PI * 2);
+            ctxCircle.fillStyle = 'black';
+            ctxCircle.fill();
+        });
+        
+        document.getElementById('clearCircles').addEventListener('click', function() {
+            ctxCircle.clearRect(0, 0, cerchiCanvas.width, cerchiCanvas.height);
+            // Ridisegna sfondo e istruzioni
+            ctxCircle.fillStyle = '#f9f9f9';
+            ctxCircle.fillRect(0, 0, cerchiCanvas.width, cerchiCanvas.height);
+            ctxCircle.fillStyle = '#333';
+            ctxCircle.font = '14px Arial';
+            ctxCircle.textAlign = 'center';
+            ctxCircle.fillText('Clicca i pulsanti sotto per disegnare cerchi e archi', cerchiCanvas.width/2, 30);
+        });
+        
+        // ------------- Poligoni -------------
+        const poligoniCanvas = document.getElementById('poligoniCanvas');
+        const ctxPolygon = poligoniCanvas.getContext('2d');
+        
+        // Disegna sfondo iniziale
+        ctxPolygon.fillStyle = '#f9f9f9';
+        ctxPolygon.fillRect(0, 0, poligoniCanvas.width, poligoniCanvas.height);
+        
+        // Istruzioni
+        ctxPolygon.fillStyle = '#333';
+        ctxPolygon.font = '14px Arial';
+        ctxPolygon.textAlign = 'center';
+        ctxPolygon.fillText('Clicca i pulsanti sotto per disegnare i poligoni', poligoniCanvas.width/2, 30);
+        
+        document.getElementById('drawTriangle').addEventListener('click', function() {
+            const x = 100 + Math.random() * 400;
+            const y = 80 + Math.random() * 100;
+            const size = 40 + Math.random() * 40;
+            
+            ctxPolygon.beginPath();
+            ctxPolygon.moveTo(x, y - size);
+            ctxPolygon.lineTo(x - size / Math.sqrt(3), y + size/2);
+            ctxPolygon.lineTo(x + size / Math.sqrt(3), y + size/2);
+            ctxPolygon.closePath();
+            ctxPolygon.fillStyle = `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.7)`;
+            ctxPolygon.fill();
+            ctxPolygon.strokeStyle = 'black';
+            ctxPolygon.lineWidth = 1;
+            ctxPolygon.stroke();
+        });
+        
+        document.getElementById('drawSquare').addEventListener('click', function() {
+            const x = 100 + Math.random() * 400;
+            const y = 80 + Math.random() * 100;
+            const size = 40 + Math.random() * 40;
+            const angle = Math.random() * Math.PI / 2;
+            
+            ctxPolygon.save();
+            ctxPolygon.translate(x, y);
+            ctxPolygon.rotate(angle);
+            
+            ctxPolygon.beginPath();
+            ctxPolygon.moveTo(-size/2, -size/2);
+            ctxPolygon.lineTo(size/2, -size/2);
+            ctxPolygon.lineTo(size/2, size/2);
+            ctxPolygon.lineTo(-size/2, size/2);
+            ctxPolygon.closePath();
+            ctxPolygon.fillStyle = `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.7)`;
+            ctxPolygon.fill();
+            ctxPolygon.strokeStyle = 'black';
+            ctxPolygon.lineWidth = 1;
+            ctxPolygon.stroke();
+            
+            ctxPolygon.restore();
+        });
+        
+        document.getElementById('drawPentagon').addEventListener('click', function() {
+            const x = 100 + Math.random() * 400;
+            const y = 80 + Math.random() * 100;
+            const size = 40 + Math.random() * 30;
+            
+            ctxPolygon.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * 2 * Math.PI / 5) - Math.PI / 2;
+                if (i === 0) {
+                    ctxPolygon.moveTo(x + size * Math.cos(angle), y + size * Math.sin(angle));
+                } else {
+                    ctxPolygon.lineTo(x + size * Math.cos(angle), y + size * Math.sin(angle));
+                }
+            }
+            ctxPolygon.closePath();
+            ctxPolygon.fillStyle = `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.7)`;
+            ctxPolygon.fill();
+            ctxPolygon.strokeStyle = 'black';
+            ctxPolygon.lineWidth = 1;
+            ctxPolygon.stroke();
+        });
+        
+        document.getElementById('drawStar').addEventListener('click', function() {
+            const x = 100 + Math.random() * 400;
+            const y = 80 + Math.random() * 100;
+            const outerRadius = 40 + Math.random() * 30;
+            const innerRadius = outerRadius / 2;
+            const spikes = 5;
+            
+            ctxPolygon.beginPath();
+            
+            for (let i = 0; i < spikes * 2; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const angle = (i * Math.PI) / spikes - Math.PI / 2;
+                if (i === 0) {
+                    ctxPolygon.moveTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle));
+                } else {
+                    ctxPolygon.lineTo(x + radius * Math.cos(angle), y + radius * Math.sin(angle));
+                }
+            }
+            
+            ctxPolygon.closePath();
+            ctxPolygon.fillStyle = `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.7)`;
+            ctxPolygon.fill();
+            ctxPolygon.strokeStyle = 'black';
+            ctxPolygon.lineWidth = 1;
+            ctxPolygon.stroke();
+        });
+        
+        document.getElementById('clearPolygons').addEventListener('click', function() {
+            ctxPolygon.clearRect(0, 0, poligoniCanvas.width, poligoniCanvas.height);
+            // Ridisegna sfondo e istruzioni
+            ctxPolygon.fillStyle = '#f9f9f9';
+            ctxPolygon.fillRect(0, 0, poligoniCanvas.width, poligoniCanvas.height);
+            ctxPolygon.fillStyle = '#333';
+            ctxPolygon.font = '14px Arial';
+            ctxPolygon.textAlign = 'center';
+            ctxPolygon.fillText('Clicca i pulsanti sotto per disegnare i poligoni', poligoniCanvas.width/2, 30);
+        });
+        
+        // ------------- Disegno Libero -------------
+        const disegnoLiberoCanvas = document.getElementById('disegnoLiberoCanvas');
+        const ctxFree = disegnoLiberoCanvas.getContext('2d');
+        
+        // Disegna sfondo iniziale
+        ctxFree.fillStyle = 'white';
+        ctxFree.fillRect(0, 0, disegnoLiberoCanvas.width, disegnoLiberoCanvas.height);
+        
+        // Istruzioni
+        ctxFree.fillStyle = '#333';
+        ctxFree.font = '16px Arial';
+        ctxFree.textAlign = 'center';
+        ctxFree.fillText('Disegna liberamente qui:', disegnoLiberoCanvas.width/2, 30);
+        
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let brushColor = 'black';
+        
+        // Imposta i gestori di eventi per il disegno libero
+        disegnoLiberoCanvas.addEventListener('mousedown', startDrawing);
+        disegnoLiberoCanvas.addEventListener('mousemove', draw);
+        disegnoLiberoCanvas.addEventListener('mouseup', stopDrawing);
+        disegnoLiberoCanvas.addEventListener('mouseout', stopDrawing);
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            ctxFree.lineWidth = document.getElementById('brushSize').value;
+            ctxFree.lineCap = 'round';
+            ctxFree.strokeStyle = brushColor;
+            
+            ctxFree.beginPath();
+            ctxFree.moveTo(lastX, lastY);
+            ctxFree.lineTo(e.offsetX, e.offsetY);
+            ctxFree.stroke();
+            
+            // Aggiorna le coordinate
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        // Gestori dei pulsanti colore
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                brushColor = this.getAttribute('data-color');
+            });
+        });
+        
+        document.getElementById('clearFreeDrawing').addEventListener('click', function() {
+            ctxFree.clearRect(0, 0, disegnoLiberoCanvas.width, disegnoLiberoCanvas.height);
+            // Ridisegna sfondo e istruzioni
+            ctxFree.fillStyle = 'white';
+            ctxFree.fillRect(0, 0, disegnoLiberoCanvas.width, disegnoLiberoCanvas.height);
+            ctxFree.fillStyle = '#333';
+            ctxFree.font = '16px Arial';
+            ctxFree.textAlign = 'center';
+            ctxFree.fillText('Disegna liberamente qui:', disegnoLiberoCanvas.width/2, 30);
+        });
+    </script>
+</body>
+</html>
