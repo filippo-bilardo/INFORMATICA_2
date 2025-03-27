@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio per applicazioni Canvas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        canvas {
+            display: block;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .control-panel {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .control-group {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .sound-button {
+            background-color: #2196F3;
+        }
+
+        .sound-button:hover {
+            background-color: #0b7dda;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input[type="range"] {
+            width: 200px;
+            vertical-align: middle;
+        }
+        
+        #loadingMessage {
+            color: #f44336;
+            font-weight: bold;
+        }
+        
+        #controls {
+            display: none;
+        }
+        
+        .status {
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Audio per applicazioni Canvas</h1>
+    
+    <p>Questa demo illustra come integrare l'audio in un'applicazione Canvas interattiva utilizzando l'API Web Audio.</p>
+    
+    <div id="loadingMessage">
+        Caricamento degli asset audio in corso... Clicca ovunque sulla pagina per attivare l'audio.
+    </div>
+    
+    <div id="controls" class="control-panel">
+        <div class="control-group">
+            <label for="masterVolume">Volume Master:</label>
+            <input type="range" id="masterVolume" min="0" max="1" step="0.01" value="0.7">
+            <span id="volumeValue">70%</span>
+            <button id="muteButton">Mute</button>
+        </div>
+        
+        <div class="control-group">
+            <button id="playMusic">▶️ Musica di sottofondo</button>
+            <button id="stopMusic">⏹️ Stop Musica</button>
+            <span class="status" id="musicStatus">Inattiva</span>
+        </div>
+        
+        <div class="control-group">
+            <h3>Effetti sonori</h3>
+            <button class="sound-button" data-sound="jump">Salto</button>
+            <button class="sound-button" data-sound="coin">Moneta</button>
+            <button class="sound-button" data-sound="explosion">Esplosione</button>
+        </div>
+        
+        <div class="control-group">
+            <label for="pitch">Tono:</label>
+            <input type="range" id="pitch" min="-1200" max="1200" step="100" value="0">
+            <span id="pitchValue">0</span>
+        </div>
+        
+        <div class="control-group">
+            <label for="playbackRate">Velocità:</label>
+            <input type="range" id="playbackRate" min="0.5" max="2" step="0.1" value="1">
+            <span id="rateValue">1.0x</span>
+        </div>
+    </div>
+    
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    
+    <script>
+        // Configurazione iniziale
+        let audioContext;
+        let masterGainNode;
+        let isMuted = false;
+        let backgroundMusic;
+        let isPlaying = false;
+
+        // Memorizza i suoni caricati
+        const sounds = {};
+        
+        // Riferimenti al canvas e contesto
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Configurazione di gioco
+        const player = {
+            x: 100,
+            y: 300,
+            width: 40,
+            height: 40,
+            color: '#ff5722',
+            velocityY: 0,
+            isJumping: false
+        };
+        
+        const coins = [];
+        const explosions = [];
+        
+        // Inizializza il canvas con una forma base
+        function drawGame() {
+            // Pulisci il canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Disegna il terreno
+            ctx.fillStyle = '#4CAF50';
+            ctx.fillRect(0, 340, canvas.width, 60);
+            
+            // Disegna il giocatore
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            
+            // Disegna le monete
+            ctx.fillStyle = '#FFD700';
+            for (const coin of coins) {
+                ctx.beginPath();
+                ctx.arc(coin.x, coin.y, 15, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Disegna le esplosioni
+            for (const explosion of explosions) {
+                ctx.fillStyle = `rgba(255, 0, 0, ${explosion.opacity})`;
+                ctx.beginPath();
+                ctx.arc(explosion.x, explosion.y, explosion.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Istruzioni
+            ctx.fillStyle = '#333';
+            ctx.font = '16px Arial';
+            ctx.fillText('Clicca sul canvas per saltare', 20, 30);
+            ctx.fillText('Premi i pulsanti per riprodurre effetti sonori', 20, 50);
+        }
+        
+        // Aggiorna lo stato del gioco
+        function updateGame() {
+            // Fisica del giocatore
+            if (player.isJumping) {
+                player.velocityY += 0.5; // Gravità
+                player.y += player.velocityY;
+                
+                // Controlla se il giocatore è tornato a terra
+                if (player.y >= 300) {
+                    player.y = 300;
+                    player.velocityY = 0;
+                    player.isJumping = false;
+                }
+            }
+            
+            // Aggiorna monete
+            for (let i = coins.length - 1; i >= 0; i--) {
+                // Controlla collisione con giocatore
+                const coin = coins[i];
+                if (Math.abs(coin.x - (player.x + player.width/2)) < 30 && 
+                    Math.abs(coin.y - (player.y + player.height/2)) < 30) {
+                    // Collisione rilevata
+                    playSound('coin');
+                    coins.splice(i, 1);
+                }
+            }
+            
+            // Aggiorna esplosioni
+            for (let i = explosions.length - 1; i >= 0; i--) {
+                const explosion = explosions[i];
+                explosion.radius += 2;
+                explosion.opacity -= 0.05;
+                
+                if (explosion.opacity <= 0) {
+                    explosions.splice(i, 1);
+                }
+            }
+            
+            // Disegna lo stato attuale
+            drawGame();
+            
+            // Continua il loop di animazione
+            requestAnimationFrame(updateGame);
+        }
+        
+        // Inizializza audio e gestori eventi
+        async function init() {
+            try {
+                // Crea il contesto audio
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Crea nodo master per il volume
+                masterGainNode = audioContext.createGain();
+                masterGainNode.connect(audioContext.destination);
+                
+                // Simula il caricamento di suoni (usando oscillatori per l'esempio)
+                await simulateLoadingSounds();
+                
+                // Nasconde il messaggio di caricamento e mostra i controlli
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('controls').style.display = 'block';
+                
+                // Avvia il gioco
+                updateGame();
+                
+                // Configura gli event listener
+                setupEventListeners();
+                
+                console.log("Inizializzazione completata!");
+            } catch (error) {
+                console.error("Errore durante l'inizializzazione:", error);
+                document.getElementById('loadingMessage').textContent = 
+                    "Si è verificato un errore durante il caricamento. Ricarica la pagina e riprova.";
+            }
+        }
+        
+        // Simula il caricamento di suoni (per l'esempio)
+        async function simulateLoadingSounds() {
+            // Utilizziamo oscillatori invece di file audio reali
+            const jumpBuffer = await createOscillatorBuffer(220, 0.3, 'square');
+            const coinBuffer = await createOscillatorBuffer(880, 0.2, 'sine');
+            const explosionBuffer = await createOscillatorBuffer(100, 0.8, 'sawtooth');
+            const backgroundBuffer = await createOscillatorBuffer(440, 5.0, 'sine', true);
+            
+            sounds['jump'] = jumpBuffer;
+            sounds['coin'] = coinBuffer;
+            sounds['explosion'] = explosionBuffer;
+            sounds['background'] = backgroundBuffer;
+            
+            // Simula un ritardo di caricamento
+            return new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        
+        // Crea un buffer da un oscillatore
+        async function createOscillatorBuffer(frequency, duration, type, isBackground = false) {
+            const sampleRate = audioContext.sampleRate;
+            const buffer = audioContext.createBuffer(
+                1, 
+                sampleRate * duration, 
+                sampleRate
+            );
+            
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < buffer.length; i++) {
+                // Diversi tipi di forme d'onda
+                const t = i / sampleRate;
+                const phase = 2 * Math.PI * frequency * t;
+                
+                switch(type) {
+                    case 'sine':
+                        data[i] = Math.sin(phase);
+                        break;
+                    case 'square':
+                        data[i] = Math.sin(phase) >= 0 ? 0.7 : -0.7;
+                        break;
+                    case 'sawtooth':
+                        data[i] = ((phase / Math.PI) % 2) - 1;
+                        break;
+                    default:
+                        data[i] = Math.sin(phase);
+                }
+                
+                // Fade out
+                if (i > buffer.length * 0.7) {
+                    data[i] *= (buffer.length - i) / (buffer.length * 0.3);
+                }
+                
+                // Per lo sfondo, aggiungi un po' di variazione
+                if (isBackground) {
+                    const mod = Math.sin(2 * Math.PI * 0.5 * t);
+                    data[i] *= (0.5 + 0.5 * mod) * 0.5;
+                }
+            }
+            
+            return buffer;
+        }
+        
+        // Riproduci un suono
+        function playSound(name, options = {}) {
+            if (!sounds[name]) {
+                console.warn(`Suono "${name}" non trovato`);
+                return;
+            }
+            
+            // Crea una sorgente audio
+            const source = audioContext.createBufferSource();
+            source.buffer = sounds[name];
+            
+            // Applica le opzioni
+            if (options.loop) source.loop = options.loop;
+            
+            // Prendi i valori dai controlli dell'interfaccia
+            const pitchValue = parseFloat(document.getElementById('pitch').value);
+            const rateValue = parseFloat(document.getElementById('playbackRate').value);
+            
+            // Applica tono e velocità
+            source.detune.value = options.detune || pitchValue;
+            source.playbackRate.value = options.playbackRate || rateValue;
+            
+            // Nodo gain per il controllo del volume
+            const gainNode = audioContext.createGain();
+            gainNode.gain.value = options.volume !== undefined ? options.volume : 1;
+            
+            // Connetti la catena audio
+            source.connect(gainNode);
+            gainNode.connect(masterGainNode);
+            
+            // Riproduci il suono
+            source.start();
+            
+            // Restituisci riferimenti per controllo futuro
+            return {
+                source,
+                gainNode
+            };
+        }
+        
+        // Gestisce il salto del giocatore
+        function jump() {
+            if (!player.isJumping) {
+                player.isJumping = true;
+                player.velocityY = -12;
+                playSound('jump');
+            }
+        }
+        
+        // Crea una moneta casuale
+        function spawnCoin() {
+            coins.push({
+                x: Math.random() * (canvas.width - 50) + 25,
+                y: Math.random() * 200 + 100
+            });
+        }
+        
+        // Crea un'esplosione
+        function spawnExplosion(x, y) {
+            explosions.push({
+                x: x || Math.random() * canvas.width,
+                y: y || Math.random() * 300,
+                radius: 10,
+                opacity: 1
+            });
+            playSound('explosion');
+        }
+        
+        // Gestione della musica di sottofondo
+        function toggleBackgroundMusic(play) {
+            if (play && !isPlaying) {
+                backgroundMusic = playSound('background', {
+                    loop: true,
+                    volume: 0.5
+                });
+                isPlaying = true;
+                document.getElementById('musicStatus').textContent = 'In riproduzione';
+            } else if (!play && isPlaying && backgroundMusic) {
+                backgroundMusic.source.stop();
+                isPlaying = false;
+                document.getElementById('musicStatus').textContent = 'Inattiva';
+            }
+        }
+        
+        // Imposta tutti gli eventi dell'interfaccia utente
+        function setupEventListeners() {
+            // Gestione volume master
+            const volumeSlider = document.getElementById('masterVolume');
+            const volumeValue = document.getElementById('volumeValue');
+            
+            volumeSlider.addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value);
+                masterGainNode.gain.value = value;
+                volumeValue.textContent = `${Math.round(value * 100)}%`;
+            });
+            
+            // Pulsante mute
+            const muteButton = document.getElementById('muteButton');
+            muteButton.addEventListener('click', () => {
+                isMuted = !isMuted;
+                masterGainNode.gain.value = isMuted ? 0 : parseFloat(volumeSlider.value);
+                muteButton.textContent = isMuted ? 'Unmute' : 'Mute';
+            });
+            
+            // Controlli pitch e playback rate
+            document.getElementById('pitch').addEventListener('input', (e) => {
+                document.getElementById('pitchValue').textContent = e.target.value;
+            });
+            
+            document.getElementById('playbackRate').addEventListener('input', (e) => {
+                document.getElementById('rateValue').textContent = `${e.target.value}x`;
+            });
+            
+            // Controlli musica
+            document.getElementById('playMusic').addEventListener('click', () => toggleBackgroundMusic(true));
+            document.getElementById('stopMusic').addEventListener('click', () => toggleBackgroundMusic(false));
+            
+            // Gestione bottoni effetti sonori
+            document.querySelectorAll('.sound-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const soundName = button.getAttribute('data-sound');
+                    if (soundName === 'jump') {
+                        jump();
+                    } else if (soundName === 'coin') {
+                        spawnCoin();
+                        playSound('coin');
+                    } else if (soundName === 'explosion') {
+                        spawnExplosion();
+                    }
+                });
+            });
+            
+            // Eventi canvas
+            canvas.addEventListener('click', (e) => {
+                // Attiva il contesto audio se in stato "suspended" (politica autoplay)
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Provoca un salto se si clicca vicino al giocatore
+                if (Math.abs(x - player.x) < 100) {
+                    jump();
+                } else {
+                    // Altrimenti crea un'esplosione dove si è cliccato
+                    spawnExplosion(x, y);
+                }
+            });
+        }
+        
+        // Event listener per attivare l'audio (necessario per le politiche di autoplay)
+        document.addEventListener('click', function initAudio() {
+            if (audioContext) {
+                audioContext.resume();
+            } else {
+                init();
+            }
+            document.removeEventListener('click', initAudio);
+        }, { once: true });
+    </script>
+</body>
+</html>
