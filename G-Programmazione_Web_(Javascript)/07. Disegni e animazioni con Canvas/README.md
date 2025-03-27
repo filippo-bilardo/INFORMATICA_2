@@ -16,10 +16,10 @@ Benvenuti al modulo dedicato al **Canvas HTML5**, uno strumento potente che cons
 07. [Trasformazioni](<07.07 Trasformazioni.md>) | [Esempio](<Esempi/07.07-trasformazioni.html>)
 08. [Gestione della trasparenza](<07.08 Gestione della trasparenza.md>) | [Esempio](<Esempi/07.08-trasparenza.html>)
 09. [Gestione delle immagini](<07.09 Gestione delle immagini.md>) | [Esempio](<Esempi/07.09-immagini.html>)
-10. [Canvas vs SVG: quando usare l'uno o l'altro](<07.15 Canvas vs SVG.md>) | [Esempio comparativo](<Esempi/07.15-canvas-vs-svg.html>)
+10. [Canvas vs SVG: quando usare l'uno o l'altro](<07.10 Canvas vs SVG.md>) | [Esempio comparativo](<Esempi/07.10-canvas-vs-svg.html>)
 
 ### Interattività e Animazione
-11. [Gestione degli eventi - Click e movimento del mouse](<07.10 Gestione degli eventi - Click e movimento del mouse.md>) | [Esempio](<Esempi/07.10-eventi-mouse.html>)
+11. [Gestione degli eventi - Click e movimento del mouse](<07.11 Gestione degli eventi - Click e movimento del mouse.md>) | [Esempio](<Esempi/07.11-eventi-mouse.html>)
 12. [Gestione degli eventi - Gestione del touch](<07.11 Gestione degli eventi - Gestione del touch.md>) | [Esempio](<Esempi/07.11-eventi-touch.html>)
 13. [Animazioni con Canvas](<07.12 Animazioni con Canvas.md>) | [Esempio](<Esempi/07.12-animazioni.html>)
 14. [Audio per applicazioni Canvas](<07.16 Audio per applicazioni Canvas.md>) | [Esempio](<Esempi/07.16-audio-canvas.html>)

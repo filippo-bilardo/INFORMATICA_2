@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ottimizzazione delle prestazioni con Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .fps-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .performance-stats {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ottimizzazione delle prestazioni con Canvas</h1>
+        <p>
+            Le applicazioni Canvas possono diventare lente se non ottimizzate correttamente, specialmente quando si
+            gestiscono molti oggetti o animazioni complesse. Questa guida mostra tecniche per migliorare le prestazioni.
+        </p>
+
+        <div class="section">
+            <h2>1. Confronto delle prestazioni</h2>
+            <p>Confrontiamo un'animazione non ottimizzata con una ottimizzata:</p>
+            
+            <div class="controls">
+                <button id="startNonOptimized">Avvia non ottimizzato</button>
+                <button id="startOptimized">Avvia ottimizzato</button>
+                <button id="stopAnimation">Ferma</button>
+            </div>
+            
+            <canvas id="performanceCanvas" width="800" height="400"></canvas>
+            
+            <div class="performance-stats" id="performanceStats">
+                FPS: 0 | Oggetti: 0
+            </div>
+            
+            <div class="code-container">
+                <pre><code>// Approccio non ottimizzato
+function animateNonOptimized() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Disegna ogni oggetto individualmente
+    for (let i = 0; i < objects.length; i++) {
+        const obj = objects[i];
+        
+        // Aggiorna la posizione
+        obj.x += obj.dx;
+        obj.y += obj.dy;
+        
+        // Controlla le collisioni con i bordi
+        if (obj.x < 0 || obj.x > canvas.width) obj.dx = -obj.dx;
+        if (obj.y < 0 || obj.y > canvas.height) obj.dy = -obj.dy;
+        
+        // Disegna l'oggetto (molte operazioni di disegno)
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+        ctx.fillStyle = obj.color;
+        ctx.fill();
+        ctx.restore();
+    }
+    
+    requestAnimationFrame(animateNonOptimized);
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Tecniche di ottimizzazione</h2>
+            
+            <h3>2.1 Ridurre le operazioni di stato del contesto</h3>
+            <div class="code-container">
+                <pre><code>// Raggruppa gli oggetti per colore per ridurre i cambi di stato
+function optimizedDrawing() {
+    // Raggruppa gli oggetti per colore
+    const colorGroups = {};
+    
+    for (const obj of objects) {
+        if (!colorGroups[obj.color]) {
+            colorGroups[obj.color] = [];
+        }
+        colorGroups[obj.color].push(obj);
+    }
+    
+    // Disegna gli oggetti raggruppati per colore
+    for (const color in colorGroups) {
+        ctx.fillStyle = color; // Imposta il colore una sola volta
+        ctx.beginPath();
+        
+        for (const obj of colorGroups[color]) {
+            ctx.moveTo(obj.x, obj.y);
+            ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+        }
+        
+        ctx.fill(); // Riempi tutti gli oggetti dello stesso colore in una volta
+    }
+}</code></pre>
+            </div>
+            
+            <h3>2.2 Utilizzare canvas multipli (layering)</h3>
+            <div class="code-container">
+                <pre><code>// Crea canvas separati per elementi statici e dinamici
+const backgroundCanvas = document.createElement('canvas');
+backgroundCanvas.width = canvas.width;
+backgroundCanvas.height = canvas.height;
+const bgCtx = backgroundCanvas.getContext('2d');
+
+// Disegna lo sfondo una sola volta
+function drawBackground() {
+    bgCtx.fillStyle = '#f0f0f0';
+    bgCtx.fillRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
+    // Disegna altri elementi statici...
+}
+
+// Nell'animazione, disegna solo gli elementi che cambiano
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Disegna lo sfondo statico
+    ctx.drawImage(backgroundCanvas, 0, 0);
+    
+    // Disegna solo gli elementi dinamici
+    drawDynamicElements();
+    
+    requestAnimationFrame(animate);
+}</code></pre>
+            </div>
+            
+            <h3>2.3 Utilizzare il pre-rendering</h3>
+            <div class="code-container">
+                <pre><code>// Pre-rendering di oggetti complessi
+const spriteCache = {};
+
+function createSprite(type, color, size) {
+    const key = `${type}-${color}-${size}`;
+    
+    // Se lo sprite è già in cache, restituiscilo
+    if (spriteCache[key]) return spriteCache[key];
+    
+    // Altrimenti, crea un nuovo canvas per lo sprite
+    const spriteCanvas = document.createElement('canvas');
+    spriteCanvas.width = size * 2;
+    spriteCanvas.height = size * 2;
+    const spriteCtx = spriteCanvas.getContext('2d');
+    
+    // Disegna lo sprite
+    if (type === 'circle') {
+        spriteCtx.beginPath();
+        spriteCtx.arc(size, size, size, 0, Math.PI * 2);
+        spriteCtx.fillStyle = color;
+        spriteCtx.fill();
+    }
+    // Aggiungi altri tipi di sprite...
+    
+    // Salva lo sprite in cache
+    spriteCache[key] = spriteCanvas;
+    return spriteCanvas;
+}
+
+// Nell'animazione, usa gli sprite pre-renderizzati
+function drawObject(obj) {
+    const sprite = createSprite(obj.type, obj.color, obj.radius);
+    ctx.drawImage(sprite, obj.x - obj.radius, obj.y - obj.radius);
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Ottimizzazione della logica</h2>
+            
+            <h3>3.1 Limitare gli aggiornamenti</h3>
+            <div class="code-container">
+                <pre><code>// Limita gli aggiornamenti della logica
+let lastUpdateTime = 0;
+const updateInterval = 16; // Circa 60 FPS
+
+function animate(timestamp) {
+    // Disegna sempre per mantenere l'animazione fluida
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawObjects();
+    
+    // Aggiorna la logica solo a intervalli specifici
+    if (timestamp - lastUpdateTime > updateInterval) {
+        updateObjects();
+        lastUpdateTime = timestamp;
+    }
+    
+    requestAnimationFrame(animate);
+}</code></pre>
+            </div>
+            
+            <h3>3.2 Utilizzare strutture dati efficienti</h3>
+            <div class="code-container">
+                <pre><code>// Usa una griglia spaziale per ottimizzare il rilevamento delle collisioni
+class SpatialGrid {
+    constructor(width, height, cellSize) {
+        this.cellSize = cellSize;
+        this.cols = Math.ceil(width / cellSize);
+        this.rows = Math.ceil(height / cellSize);
+        this.grid = new Array(this.cols * this.rows).fill().map(() => []);
+    }
+    
+    // Inserisci un oggetto nella griglia
+    insert(obj) {
+        const cellX = Math.floor(obj.x / this.cellSize);
+        const cellY = Math.floor(obj.y / this.cellSize);
+        const index = cellY * this.cols + cellX;
+        
+        if (this.grid[index]) {
+            this.grid[index].push(obj);
+        }
+    }
+    
+    // Ottieni gli oggetti vicini a una posizione
+    getNearby(x, y, radius) {
+        const startX = Math.max(0, Math.floor((x - radius) / this.cellSize));
+        const startY = Math.max(0, Math.floor((y - radius) / this.cellSize));
+        const endX = Math.min(this.cols - 1, Math.floor((x + radius) / this.cellSize));
+        const endY = Math.min(this.rows - 1, Math.floor((y + radius) / this.cellSize));
+        
+        const result = [];
+        
+        for (let cy = startY; cy <= endY; cy++) {
+            for (let cx = startX; cx <= endX; cx++) {
+                const index = cy * this.cols + cx;
+                if (this.grid[index]) {
+                    result.push(...this.grid[index]);
+                }
+            }
+        }
+        
+        return result;
+    }
+    
+    // Pulisci la griglia
+    clear() {
+        for (let i = 0; i < this.grid.length; i++) {
+            this.grid[i] = [];
+        }
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Ottimizzazione del rendering</h2>
+            
+            <h3>4.1 Utilizzare requestAnimationFrame correttamente</h3>
+            <div class="code-container">
+                <pre><code>// Usa requestAnimationFrame in modo efficiente
+let animationId;
+
+function startAnimation() {
+    // Cancella eventuali animazioni in corso
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+    }
+    
+    function animate() {
+        // Logica di animazione
+        
+        // Richiedi il prossimo frame solo se l'animazione è ancora attiva
+        if (isAnimating) {
+            animationId = requestAnimationFrame(animate);
+        }
+    }
+    
+    // Avvia l'animazione
+    isAnimating = true;
+    animationId = requestAnimationFrame(animate);
+}
+
+function stopAnimation() {
+    isAnimating = false;
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+}</code></pre>
+            </div>
+            
+            <h3>4.2 Utilizzare la proprietà imageSmoothingEnabled</h3>
+            <div class="code-container">
+                <pre><code>// Disabilita l'anti-aliasing per migliorare le prestazioni quando non necessario
+ctx.imageSmoothingEnabled = false; // Per pixel art o quando la qualità non è cruciale</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas principale
+        const canvas = document.getElementById('performanceCanvas');
+        const ctx = canvas.getContext('2d');
+        const statsElement = document.getElementById('performanceStats');
+        
+        // Variabili per l'animazione
+        let animationId;
+        let isOptimized = false;
+        let objects = [];
+        let lastFrameTime = 0;
+        let frameCount = 0;
+        let fps = 0;
+        let lastFpsUpdate = 0;
+        
+        // Funzione per creare oggetti
+        function createObjects(count) {
+            objects = [];
+            for (let i = 0; i < count; i++) {
+                objects.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: 5 + Math.random() * 5,
+                    dx: Math.random() * 2 - 1,
+                    dy: Math.random() * 2 - 1,
+                    color: `hsl(${Math.random() * 360}, 70%, 50%)`
+                });
+            }
+        }
+        
+        // Funzione per aggiornare gli oggetti
+        function updateObjects() {
+            for (let i = 0; i < objects.length; i++) {
+                const obj = objects[i];
+                
+                // Aggiorna la posizione
+                obj.x += obj.dx;
+                obj.y += obj.dy;
+                
+                // Controlla le collisioni con i bordi
+                if (obj.x - obj.radius < 0 || obj.x + obj.radius > canvas.width) {
+                    obj.dx = -obj.dx;
+                    // Correggi la posizione per evitare che l'oggetto esca dal canvas
+                    if (obj.x - obj.radius < 0) {
+                        obj.x = obj.radius;
+                    } else if (obj.x + obj.radius > canvas.width) {
+                        obj.x = canvas.width - obj.radius;
+                    }
+                }
+                
+                if (obj.y - obj.radius < 0 || obj.y + obj.radius > canvas.height) {
+                    obj.dy = -obj.dy;
+                    // Correggi la posizione
+                    if (obj.y - obj.radius < 0) {
+                        obj.y = obj.radius;
+                    } else if (obj.y + obj.radius > canvas.height) {
+                        obj.y = canvas.height - obj.radius;
+                    }
+                }
+            }
+        }
+        
+        // Funzione di disegno non ottimizzata
+        function drawNonOptimized() {
+            for (let i = 0; i < objects.length; i++) {
+                const obj = objects[i];
+                
+                // Molte operazioni di stato per ogni oggetto
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+                ctx.fillStyle = obj.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        
+        // Funzione di disegno ottimizzata
+        function drawOptimized() {
+            // Raggruppa gli oggetti per colore
+            const colorGroups = {};
+            
+            for (const obj of objects) {
+                if (!colorGroups[obj.color]) {
+                    colorGroups[obj.color] = [];
+                }
+                colorGroups[obj.color].push(obj);
+            }
+            
+            // Disegna gli oggetti raggruppati per colore
+            for (const color in colorGroups) {
+                ctx.fillStyle = color; // Imposta il colore una sola volta
+                ctx.beginPath();
+                
+                for (const obj of colorGroups[color]) {
+                    ctx.moveTo(obj.x + obj.radius, obj.y);
+                    ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+                }
+                
+                ctx.fill(); // Riempi tutti gli oggetti dello stesso colore in una volta
+            }
+        }
+        
+        // Funzione di animazione principale
+        function animate(timestamp) {
+            // Calcola FPS
+            if (!lastFrameTime) {
+                lastFrameTime = timestamp;
+            }
+            
+            frameCount++;
+            const elapsed = timestamp - lastFpsUpdate;
+            
+            if (elapsed >= 1000) { // Aggiorna FPS ogni secondo
+                fps = Math.round((frameCount * 1000) / elapsed);
+                frameCount = 0;
+                lastFpsUpdate = timestamp;
+                
+                // Aggiorna le statistiche
+                statsElement.textContent = `FPS: ${fps} | Oggetti: ${objects.length} | Modalità: ${isOptimized ? 'Ottimizzata' : 'Non ottimizzata'}`;
+            }
+            
+            // Pulisci il canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Aggiorna gli oggetti
+            updateObjects();
+            
+            // Disegna gli oggetti con il metodo appropriato
+            if (isOptimized) {
+                drawOptimized();
+            } else {
+                drawNonOptimized();
+            }
+            
+            // Richiedi il prossimo frame
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // Funzione per avviare l'animazione non ottimizzata
+        function startNonOptimized() {
+            stopAnimation();
+            isOptimized = false;
+            createObjects(1000); // Crea 1000 oggetti
+            lastFrameTime = 0;
+            frameCount = 0;
+            lastFpsUpdate = 0;
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // Funzione per avviare l'animazione ottimizzata
+        function startOptimized() {
+            stopAnimation();
+            isOptimized = true;
+            createObjects(1000); // Crea 1000 oggetti
+            lastFrameTime = 0;
+            frameCount = 0;
+            lastFpsUpdate = 0;
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // Funzione per fermare l'animazione
+        function stopAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+        
+        // Aggiungi event listener ai pulsanti
+        document.getElementById('startNonOptimized').addEventListener('click', startNonOptimized);
+        document.getElementById('startOptimized').addEventListener('click', startOptimized);
+        document.getElementById('stopAnimation').addEventListener('click', stopAnimation);
+        
+        // Inizializza il canvas con un messaggio
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'center';
+        ctx.fillText('Clicca su uno dei pulsanti sopra per avviare la demo', canvas.width / 2, canvas.height / 2);
+    </script>
+</body>
+</html>

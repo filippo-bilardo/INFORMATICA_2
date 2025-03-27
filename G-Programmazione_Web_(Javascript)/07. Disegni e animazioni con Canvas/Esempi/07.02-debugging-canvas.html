@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debugging di applicazioni Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 25px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            background-color: white;
+            display: block;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .debug-panel {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 15px 0;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Debugging di applicazioni Canvas</h1>
+        <p>
+            Il debugging delle applicazioni Canvas può essere complesso perché non è possibile ispezionare
+            direttamente gli elementi grafici come si farebbe con gli elementi DOM. Questa guida mostra
+            tecniche pratiche per il debugging di applicazioni Canvas.
+        </p>
+
+        <h2>1. Visualizzazione dello stato del Canvas</h2>
+        <p>Un modo efficace per il debugging è visualizzare lo stato corrente del Canvas:</p>
+        
+        <canvas id="debugCanvas" width="400" height="200"></canvas>
+        
+        <div class="controls">
+            <button id="drawRectangle">Disegna Rettangolo</button>
+            <button id="drawCircle">Disegna Cerchio</button>
+            <button id="introduceError">Introduci Errore</button>
+            <button id="clearCanvas">Pulisci Canvas</button>
+        </div>
+
+        <div class="debug-panel" id="debugOutput">
+            <div>Console di debug:</div>
+        </div>
+
+        <h2>2. Tecniche di Logging</h2>
+        <p>
+            Utilizzare il logging per tracciare lo stato delle variabili e l'esecuzione del codice:
+        </p>
+        <div class="code-container">
+            <pre><code>// Esempio di logging per debugging
+function drawShape(x, y, type) {
+    console.log(`Disegno ${type} a (${x}, ${y})`);
+    // Codice per disegnare la forma
+    console.log('Disegno completato');
+}</code></pre>
+        </div>
+
+        <h2>3. Visualizzazione dei Bordi</h2>
+        <p>
+            Aggiungere bordi visibili agli elementi per verificare posizionamento e dimensioni:
+        </p>
+        <canvas id="bordersCanvas" width="400" height="200"></canvas>
+        <div class="controls">
+            <button id="toggleBorders">Mostra/Nascondi Bordi</button>
+        </div>
+
+        <h2>4. Debugging con Breakpoints</h2>
+        <p>
+            Utilizzare i breakpoints del browser per esaminare lo stato durante l'esecuzione:
+        </p>
+        <div class="code-container">
+            <pre><code>function animateShape() {
+    // Puoi inserire un breakpoint qui
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // O qui per esaminare i valori
+    x += dx;
+    y += dy;
+    
+    // O qui per verificare i limiti
+    if (x + size > canvas.width || x < 0) {
+        dx = -dx;
+    }
+}</code></pre>
+        </div>
+
+        <div class="note">
+            <strong>Suggerimento:</strong> Premi F12 per aprire gli strumenti di sviluppo del browser, vai alla scheda "Sources" e imposta breakpoints nel tuo codice JavaScript.
+        </div>
+
+        <h2>5. Gestione degli Errori</h2>
+        <p>
+            Implementare una gestione degli errori robusta per catturare e diagnosticare i problemi:
+        </p>
+        <div class="code-container">
+            <pre><code>try {
+    // Codice che potrebbe generare errori
+    ctx.drawImage(img, 0, 0);
+} catch (error) {
+    console.error('Errore nel disegno dell\'immagine:', error);
+    // Gestione dell'errore (es. mostrare un messaggio all'utente)
+    showErrorMessage('Impossibile caricare l\'immagine');
+}</code></pre>
+        </div>
+    </div>
+
+    <script>
+        // Funzione di utility per il logging nella panel di debug
+        function log(message, type = 'info') {
+            const debugOutput = document.getElementById('debugOutput');
+            const logEntry = document.createElement('div');
+            logEntry.textContent = message;
+            if (type === 'error') {
+                logEntry.classList.add('error');
+            } else if (type === 'success') {
+                logEntry.classList.add('success');
+            }
+            debugOutput.appendChild(logEntry);
+            debugOutput.scrollTop = debugOutput.scrollHeight;
+        }
+
+        // Canvas di debug principale
+        const canvas = document.getElementById('debugCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Gestione degli eventi per i pulsanti
+        document.getElementById('drawRectangle').addEventListener('click', function() {
+            try {
+                log('Tentativo di disegnare un rettangolo...');
+                ctx.fillStyle = 'blue';
+                ctx.fillRect(50, 50, 100, 80);
+                log('Rettangolo disegnato con successo!', 'success');
+            } catch (error) {
+                log(`Errore nel disegno del rettangolo: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('drawCircle').addEventListener('click', function() {
+            try {
+                log('Tentativo di disegnare un cerchio...');
+                ctx.beginPath();
+                ctx.arc(200, 100, 50, 0, Math.PI * 2);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+                log('Cerchio disegnato con successo!', 'success');
+            } catch (error) {
+                log(`Errore nel disegno del cerchio: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('introduceError').addEventListener('click', function() {
+            try {
+                log('Introduzione di un errore intenzionale...');
+                // Tentativo di utilizzare un metodo inesistente
+                ctx.nonExistentMethod();
+            } catch (error) {
+                log(`Errore catturato: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('clearCanvas').addEventListener('click', function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            log('Canvas pulito');
+        });
+
+        // Canvas per la visualizzazione dei bordi
+        const bordersCanvas = document.getElementById('bordersCanvas');
+        const bordersCtx = bordersCanvas.getContext('2d');
+        let showBorders = false;
+
+        function drawWithBorders() {
+            bordersCtx.clearRect(0, 0, bordersCanvas.width, bordersCanvas.height);
+            
+            // Disegna un rettangolo
+            bordersCtx.fillStyle = 'green';
+            bordersCtx.fillRect(100, 50, 80, 60);
+            
+            // Disegna un cerchio
+            bordersCtx.beginPath();
+            bordersCtx.arc(250, 80, 40, 0, Math.PI * 2);
+            bordersCtx.fillStyle = 'purple';
+            bordersCtx.fill();
+            
+            // Se abilitato, disegna i bordi di debug
+            if (showBorders) {
+                // Bordo del rettangolo
+                bordersCtx.strokeStyle = 'red';
+                bordersCtx.lineWidth = 2;
+                bordersCtx.strokeRect(100, 50, 80, 60);
+                
+                // Bordo del cerchio
+                bordersCtx.beginPath();
+                bordersCtx.arc(250, 80, 40, 0, Math.PI * 2);
+                bordersCtx.strokeStyle = 'blue';
+                bordersCtx.stroke();
+                
+                // Punti centrali
+                bordersCtx.fillStyle = 'red';
+                bordersCtx.beginPath();
+                bordersCtx.arc(140, 80, 3, 0, Math.PI * 2);
+                bordersCtx.fill();
+                
+                bordersCtx.beginPath();
+                bordersCtx.arc(250, 80, 3, 0, Math.PI * 2);
+                bordersCtx.fill();
+            }
+        }
+
+        document.getElementById('toggleBorders').addEventListener('click', function() {
+            showBorders = !showBorders;
+            drawWithBorders();
+            log(`Bordi di debug ${showBorders ? 'attivati' : 'disattivati'}`);
+        });
+
+        // Inizializzazione
+        drawWithBorders();
+        log('Applicazione inizializzata', 'success');
+    </script>
+</body>
+</html>

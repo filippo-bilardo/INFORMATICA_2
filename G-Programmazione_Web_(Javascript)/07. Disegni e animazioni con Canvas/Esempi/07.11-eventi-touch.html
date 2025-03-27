@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione degli eventi touch con Canvas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            background-color: white;
+            display: block;
+            touch-action: none; /* Previene lo scrolling e lo zoom durante il touch */
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .code-container {
+            background-color: #f8f8f8;
+            border-left: 4px solid #4CAF50;
+            padding: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .mobile-note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestione degli eventi touch con Canvas</h1>
+        <p>
+            Per creare applicazioni Canvas che funzionino bene sui dispositivi mobili, è necessario gestire
+            gli eventi touch. Questa guida mostra come implementare il supporto touch per le tue applicazioni Canvas.
+        </p>
+
+        <div class="mobile-note">
+            <strong>Nota:</strong> Questa pagina è progettata per essere testata su dispositivi touch. Se stai utilizzando
+            un computer desktop, puoi utilizzare gli strumenti di sviluppo del browser per simulare eventi touch
+            (ad esempio, in Chrome DevTools, vai su "Toggle device toolbar" per attivare la modalità dispositivo mobile).
+        </div>
+
+        <div class="section">
+            <h2>1. Eventi touch di base</h2>
+            <p>Ecco come gestire gli eventi touch di base su un canvas:</p>
+            
+            <canvas id="basicTouchCanvas" width="500" height="300"></canvas>
+            
+            <div class="status" id="basicTouchStatus">Tocca il canvas per interagire</div>
+            
+            <div class="code-container">
+                <pre><code>// Gestione del touchstart
+canvas.addEventListener('touchstart', function(event) {
+    // Previeni il comportamento predefinito (come lo scrolling)
+    event.preventDefault();
+    
+    // Ottieni le coordinate del primo tocco
+    const touch = event.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    // Fai qualcosa con le coordinate
+    console.log(`Touch alle coordinate: (${x}, ${y})`);
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Disegno con il touch</h2>
+            <p>Crea un semplice strumento di disegno utilizzando gli eventi touch:</p>
+            
+            <canvas id="drawingTouchCanvas" width="500" height="300"></canvas>
+            
+            <div class="controls">
+                <button id="clearTouchDrawing">Pulisci Canvas</button>
+                <button id="redTouchPen">Penna Rossa</button>
+                <button id="blueTouchPen">Penna Blu</button>
+                <button id="greenTouchPen">Penna Verde</button>
+            </div>
+            
+            <div class="code-container">
+                <pre><code>// Variabili per il disegno
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+
+// Inizia a disegnare
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    isDrawing = true;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    lastX = touch.clientX - rect.left;
+    lastY = touch.clientY - rect.top;
+});
+
+// Disegna mentre muovi il dito
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (!isDrawing) return;
+    
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    
+    lastX = x;
+    lastY = y;
+});
+
+// Smetti di disegnare
+canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    isDrawing = false;
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Gestione multi-touch</h2>
+            <p>Gestisci più punti di contatto contemporaneamente:</p>
+            
+            <canvas id="multiTouchCanvas" width="500" height="300"></canvas>
+            
+            <div class="status" id="multiTouchStatus">Tocca con più dita per vedere i punti di contatto</div>
+            
+            <div class="code-container">
+                <pre><code>// Gestione di più punti di contatto
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    updateTouchPoints(e.touches);
+});
+
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    updateTouchPoints(e.touches);
+});
+
+function updateTouchPoints(touches) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Disegna un cerchio per ogni punto di contatto
+    for (let i = 0; i < touches.length; i++) {
+        const touch = touches[i];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 20, 0, Math.PI * 2);
+        ctx.fillStyle = getColorForTouchIndex(i);
+        ctx.fill();
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(i + 1, x, y);
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Gesti touch: Pinch-to-zoom</h2>
+            <p>Implementa il gesto di pinch per ingrandire e rimpicciolire un'immagine:</p>
+            
+            <canvas id="pinchZoomCanvas" width="500" height="300"></canvas>
+            
+            <div class="status" id="pinchZoomStatus">Usa due dita per ingrandire/rimpicciolire</div>
+            
+            <div class="code-container">
+                <pre><code>// Variabili per il pinch-to-zoom
+let scale = 1;
+let lastDistance = 0;
+
+// Calcola la distanza tra due punti di contatto
+function getDistance(touch1, touch2) {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+// Gestisci l'inizio del pinch
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+        lastDistance = getDistance(e.touches[0], e.touches[1]);
+    }
+});
+
+// Gestisci il movimento durante il pinch
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+        const currentDistance = getDistance(e.touches[0], e.touches[1]);
+        const delta = currentDistance - lastDistance;
+        
+        // Aggiorna la scala
+        scale += delta * 0.01;
+        scale = Math.max(0.5, Math.min(scale, 3)); // Limita la scala
+        
+        lastDistance = currentDistance;
+        redraw();
+    }
+});</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Eventi touch di base
+        const basicTouchCanvas = document.getElementById('basicTouchCanvas');
+        const basicTouchCtx = basicTouchCanvas.getContext('2d');
+        const basicTouchStatus = document.getElementById('basicTouchStatus');
+        
+        // Disegna un background
+        basicTouchCtx.fillStyle = '#f0f0f0';
+        basicTouchCtx.fillRect(0, 0, basicTouchCanvas.width, basicTouchCanvas.height);
+        basicTouchCtx.fillStyle = '#333';
+        basicTouchCtx.font = '16px Arial';
+        basicTouchCtx.fillText('Tocca questo canvas', 20, 30);
+        
+        // Gestione degli eventi touch
+        basicTouchCanvas.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            const rect = basicTouchCanvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            // Aggiorna lo status
+            basicTouchStatus.textContent = `Touch iniziato alle coordinate: (${Math.round(x)}, ${Math.round(y)})`;
+            
+            // Disegna un cerchio dove è avvenuto il touch
+            basicTouchCtx.beginPath();
+            basicTouchCtx.arc(x, y, 20, 0, Math.PI * 2);
+            basicTouchCtx.fillStyle = 'blue';
+            basicTouchCtx.fill();
+        });
+        
+        basicTouchCanvas.addEventListener('touchmove', function(event) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            const rect = basicTouchCanvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            // Aggiorna lo status
+            basicTouchStatus.textContent = `Touch in movimento alle coordinate: (${Math.round(x)}, ${Math.round(y)})`;
+            
+            // Disegna un piccolo cerchio che segue il touch
+            basicTouchCtx.beginPath();
+            basicTouchCtx.arc(x, y, 10, 0, Math.PI * 2);
+            basicTouchCtx.fillStyle = 'red';
+            basicTouchCtx.fill();
+        });
+        
+        basicTouchCanvas.addEventListener('touchend', function(event) {
+            event.preventDefault();
+            basicTouchStatus.textContent = 'Touch terminato';
+        });
+        
+        // 2. Disegno con il touch
+        const drawingTouchCanvas = document.getElementById('drawingTouchCanvas');
+        const drawingTouchCtx = drawingTouchCanvas.getContext('2d');
+        
+        // Inizializza il canvas
+        drawingTouchCtx.fillStyle = 'white';
+        drawingTouchCtx.fillRect(0, 0, drawingTouchCanvas.width, drawingTouchCanvas.height);
+        drawingTouchCtx.lineWidth = 5;
+        drawingTouchCtx.lineCap = 'round';
+        drawingTouchCtx.strokeStyle = 'black';
+        
+        // Variabili per il disegno
+        let isTouchDrawing = false;
+        let lastTouchX = 0;
+        let lastTouchY = 0;
+        
+        // Funzione per iniziare a disegnare
+        drawingTouchCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isTouchDrawing = true;
+            const touch = e.touches[0];
+            const rect = drawingTouchCanvas.getBoundingClientRect();
+            lastTouchX = touch.clientX - rect.left;
+            lastTouchY = touch.clientY - rect.top;
+        });
+        
+        // Funzione per disegnare mentre si muove il dito
+        drawingTouchCanvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isTouchDrawing) return;
+            
+            const touch = e.touches[0];
+            const rect = drawingTouchCanvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            drawingTouchCtx.beginPath();
+            drawingTouchCtx.moveTo(lastTouchX, lastTouchY);
+            drawingTouchCtx.lineTo(x, y);
+            drawingTouchCtx.stroke();
+            
+            lastTouchX = x;
+            lastTouchY = y;
+        });
+        
+        // Funzione per smettere di disegnare
+        drawingTouchCanvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            isTouchDrawing = false;
+        });
+        
+        // Pulsanti di controllo
+        document.getElementById('clearTouchDrawing').addEventListener('click', () => {
+            drawingTouchCtx.fillStyle = 'white';
+            drawingTouchCtx.fillRect(0, 0, drawingTouchCanvas.width, drawingTouchCanvas.height);
+        });
+        
+        document.getElementById('redTouchPen').addEventListener('click', () => {
+            drawingTouchCtx.strokeStyle = 'red';
+        });
+        
+        document.getElementById('blueTouchPen').addEventListener('click', () => {
+            drawingTouchCtx.strokeStyle = 'blue';
+        });
+        
+        document.getElementById('greenTouchPen').addEventListener('click', () => {
+            drawingTouchCtx.strokeStyle = 'green';
+        });
+        
+        // 3. Gestione multi-touch
+        const multiTouchCanvas = document.getElementById('multiTouchCanvas');
+        const multiTouchCtx = multiTouchCanvas.getContext('2d');
+        const multiTouchStatus = document.getElementById('multiTouchStatus');
+        
+        // Inizializza il canvas
+        multiTouchCtx.fillStyle = '#f0f0f0';
+        multiTouchCtx.fillRect(0, 0, multiTouchCanvas.width, multiTouchCanvas.height);
+        multiTouchCtx.font = '16px Arial';
+        multiTouchCtx.fillStyle = '#333';
+        multiTouchCtx.fillText('Tocca con più dita', 20, 30);
+        
+        // Funzione per ottenere un colore in base all'indice del touch
+        function getColorForTouchIndex(index) {
+            const colors = ['red', 'blue', 'green', 'purple', 'orange'];
+            return colors[index % colors.length];
+        }
+        
+        // Funzione per aggiornare i punti di contatto
+        function updateMultiTouchPoints(touches) {
+            // Pulisci il canvas ma mantieni il testo di istruzioni
+            multiTouchCtx.fillStyle = '#f0f0f0';
+            multiTouchCtx.fillRect(0, 0, multiTouchCanvas.width, multiTouchCanvas.height);
+            multiTouchCtx.font = '16px Arial';
+            multiTouchCtx.fillStyle = '#333';
+            multiTouchCtx.fillText('Tocca con più dita', 20, 30);
+            
+            // Aggiorna lo status
+            multiTouchStatus.textContent = `Punti di contatto attivi: ${touches.length}`;
+            
+            // Disegna un cerchio per ogni punto di contatto
+            for (let i = 0; i < touches.length; i++) {
+                const touch = touches[i];
+                const rect = multiTouchCanvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                
+                multiTouchCtx.beginPath();
+                multiTouchCtx.arc(x, y, 20, 0, Math.PI * 2);
+                multiTouchCtx.fillStyle = getColorForTouchIndex(i);
+                multiTouchCtx.fill();
+                multiTouchCtx.fillStyle = 'white';
+                multiTouchCtx.textAlign = 'center';
+                multiTouchCtx.textBaseline = 'middle';
+                multiTouchCtx.fillText(i + 1, x, y);
+            }
+        }
+        
+        // Gestione degli eventi multi-touch
+        multiTouchCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            updateMultiTouchPoints(e.touches);
+        });
+        
+        multiTouchCanvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            updateMultiTouchPoints(e.touches);
+        });
+        
+        multiTouchCanvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            updateMultiTouchPoints(e.touches);
+            if (e.touches.length === 0) {
+                multiTouchStatus.textContent = 'Tocca con più dita per vedere i punti di contatto';
+            }
+        });
+        
+        // 4. Pinch-to-zoom
+        const pinchZoomCanvas = document.getElementById('pinchZoomCanvas');
+        const pinchZoomCtx = pinchZoomCanvas.getContext('2d');
+        const pinchZoomStatus = document.getElementById('pinchZoomStatus');
+        
+        // Variabili per il pinch-to-zoom
+        let scale = 1;
+        let lastDistance = 0;
+        
+        // Disegna un'immagine di esempio (un rettangolo colorato)
+        function drawZoomableImage() {
+            const centerX = pinchZoomCanvas.width / 2;
+            const centerY = pinchZoomCanvas.height / 2;
+            const baseSize = 100;
+            
+            pinchZoomCtx.clearRect(0, 0, pinchZoomCanvas.width, pinchZoomCanvas.height);
+            
+            // Salva lo stato corrente
+            pinchZoomCtx.save();
+            
+            // Trasforma il canvas per lo zoom
+            pinchZoomCtx.translate(centerX, centerY);
+            pinchZoomCtx.scale(scale, scale);
+            pinchZoomCtx.translate(-centerX, -centerY);
+            
+            // Disegna un rettangolo colorato
+            const rectWidth = baseSize * 2;
+            const rectHeight = baseSize;
+            const rectX = centerX - rectWidth / 2;
+            const rectY = centerY - rectHeight / 2;
+            
+            // Sfondo
+            pinchZoomCtx.fillStyle = 'blue';
+            pinchZoomCtx.fillRect(rectX, rectY, rectWidth, rectHeight);
+            
+            // Testo
+            pinchZoomCtx.fillStyle = 'white';
+            pinchZoomCtx.font = '20px Arial';
+            pinchZoomCtx.textAlign = 'center';
+            pinchZoomCtx.textBaseline = 'middle';
+            pinchZoomCtx.fillText('Pinch to Zoom', centerX, centerY);
+            
+            // Ripristina lo stato
+            pinchZoomCtx.restore();
+            
+            // Aggiorna lo status
+            pinchZoomStatus.textContent = `Scala attuale: ${scale.toFixed(2)}`;
+        }
+        
+        // Calcola la distanza tra due punti di contatto
+        function getDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        
+        // Gestisci l'inizio del pinch
+        pinchZoomCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (e.touches.length === 2) {
+                lastDistance = getDistance(e.touches[0], e.touches[1]);
+            }
+        });
+        
+        // Gestisci il movimento durante il pinch
+        pinchZoomCanvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (e.touches.length === 2) {
+                const currentDistance = getDistance(e.touches[0], e.touches[1]);
+                const delta = currentDistance - lastDistance;
+                
+                // Aggiorna la scala
+                scale += delta * 0.01;
+                scale = Math.max(0.5, Math.min(scale, 3)); // Limita la scala
+                
+                lastDistance = currentDistance;
+                drawZoomableImage();
+            }
+        });
+        
+        // Inizializza il canvas di pinch-to-zoom
+        drawZoomableImage();
+    </script>
+</body>
+</html>
