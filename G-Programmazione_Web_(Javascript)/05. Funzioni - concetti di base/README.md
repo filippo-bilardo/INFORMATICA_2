@@ -20,23 +20,22 @@ Le funzioni sono blocchi di codice riutilizzabile che eseguono un compito specif
 - [5.9 - Funzioni pure e effetti collaterali](<05.09 - Funzioni pure e effetti collaterali.md>)
 - [5.10 - Pattern funzionali comuni (currying, composition)](<05.10 - Pattern funzionali comuni.md>)
 
-### Esempi pratici
-- [Indice degli esempi](<esempi/index.html>)
-- [Esempi di base](<esempi/esempi-base.js>)
-- [Esempi avanzati](<esempi/esempi-avanzati.js>)
-- [Esercizi guidati](<esempi/esercizi-guidati.md>)
-- [Esempi HTML: Funzioni interattivi](<esempi/12_funzioni_base_dom.html>)
-- [Esempi HTML: Closures nel DOM](<esempi/07_closures_dom.html>)
-- [Esempi HTML: Funzioni Asincrone](<esempi/11_funzioni_asincrone.html>)
+## Esempi Pratici
 
-### Best Practices & Errori comuni
-- [Best Practices](<best-practices.md>)
-- [Errori comuni e debugging](<errori-comuni.md>)
+Nella cartella [esempi](esempi/) troverai:
 
-### Risorse aggiuntive
-- [MDN - Funzioni JavaScript](https://developer.mozilla.org/it/docs/Web/JavaScript/Guide/Functions)
-- [JavaScript.info - Functions](https://javascript.info/function-basics)
-- [Eloquent JavaScript - Funzioni](https://eloquentjavascript.net/03_functions.html)
+- [Esempi interattivi](esempi/index.html)
+- [Esempi di base](esempi/esempi-base.js)
+- [Esempi avanzati](esempi/esempi-avanzati.js)
+- [Esercizi guidati](esempi/esercizi-guidati.md)
 
---- 
-[INDICE](../README.md)
+## Introduzione
+
+Le funzioni sono uno dei concetti fondamentali in JavaScript. Sono "sottoprogrammi" che possono essere chiamati da altre parti del codice o da loro stesse. Le funzioni in JavaScript sono oggetti di prima classe, il che significa che possono essere:
+
+- Assegnate a variabili
+- Passate come argomenti ad altre funzioni 
+- Restituite da altre funzioni
+- Dotate di proprietà e metodi
+
+Questa guida esplora tutti i concetti essenziali delle funzioni in JavaScript, dalla sintassi base alle tecniche avanzate.

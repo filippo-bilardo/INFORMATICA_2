@@ -1,158 +1,173 @@
 /**
- * Esempi avanzati sulle funzioni in JavaScript
- * Questo file contiene esempi pratici che illustrano concetti avanzati delle funzioni.
+ * ESEMPI AVANZATI DI FUNZIONI IN JAVASCRIPT
+ * Questo file contiene esempi avanzati sull'utilizzo delle funzioni in JavaScript
  */
 
-// ----------------------------------------------------------------------
-// 4. PATTERN FUNZIONALI
-// ----------------------------------------------------------------------
+// ======= CLOSURES =======
 
-// Currying
-function moltiplicazione(a) {
+function creaContatore() {
+    let conteggio = 0;
+    
+    // Questa funzione interna "ricorda" la variabile conteggio
+    // anche dopo che la funzione esterna è terminata
+    return function() {
+        conteggio++;
+        return conteggio;
+    };
+}
+
+const contatore1 = creaContatore();
+const contatore2 = creaContatore();
+
+console.log(contatore1()); // Output: 1
+console.log(contatore1()); // Output: 2
+console.log(contatore2()); // Output: 1 (contatore2 ha il suo stato separato)
+
+// Esempio pratico: generatore di ID
+function creaGeneratoreID(prefisso = 'id-') {
+    let contatore = 0;
+    return function() {
+        contatore++;
+        return `${prefisso}${contatore}`;
+    };
+}
+
+const generaID = creaGeneratoreID('user-');
+console.log(generaID()); // Output: user-1
+console.log(generaID()); // Output: user-2
+
+// ======= RICORSIONE =======
+
+// Calcolo del fattoriale con ricorsione
+function fattoriale(n) {
+    // Caso base
+    if (n <= 1) {
+        return 1;
+    }
+    // Chiamata ricorsiva
+    return n * fattoriale(n - 1);
+}
+
+console.log(fattoriale(5)); // Output: 120 (5 * 4 * 3 * 2 * 1)
+
+// Fibonacci con ricorsione
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(7)); // Output: 13
+
+// ======= CURRYING =======
+
+// Funzione normale
+function somma(a, b, c) {
+    return a + b + c;
+}
+
+// Versione curried
+function sommaC(a) {
     return function(b) {
         return function(c) {
-            return a * b * c;
+            return a + b + c;
         };
     };
 }
 
-console.log(moltiplicazione(2)(3)(4)); // 24
+console.log(somma(1, 2, 3)); // Output: 6
+console.log(sommaC(1)(2)(3)); // Output: 6
 
-// Composizione di funzioni
+// Utilizzo pratico del currying
+const aggiungiTasse = (tassaPercentuale) => {
+    return (prezzo) => {
+        return prezzo * (1 + tassaPercentuale / 100);
+    };
+};
+
+const aggiungiIVA22 = aggiungiTasse(22);
+console.log(aggiungiIVA22(100)); // Output: 122
+console.log(aggiungiIVA22(200)); // Output: 244
+
+// ======= COMPOSIZIONE DI FUNZIONI =======
+
+// Funzioni semplici
 const doppio = x => x * 2;
 const incrementa = x => x + 1;
 const quadrato = x => x * x;
 
-function componi(...funzioni) {
-    return funzioni.reduce((f, g) => (...args) => f(g(...args)));
+// Funzione di composizione
+const componi = (...funzioni) => {
+    return (valore) => {
+        return funzioni.reduceRight((valoreParziale, funzione) => {
+            return funzione(valoreParziale);
+        }, valore);
+    };
+};
+
+// Creazione di una nuova funzione composta
+const operazioneComplessa = componi(quadrato, incrementa, doppio);
+
+// È equivalente a: quadrato(incrementa(doppio(5)))
+console.log(operazioneComplessa(5)); // Output: 121 (((5*2)+1)^2)
+
+// ======= MEMOIZZAZIONE =======
+
+// Funzione costosa senza memoizzazione
+function fibonacciLento(n) {
+    if (n <= 1) return n;
+    return fibonacciLento(n - 1) + fibonacciLento(n - 2);
 }
 
-const elabora = componi(quadrato, incrementa, doppio);
-console.log(elabora(3)); // quadrato(incrementa(doppio(3))) = quadrato(incrementa(6)) = quadrato(7) = 49
+// Creazione di una funzione di memoizzazione generica
+function memoize(fn) {
+    const cache = {};
+    return function(...args) {
+        const key = JSON.stringify(args);
+        if (cache[key] === undefined) {
+            cache[key] = fn(...args);
+        }
+        return cache[key];
+    };
+}
 
-// Point-free style
-const numeri = [1, 2, 3, 4, 5, 6];
-const isPari = n => n % 2 === 0;
-const pari = numeri.filter(isPari); // point-free style
+// Versione memoizzata di fibonacci
+const fibonacciVeloce = memoize(function(n) {
+    if (n <= 1) return n;
+    return fibonacciVeloce(n - 1) + fibonacciVeloce(n - 2);
+});
 
-console.log(pari); // [2, 4, 6]
+console.time('Fibonacci lento');
+console.log(fibonacciLento(30)); // Molto lento
+console.timeEnd('Fibonacci lento');
 
-// ----------------------------------------------------------------------
-// 5. FUNZIONI ASINCRONE
-// ----------------------------------------------------------------------
+console.time('Fibonacci veloce');
+console.log(fibonacciVeloce(30)); // Molto più veloce
+console.timeEnd('Fibonacci veloce');
 
-// Promise con funzioni
-function ritardoPromise(ms, valore) {
-    return new Promise(resolve => {
-        setTimeout(() => resolve(valore), ms);
+// ======= ASYNC/AWAIT CON FUNZIONI =======
+
+// Simulazione di chiamata API
+function fakeAPICall(id) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({ id, nome: `Item-${id}` });
+        }, 1000);
     });
 }
 
-ritardoPromise(1000, "Operazione completata!")
-    .then(risultato => console.log(risultato))
-    .catch(errore => console.error(errore));
-
-// Async/Await
-async function esempioAsync() {
+// Funzione asincrona
+async function ottieniDati(id) {
     try {
-        console.log("Inizio");
-        const risultato1 = await ritardoPromise(1000, "Primo risultato");
-        console.log(risultato1);
-        const risultato2 = await ritardoPromise(500, "Secondo risultato");
-        console.log(risultato2);
-        console.log("Fine");
+        console.log('Recupero dati...');
+        const dati = await fakeAPICall(id);
+        console.log('Dati ricevuti:', dati);
+        return dati;
     } catch (errore) {
-        console.error("Si è verificato un errore:", errore);
+        console.error('Errore:', errore);
     }
 }
 
-// Richiama questa funzione per vedere il risultato
-// esempioAsync();
-
-// ----------------------------------------------------------------------
-// 6. GESTIONE ERRORI IN FUNZIONI
-// ----------------------------------------------------------------------
-
-// Funzione con lancio errori
-function dividi(a, b) {
-    if (typeof a !== 'number' || typeof b !== 'number') {
-        throw new TypeError("Entrambi gli argomenti devono essere numeri");
-    }
-    if (b === 0) {
-        throw new Error("Impossibile dividere per zero");
-    }
-    return a / b;
-}
-
-// Utilizzo con try/catch
-try {
-    console.log(dividi(10, 2)); // 5
-    console.log(dividi(10, 0)); // Errore
-} catch (errore) {
-    console.error("Errore catturato:", errore.message);
-}
-
-// Funzione che ritorna un risultato o un errore
-function calcolaRadiceQuadrata(numero) {
-    if (typeof numero !== 'number') {
-        return { errore: "Input deve essere un numero" };
-    }
-    if (numero < 0) {
-        return { errore: "Impossibile calcolare la radice quadrata di un numero negativo" };
-    }
-    return { risultato: Math.sqrt(numero) };
-}
-
-const risultato1 = calcolaRadiceQuadrata(16);
-if (risultato1.errore) {
-    console.error(risultato1.errore);
-} else {
-    console.log("La radice quadrata è:", risultato1.risultato); // La radice quadrata è: 4
-}
-
-const risultato2 = calcolaRadiceQuadrata(-5);
-if (risultato2.errore) {
-    console.error(risultato2.errore); // Impossibile calcolare la radice quadrata di un numero negativo
-} else {
-    console.log("La radice quadrata è:", risultato2.risultato);
-}
-
-// ----------------------------------------------------------------------
-// 7. DEBUGGING DI FUNZIONI
-// ----------------------------------------------------------------------
-
-function funzioneDaDebuggare(array, moltiplicatore) {
-    console.time("Tempo di esecuzione");
-    
-    // Logging intermedio per debug
-    console.log("Input:", array, moltiplicatore);
-    
-    // Breakpoint condizionale
-    if (moltiplicatore === 0) {
-        console.warn("Moltiplicatore zero rilevato");
-    }
-    
-    // Tabella per visualizzare dati
-    const risultati = array.map((numero, indice) => ({
-        indice,
-        originale: numero,
-        risultato: numero * moltiplicatore
-    }));
-    console.table(risultati);
-    
-    console.timeEnd("Tempo di esecuzione");
-    return risultati.map(item => item.risultato);
-}
-
-funzioneDaDebuggare([1, 2, 3, 4, 5], 2);
-// funzioneDaDebuggare([10, 20, 30], 0); // Caso speciale
-
-// ----------------------------------------------------------------------
-// Fine esempi avanzati
-// ----------------------------------------------------------------------
-
-// Per esercizio, prova a creare una funzione che combina i concetti visti:
-// - Closure
-// - Ricorsione
-// - Memoization
-// - Funzioni pure
+// Chiamata della funzione asincrona
+ottieniDati(42).then(risultato => {
+    console.log('Risultato finale:', risultato);
+});
