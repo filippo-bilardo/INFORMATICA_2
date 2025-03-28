@@ -3,47 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio per applicazioni Canvas</title>
+    <title>Audio e Canvas: Integrazione Completa</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #f0f0f0; /* Changed background slightly */
             line-height: 1.6;
         }
         .container {
             max-width: 900px;
             margin: 0 auto;
             background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 5px;
+            padding: 25px; /* Increased padding */
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1); /* Slightly softer shadow */
+            border-radius: 8px; /* More rounded corners */
         }
         h1, h2, h3 {
             color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-top: 25px; /* Added margin-top */
         }
         h1 {
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            border-bottom-width: 2px;
+            margin-bottom: 20px;
         }
         canvas {
             border: 1px solid #ddd;
-            margin: 15px 0;
+            margin: 15px auto; /* Centered canvas */
             background-color: white;
             display: block;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .section {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 35px; /* Increased spacing */
+            padding-bottom: 25px;
+            border-bottom: 1px dashed #ccc; /* Changed section separator */
         }
-        .controls, .control-panel {
-            margin: 15px 0;
-            padding: 10px;
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .controls, .control-panel { /* Merged styles */
+            margin: 20px 0;
+            padding: 15px;
             background-color: #f8f8f8;
+            border: 1px solid #e7e7e7; /* Slightly softer border */
             border-radius: 5px;
+        }
+        .control-group {
+            margin-bottom: 12px;
+            display: flex; /* Using flex for better alignment */
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        .control-group label {
+            width: 120px; /* Consistent label width */
+            margin-right: 10px;
+            font-weight: bold; /* Bolder labels */
+            flex-shrink: 0; /* Prevent labels from shrinking */
         }
         button {
             background-color: #4CAF50;
@@ -54,12 +75,16 @@
             text-decoration: none;
             display: inline-block;
             font-size: 14px;
-            margin: 4px 2px;
+            margin: 4px;
             cursor: pointer;
             border-radius: 4px;
+            transition: background-color 0.2s, transform 0.1s;
         }
         button:hover {
             background-color: #45a049;
+        }
+        button:active {
+            transform: translateY(1px);
         }
         .sound-button {
             background-color: #2196F3;
@@ -68,622 +93,1137 @@
             background-color: #0b7dda;
         }
         .code-container {
-            background-color: #f8f8f8;
+            background-color: #2d2d2d; /* Darker background for code */
+            color: #f0f0f0; /* Lighter text for code */
             border-left: 4px solid #4CAF50;
-            padding: 10px;
-            margin: 15px 0;
+            padding: 15px;
+            margin: 20px 0;
             overflow-x: auto;
             font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9em; /* Slightly smaller code font */
+            border-radius: 0 4px 4px 0; /* Rounded corners */
         }
         .note {
             background-color: #e7f3fe;
             border-left: 4px solid #2196F3;
-            padding: 10px;
-            margin: 15px 0;
+            padding: 12px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
         }
-        .visualizer {
-            width: 100%;
-            height: 100px;
-            background-color: #000;
-            margin: 15px 0;
-        }
-        .slider-container {
+        .slider-container { /* Integrated into control-group */
             display: flex;
             align-items: center;
-            margin: 10px 0;
-        }
-        .slider-container label {
-            width: 120px;
+            flex-grow: 1; /* Allow slider to take space */
         }
         input[type="range"] {
             width: 200px;
             margin: 0 10px;
+            vertical-align: middle; /* Keep vertical alignment */
+            cursor: pointer;
         }
-        .value-display {
-            width: 40px;
+        .value-display, #volumeValue, #pitchValue, #rateValue { /* Combined value displays */
+            min-width: 45px; /* Ensure space */
             text-align: right;
-        }
-        .control-group {
-            margin-bottom: 10px;
-        }
-        label {
-            display: inline-block;
-            width: 100px;
+            font-family: monospace; /* Monospace for numbers */
+            background-color: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 5px;
         }
         .status {
             font-style: italic;
             color: #666;
+            margin-left: 15px;
         }
         #loadingMessage {
-            color: #f44336;
+            color: #d9534f; /* Bootstrap's danger color */
             font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            border: 1px solid #d9534f;
+            background-color: #f2dede;
+            border-radius: 4px;
         }
-        #controls {
+        #controls { /* Initially hidden */
             display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Audio per applicazioni Canvas</h1>
+        <h1>Audio e Canvas: Integrazione Completa</h1>
         <p>
-            L'integrazione dell'audio nelle applicazioni Canvas può migliorare significativamente l'esperienza utente,
-            specialmente nei giochi e nelle applicazioni interattive. Questa guida mostra come utilizzare l'API Web Audio
-            insieme a Canvas per creare esperienze multimediali complete.
+            L'integrazione dell'audio nelle applicazioni Canvas migliora significativamente l'esperienza utente,
+            specialmente nei giochi e nelle interfacce interattive. Questa guida combina spiegazioni concettuali
+            con un demo interattivo per mostrare come utilizzare l'API Web Audio insieme a Canvas.
         </p>
 
-        <div class="note">
-            <p><strong>Nota:</strong> Per utilizzare l'audio nel browser, potrebbe essere necessario interagire con la pagina
-            (ad esempio, fare clic su un pulsante) prima che l'audio possa essere riprodotto. Questa è una limitazione di sicurezza
-            implementata dai browser moderni.</p>
-        </div>
-
         <div id="loadingMessage">
-            Caricamento degli asset audio in corso... Clicca ovunque sulla pagina per attivare l'audio.
+            In attesa di interazione utente... Clicca ovunque sulla pagina per inizializzare l'AudioContext.
         </div>
 
+        <div class="note">
+            <p><strong>Nota importante sull'autoplay:</strong> I browser moderni richiedono un'interazione utente (come un clic)
+            prima che l'audio possa essere riprodotto. Il codice in questa pagina inizializzerà il contesto audio
+            al primo clic sulla pagina.</p>
+        </div>
+
+        <!-- === SEZIONE 1: Riproduzione Audio di Base === -->
         <div class="section">
-            <h2>1. Riproduzione audio di base</h2>
+            <h2>1. Riproduzione audio di base (Elemento `<audio>`)</h2>
             <p>
-                Ecco come riprodurre un suono in risposta a un'interazione con Canvas:
+                Il modo più semplice per aggiungere audio è usare l'elemento HTML `<audio>`. Può essere controllato via JavaScript
+                per riprodurre suoni in risposta a eventi, ma offre meno flessibilità rispetto all'API Web Audio.
             </p>
-            
-            <canvas id="basicAudioCanvas" width="500" height="300"></canvas>
-            
+            <canvas id="basicAudioCanvas" width="500" height="150"></canvas>
             <div class="controls">
-                <button id="playSound">Riproduci Suono</button>
-                <button id="toggleMusic">Avvia/Ferma Musica di Sottofondo</button>
+                <button id="playSoundBasic">Riproduci Suono (Elemento Audio)</button>
+                <span class="status">(Un semplice suono verrà riprodotto)</span>
             </div>
-            
             <div class="code-container">
-                <pre><code>// Carica un effetto sonoro
-const soundEffect = new Audio('sound.mp3');
+                <pre><code class="language-javascript">// Esempio con elemento Audio (non usato nel resto della demo)
+const simpleSound = new Audio('path/to/your/sound.mp3'); // Richiede un file audio
 
-// Carica la musica di sottofondo
-const backgroundMusic = new Audio('music.mp3');
-backgroundMusic.loop = true; // Riproduzione continua
+// Event listener su un pulsante o canvas
+buttonElement.addEventListener('click', () => {
+  // Assicurati che l'audioContext sia attivo (se lo usi altrove)
+  if (audioContext && audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
 
-// Riproduci un suono quando l'utente fa clic su un oggetto nel canvas
-canvas.addEventListener('click', function(event) {
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    
-    // Verifica se il clic è su un oggetto
-    if (isPointInObject(x, y, object)) {
-        soundEffect.currentTime = 0; // Riavvia il suono dall'inizio
-        soundEffect.play();
-    }
+  simpleSound.currentTime = 0; // Riavvolgi se necessario
+  simpleSound.play()
+    .catch(error => console.error("Errore riproduzione audio:", error));
 });</code></pre>
             </div>
+            <p>Per questa demo, useremo l'API Web Audio per maggiore controllo, come mostrato nelle sezioni successive.</p>
         </div>
 
+        <!-- === SEZIONE 2: Web Audio API - Concetti Fondamentali === -->
         <div class="section">
-            <h2>2. Web Audio API</h2>
+            <h2>2. Web Audio API: Concetti Fondamentali</h2>
             <p>
-                L'API Web Audio offre un controllo più avanzato sull'audio rispetto all'elemento HTML Audio:
+                L'API Web Audio offre un sistema potente e flessibile per manipolare l'audio nel browser.
+                Si basa su un concetto di "routing grafico": sorgenti audio (come oscillatori o file) vengono
+                collegate a nodi di elaborazione (come guadagno/volume, filtri) e infine alla destinazione (gli altoparlanti).
             </p>
-            
             <div class="controls">
-                <button id="playTone">Riproduci Tono</button>
-                <div class="slider-container">
+                <button id="playTone">Riproduci Tono (Oscillatore)</button>
+                <div class="control-group">
                     <label for="frequencySlider">Frequenza (Hz):</label>
-                    <input type="range" id="frequencySlider" min="50" max="1000" value="440" step="1">
-                    <span id="frequencyValue" class="value-display">440</span>
+                    <div class="slider-container">
+                        <input type="range" id="frequencySlider" min="100" max="1200" value="440" step="1">
+                        <span id="frequencyValue" class="value-display">440</span>
+                    </div>
                 </div>
-                <div class="slider-container">
-                    <label for="volumeSlider">Volume:</label>
-                    <input type="range" id="volumeSlider" min="0" max="1" value="0.5" step="0.01">
-                    <span id="volumeValue" class="value-display">0.5</span>
+                <div class="control-group">
+                    <label for="toneVolumeSlider">Volume Tono:</label>
+                     <div class="slider-container">
+                        <input type="range" id="toneVolumeSlider" min="0" max="1" value="0.5" step="0.01">
+                        <span id="toneVolumeValue" class="value-display">0.5</span>
+                    </div>
                 </div>
             </div>
-            
             <div class="code-container">
-                <pre><code>// Inizializza il contesto audio
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                <pre><code class="language-javascript">// Inizializzazione (fatta una sola volta)
+let audioContext; // = new (window.AudioContext || window.webkitAudioContext)();
+let masterGainNode; // Nodo per il volume principale
 
-// Crea un oscillatore (generatore di toni)
-function playTone(frequency, duration) {
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.type = 'sine'; // Tipo di onda: sine, square, sawtooth, triangle
-    oscillator.frequency.value = frequency; // Frequenza in Hz
-    
-    // Collega l'oscillatore al nodo di guadagno e poi all'output
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    // Imposta il volume
-    gainNode.gain.value = 0.5;
-    
-    // Avvia e ferma l'oscillatore
-    oscillator.start();
-    setTimeout(() => {
-        oscillator.stop();
-    }, duration);
+function initAudioContext() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    masterGainNode = audioContext.createGain();
+    masterGainNode.connect(audioContext.destination);
+    masterGainNode.gain.value = 0.7; // Imposta volume iniziale master
+    console.log("AudioContext Inizializzato.");
+  }
+  // Gestisce lo stato suspended dopo interazione
+  if (audioContext.state === 'suspended') {
+      audioContext.resume();
+  }
+}
+
+// Funzione per riprodurre un tono
+function playGeneratedTone(frequency, volume, duration = 500) {
+  if (!audioContext) return;
+  initAudioContext(); // Assicura che sia attivo
+
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain(); // Guadagno per questo specifico tono
+
+  oscillator.type = 'sine'; // Tipi: 'sine', 'square', 'sawtooth', 'triangle'
+  oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+
+  // Collega oscillator -> gainNode -> masterGainNode -> destination
+  oscillator.connect(gainNode);
+  gainNode.connect(masterGainNode); // Usa il master gain
+
+  // Imposta il volume del tono (moltiplicato per il master gain)
+  gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + duration / 1000);
 }</code></pre>
             </div>
         </div>
 
+        <!-- === SEZIONE 3: Demo Interattiva Integrata === -->
         <div class="section">
-            <h2>3. Visualizzazione audio con Canvas</h2>
+            <h2>3. Demo Interattiva: Gioco Canvas con Audio</h2>
             <p>
-                Canvas può essere utilizzato per visualizzare l'audio in tempo reale:
+                Questo esempio combina Canvas e Web Audio API per creare una piccola scena interattiva.
+                Clicca sul canvas per far saltare il personaggio (con suono), usa i pulsanti per altri effetti,
+                controlla il volume master e la musica di sottofondo.
             </p>
-            
-            <canvas id="audioVisualizerCanvas" width="500" height="200"></canvas>
-            
-            <div class="controls">
-                <button id="startVisualization">Avvia Microfono</button>
-                <button id="stopVisualization">Ferma</button>
-            </div>
-            
-            <div class="code-container">
-                <pre><code>// Accedi al microfono e visualizza l'audio
-async function setupAudioVisualization() {
-    // Ottieni l'accesso al microfono
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    
-    // Crea un analizzatore audio
-    const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 2048;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-    
-    // Collega lo stream del microfono all'analizzatore
-    const source = audioContext.createMediaStreamSource(stream);
-    source.connect(analyser);
-    
-    // Funzione di disegno per la visualizzazione
-    function draw() {
-        requestAnimationFrame(draw);
-        
-        // Ottieni i dati di frequenza
-        analyser.getByteFrequencyData(dataArray);
-        
-        // Pulisci il canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Disegna le barre di frequenza
-        const barWidth = canvas.width / bufferLength * 2.5;
-        let x = 0;
-        
-        for (let i = 0; i < bufferLength; i++) {
-            const barHeight = dataArray[i] / 2;
-            
-            ctx.fillStyle = `hsl(${i / bufferLength * 360}, 100%, 50%)`;
-            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-            
-            x += barWidth + 1;
-        }
-    }
-    
-    draw();
-}</code></pre>
-            </div>
-        </div>
 
-        <div class="section">
-            <h2>4. Applicazione interattiva con audio</h2>
-            <p>
-                Questa demo illustra come integrare l'audio in un'applicazione Canvas interattiva utilizzando l'API Web Audio.
-            </p>
-            
             <div id="controls" class="control-panel">
-                <div class="control-group">
+                <h3>Pannello di Controllo Audio</h3>
+                 <div class="control-group">
                     <label for="masterVolume">Volume Master:</label>
-                    <input type="range" id="masterVolume" min="0" max="1" step="0.01" value="0.7">
-                    <span id="volumeValue">70%</span>
-                    <button id="muteButton">Mute</button>
+                    <div class="slider-container">
+                        <input type="range" id="masterVolume" min="0" max="1" step="0.01" value="0.7">
+                        <span id="volumeValue" class="value-display">70%</span>
+                    </div>
+                    <button id="muteButton" style="margin-left: 15px;">Mute</button>
                 </div>
-                
+
                 <div class="control-group">
-                    <button id="playMusic">▶️ Musica di sottofondo</button>
-                    <button id="stopMusic">⏹️ Stop Musica</button>
+                    <label>Musica Sottofondo:</label>
+                    <button id="playMusic">▶️ Play</button>
+                    <button id="stopMusic">⏹️ Stop</button>
                     <span class="status" id="musicStatus">Inattiva</span>
                 </div>
-                
+
                 <div class="control-group">
-                    <h3>Effetti sonori</h3>
+                    <label>Effetti Sonori:</label>
                     <button class="sound-button" data-sound="jump">Salto</button>
                     <button class="sound-button" data-sound="coin">Moneta</button>
                     <button class="sound-button" data-sound="explosion">Esplosione</button>
                 </div>
-                
+
                 <div class="control-group">
-                    <label for="pitch">Tono:</label>
-                    <input type="range" id="pitch" min="-1200" max="1200" step="100" value="0">
-                    <span id="pitchValue">0</span>
+                    <label for="pitch">Tono (Detune):</label>
+                    <div class="slider-container">
+                        <input type="range" id="pitch" min="-1200" max="1200" step="100" value="0">
+                        <span id="pitchValue" class="value-display">0</span> cents
+                    </div>
                 </div>
-                
+
                 <div class="control-group">
                     <label for="playbackRate">Velocità:</label>
-                    <input type="range" id="playbackRate" min="0.5" max="2" step="0.1" value="1">
-                    <span id="rateValue">1.0x</span>
+                    <div class="slider-container">
+                        <input type="range" id="playbackRate" min="0.5" max="2" step="0.1" value="1">
+                        <span id="rateValue" class="value-display">1.0x</span>
+                    </div>
                 </div>
             </div>
-            
-            <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+            <canvas id="gameCanvas" width="800" height="300"></canvas>
+
+             <div class="code-container">
+                <pre><code class="language-javascript">// (Estratto dal codice JavaScript completo sotto)
+
+// Struttura dati per suoni (Buffer Web Audio)
+const sounds = {};
+
+// Funzione per caricare/generare suoni
+async function createAndLoadSounds() {
+  // Esempio di creazione buffer da oscillatore
+  sounds['jump'] = await createOscillatorBuffer(280, 0.15, 'square');
+  sounds['coin'] = await createOscillatorBuffer(880, 0.1, 'triangle');
+  // ... altri suoni ...
+  sounds['background'] = await createOscillatorBuffer(110, 4.0, 'sine', true); // loop
+}
+
+// Funzione centrale per riprodurre suoni
+function playSound(name, options = {}) {
+  if (!audioContext || !sounds[name]) return;
+  initAudioContext(); // Assicura attivazione
+
+  const source = audioContext.createBufferSource();
+  source.buffer = sounds[name];
+
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = options.volume !== undefined ? options.volume : 1;
+
+  // Applica controlli globali
+  const pitchValue = parseFloat(document.getElementById('pitch').value);
+  const rateValue = parseFloat(document.getElementById('playbackRate').value);
+  source.detune.value = options.detune || pitchValue;
+  source.playbackRate.value = options.playbackRate || rateValue;
+
+  source.connect(gainNode).connect(masterGainNode); // Connessione alla catena
+  source.loop = options.loop || false;
+  source.start(0);
+  return { source, gainNode }; // Ritorna riferimenti per controllo (es. stop)
+}
+
+// Logica di gioco (animazione e interazione)
+const player = { x: 100, y: 200, /* ... */ };
+function updateGame() { /* ... logica fisica e collisioni ... */ }
+function drawGame() { /* ... disegna su canvas ... */ }
+
+// Event listener sul canvas per il salto
+canvas.addEventListener('click', () => {
+    if (!player.isJumping) {
+        player.isJumping = true;
+        player.velocityY = -10;
+        playSound('jump', { volume: 0.8 }); // Riproduci suono salto
+    }
+});
+
+requestAnimationFrame(updateGame); // Avvia game loop
+</code></pre>
+            </div>
+        </div>
+
+        <!-- === SEZIONE 4: Visualizzazione Audio === -->
+        <div class="section">
+            <h2>4. Visualizzazione audio con Canvas</h2>
+            <p>
+                L'API Web Audio include un `AnalyserNode` che permette di ottenere dati sulla frequenza e sulla forma d'onda
+                dell'audio in tempo reale. Questi dati possono essere usati per disegnare visualizzazioni su Canvas.
+                Questo esempio usa l'input del microfono.
+            </p>
+            <canvas id="audioVisualizerCanvas" width="500" height="200"></canvas>
+            <div class="controls">
+                <button id="startVisualization">Avvia Microfono e Visualizza</button>
+                <button id="stopVisualization">Ferma Visualizzazione</button>
+            </div>
+            <div class="code-container">
+                <pre><code class="language-javascript">let analyserNode;
+let visualizerDataArray;
+let visualizerAnimationId;
+
+async function setupAudioVisualization() {
+  if (!audioContext) initAudioContext();
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert('getUserMedia non è supportato dal tuo browser.');
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const source = audioContext.createMediaStreamSource(stream);
+
+    analyserNode = audioContext.createAnalyser();
+    analyserNode.fftSize = 256; // Dimensione FFT (potenza di 2)
+    const bufferLength = analyserNode.frequencyBinCount;
+    visualizerDataArray = new Uint8Array(bufferLength);
+
+    source.connect(analyserNode); // Non connettere a destination per non sentire il mic
+
+    drawVisualizer(); // Avvia loop di disegno
+  } catch (err) {
+    console.error('Errore accesso microfono:', err);
+    alert('Impossibile accedere al microfono.');
+  }
+}
+
+function drawVisualizer() {
+  visualizerAnimationId = requestAnimationFrame(drawVisualizer);
+  if (!analyserNode) return;
+
+  analyserNode.getByteFrequencyData(visualizerDataArray); // Ottieni dati frequenza
+
+  const canvas = document.getElementById('audioVisualizerCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const barWidth = (canvas.width / visualizerDataArray.length) * 1.5;
+  let x = 0;
+  for (let i = 0; i < visualizerDataArray.length; i++) {
+    const barHeight = visualizerDataArray[i] / 2; // Scala altezza
+    const hue = i / visualizerDataArray.length * 360; // Colore basato sulla freq
+    ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+    x += barWidth + 1; // Spazio tra barre
+  }
+}
+
+// Pulsante Stop:
+// cancelAnimationFrame(visualizerAnimationId);
+// Pulisci canvas
+</code></pre>
+            </div>
+        </div>
+
+        <!-- === SEZIONE 5: Sincronizzazione Audio-Visiva === -->
+        <div class="section">
+            <h2>5. Sincronizzazione Audio-Visiva</h2>
+            <p>
+                Possiamo usare l'`AnalyserNode` anche per sincronizzare animazioni Canvas con un file audio o musica in riproduzione,
+                creando effetti visivi che reagiscono al ritmo o all'intensità della musica.
+            </p>
+            <canvas id="syncCanvas" width="500" height="250"></canvas>
+            <div class="controls">
+                <button id="startSync">Avvia Sincronizzazione con Audio</button>
+                <button id="stopSync">Ferma</button>
+                <span class="status">(Usa un suono generato ciclicamente)</span>
+            </div>
+            <div class="code-container">
+                <pre><code class="language-javascript">let syncAudioSource;
+let syncAnalyser;
+let syncDataArray;
+let syncAnimationId;
+
+function startAudioVisualSync() {
+  if (!audioContext) initAudioContext();
+  if (syncAudioSource) syncAudioSource.stop(); // Ferma precedente se esiste
+
+  // Usa il suono di background già caricato/generato per l'esempio
+  if (!sounds['background']) {
+      alert("Suono di background non caricato.");
+      return;
+  }
+  syncAudioSource = audioContext.createBufferSource();
+  syncAudioSource.buffer = sounds['background'];
+  syncAudioSource.loop = true;
+
+  syncAnalyser = audioContext.createAnalyser();
+  syncAnalyser.fftSize = 128;
+  const bufferLength = syncAnalyser.frequencyBinCount;
+  syncDataArray = new Uint8Array(bufferLength);
+
+  // Connetti: source -> analyser -> masterGain -> destination
+  syncAudioSource.connect(syncAnalyser).connect(masterGainNode);
+  syncAudioSource.start(0);
+
+  animateSync();
+}
+
+function animateSync() {
+  syncAnimationId = requestAnimationFrame(animateSync);
+  if (!syncAnalyser) return;
+
+  syncAnalyser.getByteFrequencyData(syncDataArray);
+  const canvas = document.getElementById('syncCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Calcola l'ampiezza media (semplice indicatore di volume)
+  let sum = syncDataArray.reduce((a, b) => a + b, 0);
+  const average = sum / syncDataArray.length;
+
+  // Disegna qualcosa che reagisce all'ampiezza
+  const radius = 30 + average * 0.8; // Raggio basato sull'ampiezza media
+  const hue = (Date.now() / 20) % 360; // Colore che cambia nel tempo
+
+  ctx.beginPath();
+  ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
+  ctx.fillStyle = `hsla(${hue}, 80%, 60%, 0.8)`;
+  ctx.fill();
+  ctx.strokeStyle = `hsl(${hue}, 90%, 40%)`;
+  ctx.lineWidth = 3;
+  ctx.stroke();
+}
+
+// Pulsante Stop:
+// if (syncAudioSource) syncAudioSource.stop();
+// cancelAnimationFrame(syncAnimationId);
+// Pulisci canvas
+</code></pre>
+            </div>
         </div>
     </div>
 
     <script>
-        // Inizializza il contesto audio
+        // === CONFIGURAZIONE GLOBALE ===
         let audioContext;
         let masterGainNode;
         let isMuted = false;
-        let backgroundMusic;
-        let isPlaying = false;
-        
-        // Memorizza i suoni caricati
-        const sounds = {};
-        
-        // Funzione per inizializzare l'audio (deve essere chiamata dopo un'interazione utente)
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Crea un nodo master per il volume
-                masterGainNode = audioContext.createGain();
-                masterGainNode.connect(audioContext.destination);
-                
-                // Crea un oscillatore per il tono di esempio
-                window.playToneWithParams = function(frequency, volume, duration) {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.type = 'sine';
-                    oscillator.frequency.value = frequency;
-                    
-                    gainNode.gain.value = volume;
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.start();
-                    setTimeout(() => {
-                        oscillator.stop();
-                    }, duration);
-                };
-                
-                // Crea un buffer per l'effetto sonoro
-                const soundBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.5, audioContext.sampleRate);
-                const channelData = soundBuffer.getChannelData(0);
-                
-                // Genera un semplice beep
-                for (let i = 0; i < soundBuffer.length; i++) {
-                    channelData[i] = Math.sin(i * 0.01) * Math.exp(-i * 0.001);
-                }
-                
-                // Funzione per riprodurre l'effetto sonoro
-                window.playBeep = function() {
-                    const source = audioContext.createBufferSource();
-                    source.buffer = soundBuffer;
-                    source.connect(audioContext.destination);
-                    source.start();
-                };
-                
-                // Crea un oscillatore per la musica di sottofondo
-                window.toggleBackgroundMusic = function() {
-                    if (isPlaying) {
-                        if (backgroundMusic) {
-                            backgroundMusic.stop();
-                            backgroundMusic = null;
-                        }
-                        isPlaying = false;
-                    } else {
-                        backgroundMusic = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        
-                        backgroundMusic.type = 'sine';
-                        backgroundMusic.frequency.value = 220;
-                        
-                        gainNode.gain.value = 0.1;
-                        
-                        backgroundMusic.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        backgroundMusic.start();
-                        isPlaying = true;
-                    }
-                };
-                
-                // Simula il caricamento di suoni (usando oscillatori per l'esempio)
-                simulateLoadingSounds();
-                
-                // Nasconde il messaggio di caricamento e mostra i controlli
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('controls').style.display = 'block';
-            }
-        }
-        
-        // 1. Canvas per audio di base
+        let backgroundMusicSource = null; // Riferimento alla sorgente musica
+        let isBgMusicPlaying = false;
+        const sounds = {}; // Oggetto per memorizzare i buffer audio
+
+        // Riferimenti Elementi DOM
+        const loadingMessage = document.getElementById('loadingMessage');
+        const controlsPanel = document.getElementById('controls');
+        const masterVolumeSlider = document.getElementById('masterVolume');
+        const volumeValueDisplay = document.getElementById('volumeValue');
+        const muteButton = document.getElementById('muteButton');
+        const musicStatusDisplay = document.getElementById('musicStatus');
+        const pitchSlider = document.getElementById('pitch');
+        const pitchValueDisplay = document.getElementById('pitchValue');
+        const rateSlider = document.getElementById('playbackRate');
+        const rateValueDisplay = document.getElementById('rateValue');
+
+        // Riferimenti Canvas
         const basicAudioCanvas = document.getElementById('basicAudioCanvas');
         const basicAudioCtx = basicAudioCanvas.getContext('2d');
-        
-        // Disegna un cerchio interattivo
-        function drawInteractiveCircle() {
-            basicAudioCtx.clearRect(0, 0, basicAudioCanvas.width, basicAudioCanvas.height);
-            
-            // Disegna un cerchio al centro
-            basicAudioCtx.beginPath();
-            basicAudioCtx.arc(basicAudioCanvas.width / 2, basicAudioCanvas.height / 2, 80, 0, Math.PI * 2);
-            basicAudioCtx.fillStyle = 'blue';
-            basicAudioCtx.fill();
-            
-            // Aggiungi testo
-            basicAudioCtx.font = '16px Arial';
-            basicAudioCtx.fillStyle = 'white';
-            basicAudioCtx.textAlign = 'center';
-            basicAudioCtx.textBaseline = 'middle';
-            basicAudioCtx.fillText('Clicca qui', basicAudioCanvas.width / 2, basicAudioCanvas.height / 2);
-        }
-        
-        drawInteractiveCircle();
-        
-        // Gestisci il clic sul cerchio
-        basicAudioCanvas.addEventListener('click', function(event) {
-            initAudio(); // Inizializza l'audio se non è già stato fatto
-            
-            const rect = basicAudioCanvas.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            
-            // Verifica se il clic è sul cerchio
-            const distance = Math.sqrt(Math.pow(x - basicAudioCanvas.width / 2, 2) + Math.pow(y - basicAudioCanvas.height / 2, 2));
-            if (distance <= 80) {
-                // Riproduci il beep
-                if (window.playBeep) {
-                    window.playBeep();
-                }
-                
-                // Effetto visivo
-                basicAudioCtx.clearRect(0, 0, basicAudioCanvas.width, basicAudioCanvas.height);
-                basicAudioCtx.beginPath();
-                basicAudioCtx.arc(basicAudioCanvas.width / 2, basicAudioCanvas.height / 2, 85, 0, Math.PI * 2);
-                basicAudioCtx.fillStyle = 'red';
-                basicAudioCtx.fill();
-                basicAudioCtx.fillStyle = 'white';
-                basicAudioCtx.fillText('Suono!', basicAudioCanvas.width / 2, basicAudioCanvas.height / 2);
-                
-                // Ripristina dopo un breve ritardo
-                setTimeout(drawInteractiveCircle, 300);
-            }
-        });
-        
-        // Pulsanti di controllo
-        document.getElementById('playSound').addEventListener('click', function() {
-            initAudio();
-            if (window.playBeep) {
-                window.playBeep();
-            }
-        });
-        
-        document.getElementById('toggleMusic').addEventListener('click', function() {
-            initAudio();
-            if (window.toggleBackgroundMusic) {
-                window.toggleBackgroundMusic();
-            }
-        });
-        
-        // 2. Controlli per Web Audio API
-        const frequencySlider = document.getElementById('frequencySlider');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const frequencyValue = document.getElementById('frequencyValue');
-        const volumeValue = document.getElementById('volumeValue');
-        
-        frequencySlider.addEventListener('input', function() {
-            frequencyValue.textContent = this.value;
-        });
-        
-        volumeSlider.addEventListener('input', function() {
-            volumeValue.textContent = this.value;
-        });
-        
-        document.getElementById('playTone').addEventListener('click', function() {
-            initAudio();
-            if (window.playToneWithParams) {
-                const frequency = parseFloat(frequencySlider.value);
-                const volume = parseFloat(volumeSlider.value);
-                window.playToneWithParams(frequency, volume, 500);
-            }
-        });
-        
-        // 3. Visualizzatore audio
-        const audioVisualizerCanvas = document.getElementById('audioVisualizerCanvas');
-        const visualizerCtx = audioVisualizerCanvas.getContext('2d');
-        let analyser;
-        let dataArray;
-        let visualizationAnimationId;
-        
-        // Disegna il messaggio iniziale
-        visualizerCtx.fillStyle = '#333';
-        visualizerCtx.font = '16px Arial';
-        visualizerCtx.textAlign = 'center';
-        visualizerCtx.fillText('Clicca su "Avvia Microfono" per visualizzare l\'audio', audioVisualizerCanvas.width / 2, audioVisualizerCanvas.height / 2);
-        
-        document.getElementById('startVisualization').addEventListener('click', async function() {
+        const gameCanvas = document.getElementById('gameCanvas');
+        const gameCtx = gameCanvas.getContext('2d');
+        const visualizerCanvas = document.getElementById('audioVisualizerCanvas');
+        const visualizerCtx = visualizerCanvas.getContext('2d');
+        const syncCanvas = document.getElementById('syncCanvas');
+        const syncCtx = syncCanvas.getContext('2d');
+
+        // === INIZIALIZZAZIONE AUDIO CONTEXT (SU INTERAZIONE) ===
+        function initAudioContext() {
+          if (!audioContext) {
             try {
-                initAudio();
-                
-                // Richiedi l'accesso al microfono
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                
-                // Crea un analizzatore audio
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256;
-                const bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
-                
-                // Collega lo stream del microfono all'analizzatore
-                const source = audioContext.createMediaStreamSource(stream);
-                source.connect(analyser);
-                
-                // Funzione di visualizzazione
-                function visualize() {
-                    visualizationAnimationId = requestAnimationFrame(visualize);
-                    
-                    // Ottieni i dati di frequenza
-                    analyser.getByteFrequencyData(dataArray);
-                    
-                    // Pulisci il canvas
-                    visualizerCtx.clearRect(0, 0, audioVisualizerCanvas.width, audioVisualizerCanvas.height);
-                    
-                    // Disegna le barre di frequenza
-                    const barWidth = audioVisualizerCanvas.width / dataArray.length;
-                    let x = 0;
-                    
-                    for (let i = 0; i < dataArray.length; i++) {
-                        const barHeight = dataArray[i] / 255 * audioVisualizerCanvas.height;
-                        
-                        // Colore basato sulla frequenza
-                        const hue = i / dataArray.length * 360;
-                        visualizerCtx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-                        
-                        visualizerCtx.fillRect(x, audioVisualizerCanvas.height - barHeight, barWidth, barHeight);
-                        
-                        x += barWidth;
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                masterGainNode = audioContext.createGain();
+                masterGainNode.connect(audioContext.destination);
+                masterGainNode.gain.value = parseFloat(masterVolumeSlider.value) || 0.7; // Usa valore slider
+                console.log("AudioContext Inizializzato. Stato:", audioContext.state);
+
+                // Carica/Genera suoni dopo inizializzazione contesto
+                createAndLoadSounds().then(() => {
+                    console.log("Suoni caricati/generati.");
+                    loadingMessage.style.display = 'none';
+                    controlsPanel.style.display = 'block'; // Mostra controlli demo
+                    // Avvia il gioco solo dopo che i suoni sono pronti
+                    if (!gameAnimationId) { // Evita avvii multipli
+                       startGameLoop();
                     }
-                }
-                
-                visualize();
-                
-            } catch (error) {
-                console.error('Errore nell\'accesso al microfono:', error);
-                visualizerCtx.clearRect(0, 0, audioVisualizerCanvas.width, audioVisualizerCanvas.height);
-                visualizerCtx.fillStyle = 'red';
-                visualizerCtx.fillText('Errore nell\'accesso al microfono', audioVisualizerCanvas.width / 2, audioVisualizerCanvas.height / 2);
+                }).catch(error => {
+                    console.error("Errore nel caricamento suoni:", error);
+                    loadingMessage.textContent = "Errore caricamento suoni.";
+                });
+
+            } catch (e) {
+                console.error("Errore creazione AudioContext:", e);
+                loadingMessage.textContent = "Web Audio API non supportata o bloccata.";
+                return false; // Fallimento
             }
-        });
-        
-        document.getElementById('stopVisualization').addEventListener('click', function() {
-            if (visualizationAnimationId) {
-                cancelAnimationFrame(visualizationAnimationId);
-                visualizationAnimationId = null;
-                
-                // Ripristina il canvas
-                visualizerCtx.clearRect(0, 0, audioVisualizerCanvas.width, audioVisualizerCanvas.height);
-                visualizerCtx.fillStyle = '#333';
-                visualizerCtx.fillText('Visualizzazione fermata', audioVisualizerCanvas.width / 2, audioVisualizerCanvas.height / 2);
-            }
-        });
-        
-        // 4. Applicazione interattiva con audio
-        // Riferimenti al canvas e contesto
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Configurazione di gioco
-        const player = {
-            x: 100,
-            y: 300,
-            width: 40,
-            height: 40,
-            color: '#ff5722',
-            velocityY: 0,
-            isJumping: false
-        };
-        
-        const coins = [];
-        const explosions = [];
-        
-        // Simula il caricamento di suoni (per l'esempio)
-        async function simulateLoadingSounds() {
-            // Utilizziamo oscillatori invece di file audio reali
-            const jumpBuffer = await createOscillatorBuffer(220, 0.3, 'square');
-            const coinBuffer = await createOscillatorBuffer(880, 0.2, 'sine');
-            const explosionBuffer = await createOscillatorBuffer(100, 0.8, 'sawtooth');
-            const backgroundBuffer = await createOscillatorBuffer(440, 5.0, 'sine', true);
-            
-            sounds['jump'] = jumpBuffer;
-            sounds['coin'] = coinBuffer;
-            sounds['explosion'] = explosionBuffer;
-            sounds['background'] = backgroundBuffer;
-            
-            // Simula un ritardo di caricamento
-            return new Promise(resolve => setTimeout(resolve, 1000));
+          }
+          // Gestisce lo stato suspended (necessario in alcuni browser/contesti)
+          if (audioContext && audioContext.state === 'suspended') {
+              audioContext.resume().then(() => {
+                  console.log("AudioContext Resumed. Stato:", audioContext.state);
+              });
+          }
+          return true; // Successo o già inizializzato
         }
-        
-        // Crea un buffer da un oscillatore
+
+        // Event listener per l'interazione iniziale
+        document.addEventListener('click', function handleFirstInteraction() {
+            if(initAudioContext()) {
+                // Rimuovi listener dopo la prima interazione riuscita
+                document.removeEventListener('click', handleFirstInteraction);
+                console.log("Prima interazione rilevata, AudioContext attivo.");
+                // Disegna stati iniziali canvas dopo l'attivazione
+                drawBasicCanvasState();
+                drawGame(); // Disegna stato iniziale gioco
+                drawVisualizerInitialState();
+                drawSyncInitialState();
+            }
+        }, { capture: true }); // Usa capture per prenderlo prima di altri click
+
+
+        // === FUNZIONI AUDIO ===
+
+        // Funzione per generare buffer audio da oscillatori (sostituisce caricamento file)
         async function createOscillatorBuffer(frequency, duration, type, isBackground = false) {
+            if (!audioContext) return null; // Serve l'audio context
             const sampleRate = audioContext.sampleRate;
-            const buffer = audioContext.createBuffer(
-                1, 
-                sampleRate * duration, 
-                sampleRate
-            );
-            
+            const frameCount = sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, frameCount, sampleRate);
             const data = buffer.getChannelData(0);
-            
-            for (let i = 0; i < buffer.length; i++) {
-                // Diversi tipi di forme d'onda
+            let sustainLevel = 0.6; // Livello durante la nota
+            let decayTime = duration * 0.4; // Tempo di decadimento
+
+            for (let i = 0; i < frameCount; i++) {
                 const t = i / sampleRate;
                 const phase = 2 * Math.PI * frequency * t;
-                
+                let value = 0;
+
+                // Genera forma d'onda
                 switch(type) {
-                    case 'sine':
-                        data[i] = Math.sin(phase);
-                        break;
-                    case 'square':
-                        data[i] = Math.sin(phase) >= 0 ? 0.7 : -0.7;
-                        break;
-                    case 'sawtooth':
-                        data[i] = ((phase / Math.PI) % 2) - 1;
-                        break;
-                    default:
-                        data[i] = Math.sin(phase);
+                    case 'sine': value = Math.sin(phase); break;
+                    case 'square': value = Math.sign(Math.sin(phase)); break;
+                    case 'sawtooth': value = ((t * frequency) % 1.0) * 2.0 - 1.0; break;
+                    case 'triangle': value = Math.asin(Math.sin(phase)) * (2 / Math.PI); break;
+                    default: value = Math.sin(phase);
                 }
-                
-                // Fade out
-                if (i > buffer.length * 0.7) {
-                    data[i] *= (buffer.length - i) / (buffer.length * 0.3);
+
+                // Inviluppo ADSR semplice (Attack, Decay, Sustain, Release)
+                let envelope = 0;
+                let attackTime = 0.01;
+
+                if (t < attackTime) { // Attack
+                    envelope = t / attackTime;
+                } else { // Decay e Sustain (o Release se non loop)
+                   if (!isBackground) {
+                       envelope = Math.max(0, sustainLevel + (1 - sustainLevel) * (1 - (t - attackTime) / decayTime));
+                   } else {
+                       envelope = 1.0; // No decay per background loop
+                   }
                 }
-                
-                // Per lo sfondo, aggiungi un po' di variazione
+
+                 // Fade out alla fine (anche per loop, per evitare click al riavvio)
+                 let fadeOutTime = 0.05;
+                 if (t > duration - fadeOutTime) {
+                     envelope *= (duration - t) / fadeOutTime;
+                 }
+
+                data[i] = value * envelope * 0.7; // Applica inviluppo e volume base
+
+                // Modulazione per suono di sottofondo (opzionale)
                 if (isBackground) {
-                    const mod = Math.sin(2 * Math.PI * 0.5 * t);
-                    data[i] *= (0.5 + 0.5 * mod) * 0.5;
+                    const modFreq = 0.3; // Frequenza lenta di modulazione
+                    const modDepth = 0.2; // Profondità modulazione volume
+                    data[i] *= (1 - modDepth + modDepth * Math.sin(2 * Math.PI * modFreq * t));
                 }
             }
-            
             return buffer;
         }
-        
-        // Riproduci un suono
-        function playSound(name, options = {}) {
-            if (!sounds[name]) {
-                console.warn(`Suono "${name}" non trovato`);
+
+        // Carica/Genera tutti i suoni necessari
+        async function createAndLoadSounds() {
+             if (!audioContext) {
+                console.error("AudioContext non disponibile per creare suoni.");
                 return;
             }
-            
-            // Crea una sorgente audio
+            console.log("Inizio generazione suoni...");
+            sounds['jump']      = await createOscillatorBuffer(350, 0.15, 'square');
+            sounds['coin']      = await createOscillatorBuffer(880, 0.2, 'sine'); // Higher pitch
+            sounds['explosion'] = await createOscillatorBuffer(80, 0.6, 'sawtooth'); // Lower, longer
+            sounds['background']= await createOscillatorBuffer(130.8, 5.0, 'sine', true); // C3, 5 sec loop
+            sounds['basicBeep'] = await createOscillatorBuffer(440, 0.2, 'sine'); // Per Sezione 1
+            sounds['tone']      = await createOscillatorBuffer(440, 0.5, 'sine'); // Placeholder per Sez 2
+            console.log("Suoni generati:", Object.keys(sounds));
+        }
+
+        // Funzione centrale per riprodurre suoni
+        function playSound(name, options = {}) {
+            if (!audioContext || !sounds[name]) {
+                console.warn(`Suono "${name}" non trovato o AudioContext non pronto.`);
+                return null;
+            }
+            // Assicura che il contesto sia attivo
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
             const source = audioContext.createBufferSource();
             source.buffer = sounds[name];
-            
-            // Applica le opzioni
-            if (options.loop) source.loop = options.loop;
-            
-            // Prendi i valori dai controlli dell'interfaccia
-            const pitchValue = parseFloat(document.getElementById('pitch').value);
-            const rateValue = parseFloat(document.getElementById('playbackRate').value
+
+            const gainNode = audioContext.createGain();
+            // Applica volume specifico del suono O volume di default (1)
+            gainNode.gain.value = options.volume !== undefined ? options.volume : 1;
+
+            // Applica controlli globali dall'interfaccia utente
+            const pitchValue = parseFloat(pitchSlider.value);
+            const rateValue = parseFloat(rateSlider.value);
+
+            // Applica detune (pitch) e playbackRate
+            // options.detune/playbackRate possono sovrascrivere i controlli globali se forniti
+            source.detune.value = options.detune !== undefined ? options.detune : pitchValue;
+            source.playbackRate.value = options.playbackRate !== undefined ? options.playbackRate : rateValue;
+
+            // Connessione: source -> gainNode -> masterGainNode -> destination
+            source.connect(gainNode);
+            gainNode.connect(masterGainNode);
+
+            source.loop = options.loop || false; // Imposta loop se richiesto
+
+            source.start(0); // Avvia immediatamente
+
+            console.log(`Playing sound: ${name}`, options);
+
+            // Ritorna riferimenti per possibile controllo futuro (es. stop)
+            return { source, gainNode };
+        }
+
+        // === SEZIONE 1: AUDIO BASE ===
+        function drawBasicCanvasState() {
+             basicAudioCtx.clearRect(0, 0, basicAudioCanvas.width, basicAudioCanvas.height);
+             basicAudioCtx.fillStyle = '#77aaff';
+             basicAudioCtx.fillRect(20, 20, basicAudioCanvas.width - 40, basicAudioCanvas.height - 40);
+             basicAudioCtx.font = '18px Arial';
+             basicAudioCtx.fillStyle = 'white';
+             basicAudioCtx.textAlign = 'center';
+             basicAudioCtx.textBaseline = 'middle';
+             basicAudioCtx.fillText('Canvas per Sezione 1', basicAudioCanvas.width / 2, basicAudioCanvas.height / 2);
+        }
+        document.getElementById('playSoundBasic').addEventListener('click', () => {
+             // Usa un suono generato con Web Audio API per coerenza demo
+             playSound('basicBeep', { volume: 0.6 });
+             // Effetto visivo
+             basicAudioCtx.fillStyle = '#ff7777';
+             basicAudioCtx.fillRect(20, 20, basicAudioCanvas.width - 40, basicAudioCanvas.height - 40);
+             basicAudioCtx.fillStyle = 'white';
+             basicAudioCtx.fillText('Beep!', basicAudioCanvas.width / 2, basicAudioCanvas.height / 2);
+             setTimeout(drawBasicCanvasState, 300);
+        });
+
+        // === SEZIONE 2: WEB AUDIO BASICS ===
+        const frequencySlider = document.getElementById('frequencySlider');
+        const frequencyValueDisplay = document.getElementById('frequencyValue');
+        const toneVolumeSlider = document.getElementById('toneVolumeSlider');
+        const toneVolumeValueDisplay = document.getElementById('toneVolumeValue');
+
+        frequencySlider.addEventListener('input', (e) => {
+            frequencyValueDisplay.textContent = e.target.value;
+        });
+        toneVolumeSlider.addEventListener('input', (e) => {
+            toneVolumeValueDisplay.textContent = e.target.value;
+        });
+
+        document.getElementById('playTone').addEventListener('click', () => {
+             const frequency = parseFloat(frequencySlider.value);
+             const volume = parseFloat(toneVolumeSlider.value);
+             playGeneratedTone(frequency, volume, 500); // Usa la funzione definita nel snippet
+        });
+
+        // Funzione specifica per il tono generato nella Sezione 2
+        function playGeneratedTone(frequency, volume, duration = 500) {
+            if (!audioContext) { initAudioContext(); }
+            if (!audioContext) return; // Se fallisce ancora
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+
+            gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+
+            oscillator.connect(gainNode).connect(masterGainNode);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration / 1000);
+            console.log(`Playing tone: ${frequency} Hz, Vol: ${volume}`);
+        }
+
+        // === SEZIONE 3: DEMO GIOCO INTEGRATO ===
+
+        // Configurazione di gioco
+        const player = {
+            x: 100, y: gameCanvas.height - 100, // Posiziona sul "terreno"
+            width: 40, height: 40, color: '#ff5722',
+            velocityY: 0, isJumping: false, gravity: 0.5
+        };
+        const coins = [];
+        const explosions = [];
+        let gameAnimationId = null; // ID per requestAnimationFrame del gioco
+
+        // Disegna elementi di gioco
+        function drawGame() {
+            gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            // Terreno
+            gameCtx.fillStyle = '#8BC34A'; // Verde più vivace
+            gameCtx.fillRect(0, gameCanvas.height - 60, gameCanvas.width, 60);
+
+            // Giocatore
+            gameCtx.fillStyle = player.color;
+            gameCtx.fillRect(player.x, player.y, player.width, player.height);
+
+            // Monete
+            gameCtx.fillStyle = '#FFD700';
+            for (const coin of coins) {
+                gameCtx.beginPath();
+                gameCtx.arc(coin.x, coin.y, 15 * (coin.scale || 1), 0, Math.PI * 2);
+                gameCtx.fill();
+            }
+
+            // Esplosioni
+            for (const explosion of explosions) {
+                gameCtx.fillStyle = `rgba(255, 60, 0, ${explosion.opacity})`;
+                gameCtx.beginPath();
+                gameCtx.arc(explosion.x, explosion.y, explosion.radius, 0, Math.PI * 2);
+                gameCtx.fill();
+            }
+
+            // Istruzioni
+            gameCtx.fillStyle = '#333';
+            gameCtx.font = '16px Arial';
+            gameCtx.textAlign = 'left';
+            gameCtx.fillText('Clicca sul canvas per saltare', 20, 30);
+        }
+
+        // Aggiorna stato del gioco
+        function updateGame() {
+            // Fisica giocatore
+            if (player.isJumping) {
+                player.velocityY += player.gravity;
+                player.y += player.velocityY;
+
+                // Collisione col terreno
+                if (player.y >= gameCanvas.height - 60 - player.height) {
+                    player.y = gameCanvas.height - 60 - player.height;
+                    player.velocityY = 0;
+                    player.isJumping = false;
+                }
+            }
+
+            // Aggiorna monete (e collisioni)
+            for (let i = coins.length - 1; i >= 0; i--) {
+                 const coin = coins[i];
+                 // Effetto pulsante/sparizione
+                 if(coin.dying) {
+                     coin.scale -= 0.1;
+                     if(coin.scale <= 0) coins.splice(i, 1);
+                     continue; // Salta controllo collisione se sta sparendo
+                 } else {
+                     coin.scale = 1; // Assicura scala normale
+                 }
+
+                 // Collisione approssimativa giocatore-moneta
+                 const dx = (player.x + player.width / 2) - coin.x;
+                 const dy = (player.y + player.height / 2) - coin.y;
+                 const distance = Math.sqrt(dx * dx + dy * dy);
+                 if (distance < player.width / 2 + 15) { // 15 è il raggio moneta
+                     playSound('coin', { volume: 0.7, playbackRate: 1.2 }); // Suono raccolta
+                     coin.dying = true; // Marca per animazione sparizione
+                     // coins.splice(i, 1); // Rimuovi subito o anima sparizione
+                 }
+            }
+
+            // Aggiorna esplosioni (animazione)
+            for (let i = explosions.length - 1; i >= 0; i--) {
+                const exp = explosions[i];
+                exp.radius += 3; // Espande raggio
+                exp.opacity -= 0.04; // Dissolvenza
+                if (exp.opacity <= 0) {
+                    explosions.splice(i, 1); // Rimuovi quando invisibile
+                }
+            }
+
+            // Richiama il disegno
+            drawGame();
+
+            // Loop
+            gameAnimationId = requestAnimationFrame(updateGame);
+        }
+
+         // Funzione per avviare il game loop (chiamata dopo init)
+        function startGameLoop() {
+            if (!gameAnimationId) {
+                console.log("Avvio Game Loop");
+                updateGame();
+            }
+        }
+
+        // Funzioni di interazione gioco
+        function jump() {
+            if (!player.isJumping) {
+                player.isJumping = true;
+                player.velocityY = -12; // Forza salto
+                playSound('jump', { volume: 0.8 });
+            }
+        }
+        function spawnCoin() {
+            coins.push({
+                x: Math.random() * (gameCanvas.width - 100) + 50, // Evita bordi
+                y: Math.random() * (gameCanvas.height - 150) + 50, // Non troppo basso/alto
+                scale: 1,
+                dying: false
+            });
+        }
+        function spawnExplosion(x, y) {
+            explosions.push({
+                x: x, y: y,
+                radius: 5, opacity: 1.0
+            });
+            playSound('explosion', { volume: 0.9 });
+        }
+
+        // Gestione Musica Sottofondo
+        function toggleBackgroundMusic(play) {
+            if (!audioContext) { initAudioContext(); }
+             if (!audioContext || !sounds['background']) {
+                 console.warn("Musica di sottofondo non pronta.");
+                 musicStatusDisplay.textContent = 'Errore';
+                 return;
+             }
+
+            if (play && !isBgMusicPlaying) {
+                // Ferma e rimuovi sorgente precedente se esiste
+                if (backgroundMusicSource) {
+                    try { backgroundMusicSource.source.stop(); } catch(e){}
+                }
+                // Crea e avvia nuova sorgente
+                backgroundMusicSource = playSound('background', { loop: true, volume: 0.4 }); // Volume basso per sottofondo
+                if (backgroundMusicSource) {
+                    isBgMusicPlaying = true;
+                    musicStatusDisplay.textContent = 'In Riproduzione';
+                    console.log("Musica avviata");
+                } else {
+                     musicStatusDisplay.textContent = 'Errore Avvio';
+                }
+            } else if (!play && isBgMusicPlaying) {
+                if (backgroundMusicSource && backgroundMusicSource.source) {
+                    try { backgroundMusicSource.source.stop(); } catch(e) { console.warn("Errore stop musica:", e); }
+                    backgroundMusicSource = null;
+                }
+                isBgMusicPlaying = false;
+                musicStatusDisplay.textContent = 'Inattiva';
+                console.log("Musica fermata");
+            }
+        }
+
+        // Event Listener Controlli Demo
+        masterVolumeSlider.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            if (masterGainNode && !isMuted) {
+                masterGainNode.gain.value = value;
+            }
+            volumeValueDisplay.textContent = `${Math.round(value * 100)}%`;
+        });
+
+        muteButton.addEventListener('click', () => {
+            if (!masterGainNode) return;
+            isMuted = !isMuted;
+            if (isMuted) {
+                masterGainNode.gain.value = 0;
+                muteButton.textContent = 'Unmute';
+                muteButton.style.backgroundColor = '#f0ad4e'; // Colore arancio per Mute
+            } else {
+                masterGainNode.gain.value = parseFloat(masterVolumeSlider.value);
+                muteButton.textContent = 'Mute';
+                muteButton.style.backgroundColor = '#4CAF50'; // Ripristina colore standard
+            }
+        });
+
+        pitchSlider.addEventListener('input', (e) => {
+            pitchValueDisplay.textContent = e.target.value;
+        });
+        rateSlider.addEventListener('input', (e) => {
+            rateValueDisplay.textContent = `${parseFloat(e.target.value).toFixed(1)}x`;
+        });
+
+        document.getElementById('playMusic').addEventListener('click', () => toggleBackgroundMusic(true));
+        document.getElementById('stopMusic').addEventListener('click', () => toggleBackgroundMusic(false));
+
+        document.querySelectorAll('.sound-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const soundName = button.getAttribute('data-sound');
+                switch(soundName) {
+                    case 'jump': jump(); break;
+                    case 'coin':
+                        spawnCoin();
+                        // Non chiamare playSound qui, viene gestito dalla collisione in updateGame
+                        break;
+                    case 'explosion':
+                        // Genera esplosione casuale se premuto pulsante
+                        spawnExplosion(Math.random() * gameCanvas.width, Math.random() * (gameCanvas.height - 60));
+                        break;
+                }
+            });
+        });
+
+        // Event Listener Canvas Gioco
+        gameCanvas.addEventListener('click', (e) => {
+            if (!audioContext) { initAudioContext(); } // Assicura init
+
+            const rect = gameCanvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            // Distanza dal centro del giocatore
+            const playerCenterX = player.x + player.width / 2;
+            const distFromPlayer = Math.abs(clickX - playerCenterX);
+
+            if (distFromPlayer < 150 && clickY > player.y - 50) { // Clic vicino al giocatore (orizzontalmente)
+                jump();
+            } else { // Clic altrove
+                spawnExplosion(clickX, clickY); // Crea esplosione dove si clicca
+            }
+        });
+
+
+        // === SEZIONE 4: VISUALIZZAZIONE AUDIO ===
+        let analyserNode;
+        let visualizerDataArray;
+        let visualizerAnimationId = null;
+        let micStreamSource = null; // Per tenere traccia della sorgente microfono
+
+        function drawVisualizerInitialState() {
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            visualizerCtx.fillStyle = '#333';
+            visualizerCtx.font = '16px Arial';
+            visualizerCtx.textAlign = 'center';
+            visualizerCtx.fillText('Pronto per visualizzare (clicca Avvia Microfono)', visualizerCanvas.width / 2, visualizerCanvas.height / 2);
+        }
+
+        async function setupAudioVisualization() {
+            if (!audioContext) { initAudioContext(); }
+            if (!audioContext || visualizerAnimationId) return; // Non avviare se già attivo
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('API MediaDevices (getUserMedia) non supportata.');
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                micStreamSource = audioContext.createMediaStreamSource(stream);
+
+                analyserNode = audioContext.createAnalyser();
+                analyserNode.fftSize = 256; // Valore comune, potenza di 2
+                const bufferLength = analyserNode.frequencyBinCount; // metà di fftSize
+                visualizerDataArray = new Uint8Array(bufferLength);
+
+                micStreamSource.connect(analyserNode);
+                // NON connettere analyserNode a masterGainNode/destination se non vuoi sentire il mic
+
+                console.log("Microfono connesso all'analizzatore.");
+                drawVisualizer(); // Avvia loop di disegno
+            } catch (err) {
+                console.error('Errore accesso microfono:', err);
+                visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                visualizerCtx.fillStyle = 'red';
+                visualizerCtx.fillText('Errore accesso microfono. Controlla permessi.', visualizerCanvas.width / 2, visualizerCanvas.height / 2);
+            }
+        }
+
+        function drawVisualizer() {
+            visualizerAnimationId = requestAnimationFrame(drawVisualizer);
+            if (!analyserNode || !visualizerDataArray) return;
+
+            analyserNode.getByteFrequencyData(visualizerDataArray); // Popola array con dati freq
+
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            visualizerCtx.fillStyle = '#1a1a1a'; // Sfondo scuro per visualizer
+            visualizerCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+            const barWidth = (visualizerCanvas.width / visualizerDataArray.length) * 1.2; // Barre leggermente più larghe
+            let x = 0;
+            for (let i = 0; i < visualizerDataArray.length; i++) {
+                const barHeight = visualizerDataArray[i] * (visualizerCanvas.height / 255); // Scala a altezza canvas
+                const hue = i / visualizerDataArray.length * 360; // Colore basato su indice freq
+                visualizerCtx.fillStyle = `hsl(${hue}, 90%, 60%)`;
+                visualizerCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
+                x += barWidth + 1; // Spazio tra barre
+            }
+        }
+
+        function stopVisualization() {
+            if (visualizerAnimationId) {
+                cancelAnimationFrame(visualizerAnimationId);
+                visualizerAnimationId = null;
+            }
+            if (micStreamSource) {
+                micStreamSource.disconnect(); // Disconnetti analizzatore
+                 // Ferma le tracce dello stream per rilasciare il microfono
+                 micStreamSource.mediaStream.getTracks().forEach(track => track.stop());
+                micStreamSource = null;
+            }
+            analyserNode = null; // Rilascia riferimento
+            console.log("Visualizzazione fermata.");
+            drawVisualizerInitialState(); // Ripristina stato iniziale canvas
+        }
+
+        document.getElementById('startVisualization').addEventListener('click', setupAudioVisualization);
+        document.getElementById('stopVisualization').addEventListener('click', stopVisualization);
+
+        // === SEZIONE 5: SYNC AUDIO-VISIVA ===
+        let syncAudioSource = null; // Sorgente audio per sync
+        let syncAnalyser = null;
+        let syncDataArray = null;
+        let syncAnimationId = null;
+
+        function drawSyncInitialState() {
+            syncCtx.clearRect(0, 0, syncCanvas.width, syncCanvas.height);
+            syncCtx.fillStyle = '#eee';
+            syncCtx.fillRect(0, 0, syncCanvas.width, syncCanvas.height);
+            syncCtx.fillStyle = '#555';
+            syncCtx.font = '16px Arial';
+            syncCtx.textAlign = 'center';
+            syncCtx.fillText('Pronto per sincronizzazione', syncCanvas.width / 2, syncCanvas.height / 2);
+        }
+
+        function startAudioVisualSync() {
+             if (!audioContext) { initAudioContext(); }
+             if (!audioContext || syncAnimationId) return; // Già attivo
+
+             // Usa il suono di background per la demo
+             if (!sounds['background']) {
+                 alert("Suono 'background' non disponibile per la sincronizzazione.");
+                 return;
+             }
+             // Ferma sorgente precedente se esiste
+             if (syncAudioSource) { try { syncAudioSource.stop(); } catch(e){} }
+
+             syncAudioSource = audioContext.createBufferSource();
+             syncAudioSource.buffer = sounds['background'];
+             syncAudioSource.loop = true;
+
+             syncAnalyser = audioContext.createAnalyser();
+             syncAnalyser.fftSize = 128; // Meno dettagliato per effetto più generale
+             const bufferLength = syncAnalyser.frequencyBinCount;
+             syncDataArray = new Uint8Array(bufferLength);
+
+             // Connetti: source -> analyser -> masterGain -> destination
+             syncAudioSource.connect(syncAnalyser);
+             syncAnalyser.connect(masterGainNode); // Assicurati che sia connesso al master
+
+             syncAudioSource.start(0);
+             console.log("Avvio sincronizzazione audio-visiva.");
+             animateSync();
+        }
+
+        function animateSync() {
+            syncAnimationId = requestAnimationFrame(animateSync);
+            if (!syncAnalyser || !syncDataArray) return;
+
+            syncAnalyser.getByteFrequencyData(syncDataArray); // Prendi dati
+
+            syncCtx.clearRect(0, 0, syncCanvas.width, syncCanvas.height);
+            syncCtx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Effetto dissolvenza lieve
+            syncCtx.fillRect(0, 0, syncCanvas.width, syncCanvas.height);
+
+            // Calcola ampiezza media bassi/medi (più reattivo al beat)
+            let sum = 0;
+            const relevantBins = Math.floor(syncDataArray.length * 0.6); // Considera solo il 60% inferiore delle freq
+            for (let i = 0; i < relevantBins; i++) {
+                sum += syncDataArray[i];
+            }
+            const average = relevantBins > 0 ? sum / relevantBins : 0;
+
+            const centerX = syncCanvas.width / 2;
+            const centerY = syncCanvas.height / 2;
+            const baseRadius = 30;
+            const dynamicRadius = average * 0.7; // Scala impatto dell'ampiezza
+            const radius = baseRadius + dynamicRadius;
+            const hue = (Date.now() / 15) % 360; // Colore che cambia lentamente
+
+            // Disegna cerchio pulsante
+            syncCtx.beginPath();
+            syncCtx.arc(centerX, centerY, Math.max(5, radius), 0, Math.PI * 2); // Raggio minimo 5
+            syncCtx.fillStyle = `hsla(${hue}, 85%, 65%, 0.7)`;
+            syncCtx.fill();
+
+            // Aggiungi un bordo
+            syncCtx.strokeStyle = `hsl(${hue}, 90%, 50%)`;
+            syncCtx.lineWidth = 2 + average / 50; // Spessore bordo variabile
+            syncCtx.stroke();
+        }
+
+        function stopAudioVisualSync() {
+            if (syncAnimationId) {
+                cancelAnimationFrame(syncAnimationId);
+                syncAnimationId = null;
+            }
+            if (syncAudioSource) {
+                try { syncAudioSource.stop(); } catch(e) {}
+                syncAudioSource.disconnect(); // Disconnetti tutto
+                syncAudioSource = null;
+            }
+            if (syncAnalyser) {
+                syncAnalyser.disconnect();
+                syncAnalyser = null;
+            }
+            console.log("Sincronizzazione fermata.");
+            drawSyncInitialState(); // Ripristina canvas
+        }
+
+        document.getElementById('startSync').addEventListener('click', startAudioVisualSync);
+        document.getElementById('stopSync').addEventListener('click', stopAudioVisualSync);
+
+        // Disegna stati iniziali dei canvas (dopo che il DOM è pronto)
+        // Questi verranno ridisegnati correttamente dopo l'interazione utente
+        window.addEventListener('load', () => {
+            drawBasicCanvasState();
+            drawGame();
+            drawVisualizerInitialState();
+            drawSyncInitialState();
+        });
+
+    </script>
+</body>
+</html>
