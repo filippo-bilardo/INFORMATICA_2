@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esempi di Closures con DOM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .esempio {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .output {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin-top: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+        }
+        h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+        .contatore-gruppo {
+            display: flex;
+            justify-content: space-between;
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+        .task {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+            background-color: #e9ffe9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Esempi di Closures con DOM</h1>
+    <p>Questa pagina mostra esempi pratici di utilizzo delle closures JavaScript con il DOM.</p>
+
+    <div class="esempio">
+        <h3>1. Contatori multipli con closures</h3>
+        <div id="contatori-container">
+            <!-- I contatori saranno aggiunti qui -->
+        </div>
+        <button id="aggiungiContatore">Aggiungi contatore</button>
+        <div class="output" id="outputContatori"></div>
+        
+        <pre>
+function creaContatore(id) {
+    // Variabile privata mantenuta nella closure
+    let conteggio = 0;
+    
+    // Creiamo gli elementi DOM
+    const container = document.createElement('div');
+    container.className = 'contatore-gruppo';
+    
+    const label = document.createElement('span');
+    label.textContent = `Contatore ${id}: 0`;
+    
+    const btnIncrementa = document.createElement('button');
+    btnIncrementa.textContent = '+';
+    
+    const btnDecrementa = document.createElement('button');
+    btnDecrementa.textContent = '-';
+    
+    // Aggiungiamo gli elementi al container
+    container.appendChild(label);
+    container.appendChild(btnDecrementa);
+    container.appendChild(btnIncrementa);
+    
+    // Funzione di aggiornamento dell'output
+    function aggiornaTotale() {
+        const contatori = document.querySelectorAll('.contatore-gruppo');
+        let totale = 0;
+        
+        contatori.forEach(cont => {
+            const valore = parseInt(cont.querySelector('span').textContent.split(': ')[1]);
+            totale += valore;
+        });
+        
+        document.getElementById('outputContatori').textContent = `Somma totale: ${totale}`;
+    }
+    
+    // Event listeners
+    btnIncrementa.addEventListener('click', () => {
+        conteggio++;
+        label.textContent = `Contatore ${id}: ${conteggio}`;
+        aggiornaTotale();
+    });
+    
+    btnDecrementa.addEventListener('click', () => {
+        conteggio--;
+        label.textContent = `Contatore ${id}: ${conteggio}`;
+        aggiornaTotale();
+    });
+    
+    return container;
+}
+
+let contatoreId = 1;
+document.getElementById('aggiungiContatore').addEventListener('click', () => {
+    const nuovoContatore = creaContatore(contatoreId++);
+    document.getElementById('contatori-container').appendChild(nuovoContatore);
+});
+        </pre>
+    </div>
+
+    <div class="esempio">
+        <h3>2. Todo List con closures</h3>
+        <div>
+            <input type="text" id="nuovoTask" placeholder="Nuovo task">
+            <button id="aggiungiTask">Aggiungi</button>
+        </div>
+        <div id="taskList">
+            <!-- I task saranno aggiunti qui -->
+        </div>
+        <div class="output" id="outputTasks">Task completati: 0/0</div>
+        
+        <pre>
+// Factory function che crea un gestore della todo list
+function creaTodoList() {
+    // Stato privato
+    let tasks = [];
+    
+    // DOM elements
+    const input = document.getElementById('nuovoTask');
+    const addBtn = document.getElementById('aggiungiTask');
+    const listEl = document.getElementById('taskList');
+    const outputEl = document.getElementById('outputTasks');
+    
+    // Funzioni private
+    function renderTasks() {
+        listEl.innerHTML = '';
+        
+        tasks.forEach((task, index) => {
+            const taskEl = document.createElement('div');
+            taskEl.className = `task ${task.completed ? 'completed' : ''}`;
+            
+            const text = document.createElement('span');
+            text.textContent = task.text;
+            
+            const toggleBtn = document.createElement('button');
+            toggleBtn.textContent = task.completed ? 'Riapri' : 'Completa';
+            toggleBtn.onclick = () => toggleTask(index);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Elimina';
+            deleteBtn.onclick = () => removeTask(index);
+            
+            taskEl.appendChild(text);
+            taskEl.appendChild(toggleBtn);
+            taskEl.appendChild(deleteBtn);
+            
+            listEl.appendChild(taskEl);
+        });
+        
+        // Aggiorna conteggio
+        const completati = tasks.filter(t => t.completed).length;
+        outputEl.textContent = `Task completati: ${completati}/${tasks.length}`;
+    }
+    
+    function addTask(text) {
+        tasks.push({ text, completed: false });
+        renderTasks();
+    }
+    
+    function toggleTask(index) {
+        tasks[index].completed = !tasks[index].completed;
+        renderTasks();
+    }
+    
+    function removeTask(index) {
+        tasks.splice(index, 1);
+        renderTasks();
+    }
+    
+    // Event binding
+    addBtn.addEventListener('click', () => {
+        const text = input.value.trim();
+        if (text) {
+            addTask(text);
+            input.value = '';
+        }
+    });
+    
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const text = input.value.trim();
+            if (text) {
+                addTask(text);
+                input.value = '';
+            }
+        }
+    });
+    
+    // Inizializzazione
+    renderTasks();
+    
+    // API pubblica
+    return {
+        addSampleTasks: () => {
+            addTask('Studiare JavaScript');
+            addTask('Fare gli esercizi sulle closures');
+            addTask('Preparare la presentazione');
+        }
+    };
+}
+
+// Crea e inizializza la todo list
+const todoApp = creaTodoList();
+        </pre>
+    </div>
+
+    <div class="esempio">
+        <h3>3. Creatore di colori con closures</h3>
+        <div>
+            R: <input type="range" id="red" min="0" max="255" value="128"><br>
+            G: <input type="range" id="green" min="0" max="255" value="128"><br>
+            B: <input type="range" id="blue" min="0" max="255" value="128">
+        </div>
+        <div class="output" id="coloreOutput" style="height: 50px; margin-top: 10px;">RGB(128, 128, 128)</div>
+        <div id="coloriSalvati"></div>
+        <button id="salvaColore">Salva questo colore</button>
+        
+        <pre>
+function creaGestoreColore() {
+    // Stato privato
+    let coloriSalvati = [];
+    
+    // Elementi DOM
+    const redSlider = document.getElementById('red');
+    const greenSlider = document.getElementById('green');
+    const blueSlider = document.getElementById('blue');
+    const outputEl = document.getElementById('coloreOutput');
+    const coloriSalvatiEl = document.getElementById('coloriSalvati');
+    const salvaBtn = document.getElementById('salvaColore');
+    
+    // Funzione privata per aggiornare il colore visualizzato
+    function aggiornaColore() {
+        const r = redSlider.value;
+        const g = greenSlider.value;
+        const b = blueSlider.value;
+        
+        const colore = `rgb(${r}, ${g}, ${b})`;
+        outputEl.style.backgroundColor = colore;
+        outputEl.textContent = colore;
+    }
+    
+    // Funzione privata per aggiornare la lista dei colori salvati
+    function aggiornaColoriSalvati() {
+        coloriSalvatiEl.innerHTML = '';
+        
+        coloriSalvati.forEach((colore, index) => {
+            const campione = document.createElement('div');
+            campione.style.backgroundColor = colore;
+            campione.style.width = '50px';
+            campione.style.height = '20px';
+            campione.style.display = 'inline-block';
+            campione.style.margin = '5px';
+            campione.title = colore;
+            
+            campione.addEventListener('click', () => {
+                const [r, g, b] = colore.match(/\d+/g);
+                redSlider.value = r;
+                greenSlider.value = g;
+                blueSlider.value = b;
+                aggiornaColore();
+            });
+            
+            coloriSalvatiEl.appendChild(campione);
+        });
+    }
+    
+    // Listener evento per i cursori
+    redSlider.addEventListener('input', aggiornaColore);
+    greenSlider.addEventListener('input', aggiornaColore);
+    blueSlider.addEventListener('input', aggiornaColore);
+    
+    // Listener per il pulsante salva
+    salvaBtn.addEventListener('click', () => {
+        const r = redSlider.value;
+        const g = greenSlider.value;
+        const b = blueSlider.value;
+        
+        const colore = `rgb(${r}, ${g}, ${b})`;
+        coloriSalvati.push(colore);
+        aggiornaColoriSalvati();
+    });
+    
+    // Inizializzazione
+    aggiornaColore();
+    
+    // API pubblica
+    return {
+        reset: () => {
+            redSlider.value = 128;
+            greenSlider.value = 128;
+            blueSlider.value = 128;
+            aggiornaColore();
+        },
+        pulisciSalvati: () => {
+            coloriSalvati = [];
+            aggiornaColoriSalvati();
+        }
+    };
+}
+
+// Crea gestore colore
+const gestoreColore = creaGestoreColore();
+        </pre>
+    </div>
+
+    <script>
+        // Esempio 1: Contatori multipli con closures
+        function creaContatore(id) {
+            // Variabile privata mantenuta nella closure
+            let conteggio = 0;
+            
+            // Creiamo gli elementi DOM
+            const container = document.createElement('div');
+            container.className = 'contatore-gruppo';
+            
+            const label = document.createElement('span');
+            label.textContent = `Contatore ${id}: 0`;
+            
+            const btnIncrementa = document.createElement('button');
+            btnIncrementa.textContent = '+';
+            
+            const btnDecrementa = document.createElement('button');
+            btnDecrementa.textContent = '-';
+            
+            // Aggiungiamo gli elementi al container
+            container.appendChild(label);
+            container.appendChild(btnDecrementa);
+            container.appendChild(btnIncrementa);
+            
+            // Funzione di aggiornamento dell'output
+            function aggiornaTotale() {
+                const contatori = document.querySelectorAll('.contatore-gruppo');
+                let totale = 0;
+                
+                contatori.forEach(cont => {
+                    const valore = parseInt(cont.querySelector('span').textContent.split(': ')[1]);
+                    totale += valore;
+                });
+                
+                document.getElementById('outputContatori').textContent = `Somma totale: ${totale}`;
+            }
+            
+            // Event listeners
+            btnIncrementa.addEventListener('click', () => {
+                conteggio++;
+                label.textContent = `Contatore ${id}: ${conteggio}`;
+                aggiornaTotale();
+            });
+            
+            btnDecrementa.addEventListener('click', () => {
+                conteggio--;
+                label.textContent = `Contatore ${id}: ${conteggio}`;
+                aggiornaTotale();
+            });
+            
+            return container;
+        }
+
+        let contatoreId = 1;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('aggiungiContatore').addEventListener('click', () => {
+                const nuovoContatore = creaContatore(contatoreId++);
+                document.getElementById('contatori-container').appendChild(nuovoContatore);
+                
+                // Aggiorna il totale iniziale
+                const output = document.getElementById('outputContatori');
+                if (!output.textContent) {
+                    output.textContent = 'Somma totale: 0';
+                }
+            });
+        });
+
+        // Esempio 2: Todo List con closures
+        function creaTodoList() {
+            // Stato privato
+            let tasks = [];
+            
+            // DOM elements
+            const input = document.getElementById('nuovoTask');
+            const addBtn = document.getElementById('aggiungiTask');
+            const listEl = document.getElementById('taskList');
+            const outputEl = document.getElementById('outputTasks');
+            
+            // Funzioni private
+            function renderTasks() {
+                listEl.innerHTML = '';
+                
+                tasks.forEach((task, index) => {
+                    const taskEl = document.createElement('div');
+                    taskEl.className = `task ${task.completed ? 'completed' : ''}`;
+                    
+                    const text = document.createElement('span');
+                    text.textContent = task.text;
+                    
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.textContent = task.completed ? 'Riapri' : 'Completa';
+                    toggleBtn.onclick = () => toggleTask(index);
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Elimina';
+                    deleteBtn.onclick = () => removeTask(index);
+                    
+                    taskEl.appendChild(text);
+                    taskEl.appendChild(toggleBtn);
+                    taskEl.appendChild(deleteBtn);
+                    
+                    listEl.appendChild(taskEl);
+                });
+                
+                // Aggiorna conteggio
+                const completati = tasks.filter(t => t.completed).length;
+                outputEl.textContent = `Task completati: ${completati}/${tasks.length}`;
+            }
+            
+            function addTask(text) {
+                tasks.push({ text, completed: false });
+                renderTasks();
+            }
+            
+            function toggleTask(index) {
+                tasks[index].completed = !tasks[index].completed;
+                renderTasks();
+            }
+            
+            function removeTask(index) {
+                tasks.splice(index, 1);
+                renderTasks();
+            }
+            
+            // Event binding
+            document.addEventListener('DOMContentLoaded', () => {
+                addBtn.addEventListener('click', () => {
+                    const text = input.value.trim();
+                    if (text) {
+                        addTask(text);
+                        input.value = '';
+                    }
+                });
+                
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const text = input.value.trim();
+                        if (text) {
+                            addTask(text);
+                            input.value = '';
+                        }
+                    }
+                });
+                
+                // Inizializzazione
+                renderTasks();
+            });
+            
+            // API pubblica
+            return {
+                addSampleTasks: () => {
+                    addTask('Studiare JavaScript');
+                    addTask('Fare gli esercizi sulle closures');
+                    addTask('Preparare la presentazione');
+                }
+            };
+        }
+
+        // Crea e inizializza la todo list
+        const todoApp = creaTodoList();
+
+        // Esempio 3: Creatore di colori con closures
+        function creaGestoreColore() {
+            // Stato privato
+            let coloriSalvati = [];
+            
+            // Funzione privata per aggiornare il colore visualizzato
+            function aggiornaColore() {
+                const redSlider = document.getElementById('red');
+                const greenSlider = document.getElementById('green');
+                const blueSlider = document.getElementById('blue');
+                const outputEl = document.getElementById('coloreOutput');
+                
+                const r = redSlider.value;
+                const g = greenSlider.value;
+                const b = blueSlider.value;
+                
+                const colore = `rgb(${r}, ${g}, ${b})`;
+                outputEl.style.backgroundColor = colore;
+                outputEl.textContent = colore;
+            }
+            
+            // Funzione privata per aggiornare la lista dei colori salvati
+            function aggiornaColoriSalvati() {
+                const coloriSalvatiEl = document.getElementById('coloriSalvati');
+                coloriSalvatiEl.innerHTML = '';
+                
+                coloriSalvati.forEach((colore, index) => {
+                    const campione = document.createElement('div');
+                    campione.style.backgroundColor = colore;
+                    campione.style.width = '50px';
+                    campione.style.height = '20px';
+                    campione.style.display = 'inline-block';
+                    campione.style.margin = '5px';
+                    campione.title = colore;
+                    
+                    campione.addEventListener('click', () => {
+                        const [r, g, b] = colore.match(/\d+/g);
+                        document.getElementById('red').value = r;
+                        document.getElementById('green').value = g;
+                        document.getElementById('blue').value = b;
+                        aggiornaColore();
+                    });
+                    
+                    coloriSalvatiEl.appendChild(campione);
+                });
+            }
+            
+            document.addEventListener('DOMContentLoaded', () => {
+                const redSlider = document.getElementById('red');
+                const greenSlider = document.getElementById('green');
+                const blueSlider = document.getElementById('blue');
+                const salvaBtn = document.getElementById('salvaColore');
+                
+                // Listener evento per i cursori
+                redSlider.addEventListener('input', aggiornaColore);
+                greenSlider.addEventListener('input', aggiornaColore);
+                blueSlider.addEventListener('input', aggiornaColore);
+                
+                // Listener per il pulsante salva
+                salvaBtn.addEventListener('click', () => {
+                    const r = redSlider.value;
+                    const g = greenSlider.value;
+                    const b = blueSlider.value;
+                    
+                    const colore = `rgb(${r}, ${g}, ${b})`;
+                    coloriSalvati.push(colore);
+                    aggiornaColoriSalvati();
+                });
+                
+                // Inizializzazione
+                aggiornaColore();
+            });
+            
+            // API pubblica
+            return {
+                reset: () => {
+                    document.getElementById('red').value = 128;
+                    document.getElementById('green').value = 128;
+                    document.getElementById('blue').value = 128;
+                    aggiornaColore();
+                },
+                pulisciSalvati: () => {
+                    coloriSalvati = [];
+                    aggiornaColoriSalvati();
+                }
+            };
+        }
+
+        // Crea gestore colore
+        const gestoreColore = creaGestoreColore();
+    </script>
+</body>
+</html>
