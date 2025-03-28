@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica dinamica dei contenuti</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .demo-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .container {
+            border: 2px dashed #ccc;
+            padding: 10px;
+            min-height: 100px;
+            margin: 10px 0;
+        }
+        .item {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 3px;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+        }
+        .special {
+            background-color: #ffffcc;
+            border-left: 3px solid #ffcc00;
+        }
+        .controls {
+            margin: 10px 0;
+        }
+        .red { color: red; }
+        .blue { color: blue; }
+        .green { color: green; }
+        .italic { font-style: italic; }
+        .bold { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Modifica dinamica dei contenuti</h1>
+    
+    <div class="section">
+        <h2>1. Modificare il contenuto testuale</h2>
+        
+        <div class="demo-box">
+            <div id="text-content" class="container">
+                <p>Questo è un paragrafo di esempio. Il suo contenuto può essere modificato.</p>
+            </div>
+            
+            <div class="controls">
+                <button onclick="cambiaTestoInnerText()">Cambia con innerText</button>
+                <button onclick="cambiaTestoTextContent()">Cambia con textContent</button>
+                <button onclick="cambiaTestoInnerHTML()">Cambia con innerHTML</button>
+                <button onclick="ripristinaTestoOriginale()">Ripristina</button>
+            </div>
+            
+            <div id="text-info"></div>
+            
+            <script>
+                const testoOriginale = document.getElementById('text-content').innerHTML;
+                
+                function cambiaTestoInnerText() {
+                    const container = document.getElementById('text-content');
+                    container.innerText = 'Questo testo è stato modificato con innerText.\nRispetta gli a capo ma non interpreta tag HTML <b>come questo</b>';
+                    
+                    document.getElementById('text-info').textContent = 
+                        'innerText è una proprietà che considera la formattazione visibile del testo, inclusi gli a capo, ma non interpreta HTML.';
+                }
+                
+                function cambiaTestoTextContent() {
+                    const container = document.getElementById('text-content');
+                    container.textContent = 'Questo testo è stato modificato con textContent.\nRispetta gli a capo ma non interpreta tag HTML <b>come questo</b>';
+                    
+                    document.getElementById('text-info').textContent = 
+                        'textContent è una proprietà che restituisce il contenuto testuale di tutti i nodi discendenti, ignorando il markup HTML.';
+                }
+                
+                function cambiaTestoInnerHTML() {
+                    const container = document.getElementById('text-content');
+                    container.innerHTML = 'Questo testo è stato modificato con <b>innerHTML</b>.<br>Interpreta i <span style="color: red;">tag HTML</span> ed è utile per contenuti formattati.';
+                    
+                    document.getElementById('text-info').textContent = 
+                        'innerHTML è una proprietà che consente di ottenere o modificare il contenuto HTML di un elemento, interpretando i tag.';
+                }
+                
+                function ripristinaTestoOriginale() {
+                    document.getElementById('text-content').innerHTML = testoOriginale;
+                    document.getElementById('text-info').textContent = '';
+                }
+            </script>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>2. Creare nuovi elementi</h2>
+        
+        <div class="demo-box">
+            <div id="create-container" class="container">
+                <!-- Gli elementi saranno aggiunti qui -->
+            </div>
+            
+            <div class="controls">
+                <button onclick="creaElemento()">Crea nuovo elemento</button>
+                <button onclick="creaElementoComplesso()">Crea elemento complesso</button>
+                <button onclick="creaConInnerHTML()">Crea con innerHTML</button>
+                <button onclick="creaFragmento()">Crea con DocumentFragment</button>
+                <button onclick="svuotaContenitore('create-container')">Svuota</button>
+            </div>
+            
+            <script>
+                let contatore = 1;
+                
+                function creaElemento() {
+                    // Creazione dell'elemento
+                    const nuovoElemento = document.createElement('div');
+                    nuovoElemento.textContent = `Elemento ${contatore++}`;
+                    nuovoElemento.className = 'item';
+                    
+                    // Aggiunta al DOM
+                    document.getElementById('create-container').appendChild(nuovoElemento);
+                }
+                
+                function creaElementoComplesso() {
+                    // Elemento principale
+                    const card = document.createElement('div');
+                    card.className = 'item special';
+                    
+                    // Titolo
+                    const titolo = document.createElement('h3');
+                    titolo.textContent = `Elemento complesso ${contatore++}`;
+                    
+                    // Paragrafo
+                    const paragrafo = document.createElement('p');
+                    paragrafo.textContent = 'Questo è un elemento creato con createElement e composto da diversi sotto-elementi';
+                    
+                    // Button
+                    const button = document.createElement('button');
+                    button.textContent = 'Click me';
+                    button.addEventListener('click', function() {
+                        alert('Hai cliccato sul pulsante di un elemento creato dinamicamente');
+                    });
+                    
+                    // Assemblaggio
+                    card.appendChild(titolo);
+                    card.appendChild(paragrafo);
+                    card.appendChild(button);
+                    
+                    // Aggiunta al DOM
+                    document.getElementById('create-container').appendChild(card);
+                }
+                
+                function creaConInnerHTML() {
+                    const container = document.getElementById('create-container');
+                    
+                    // Aggiunta tramite innerHTML
+                    container.innerHTML += `
+                        <div class="item special">
+                            <h3>Elemento innerHTML ${contatore++}</h3>
+                            <p>Questo elemento è stato creato usando la proprietà <code>innerHTML</code>.</p>
+                            <button onclick="alert('Attenzione: questa modalità può causare problemi di sicurezza con XSS')">
+                                Attenzione
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                function creaFragmento() {
+                    // Creazione di un fragment (container temporaneo)
+                    const fragment = document.createDocumentFragment();
+                    
+                    // Creazione di più elementi
+                    for (let i = 0; i < 3; i++) {
+                        const item = document.createElement('div');
+                        item.className = 'item';
+                        item.textContent = `Item ${contatore++} del frammento`;
+                        fragment.appendChild(item);
+                    }
+                    
+                    // Aggiunta al DOM (un'unica operazione)
+                    document.getElementById('create-container').appendChild(fragment);
+                }
+                
+                function svuotaContenitore(id) {
+                    const container = document.getElementById(id);
+                    while (container.firstChild) {
+                        container.removeChild(container.firstChild);
+                    }
+                }
+            </script>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>3. Manipolazione degli elementi del DOM</h2>
+        
+        <div class="demo-box">
+            <div id="manipulate-container" class="container">
+                <div class="item" id="item1">Elemento 1</div>
+                <div class="item" id="item2">Elemento 2</div>
+                <div class="item" id="item3">Elemento 3</div>
+                <div class="item" id="item4">Elemento 4</div>
+                <div class="item" id="item5">Elemento 5</div>
+            </div>
+            
+            <div class="controls">
+                <button onclick="rimuoviElemento()">Rimuovi elemento</button>
+                <button onclick="sostituisciElemento()">Sostituisci elemento</button>
+                <button onclick="inserisciPrima()">Inserisci prima</button>
+                <button onclick="inserisciDopo()">Inserisci dopo</button>
+                <button onclick="cloneElemento()">Clona elemento</button>
+                <button onclick="resetContainer()">Ripristina</button>
+            </div>
+            
+            <script>
+                const contenutoOriginale = document.getElementById('manipulate-container').innerHTML;
+                
+                function rimuoviElemento() {
+                    const container = document.getElementById('manipulate-container');
+                    const elemento3 = document.getElementById('item3');
+                    if (elemento3) {
+                        container.removeChild(elemento3);
+                        // Oppure: elemento3.remove();
+                    }
+                }
+                
+                function sostituisciElemento() {
+                    const container = document.getElementById('manipulate-container');
+                    const elemento4 = document.getElementById('item4');
+                    
+                    if (elemento4) {
+                        const nuovoElemento = document.createElement('div');
+                        nuovoElemento.className = 'item special';
+                        nuovoElemento.textContent = 'Nuovo elemento sostitutivo';
+                        
+                        container.replaceChild(nuovoElemento, elemento4);
+                        // Oppure: elemento4.replaceWith(nuovoElemento);
+                    }
+                }
+                
+                function inserisciPrima() {
+                    const elemento2 = document.getElementById('item2');
+                    
+                    if (elemento2) {
+                        const nuovoElemento = document.createElement('div');
+                        nuovoElemento.className = 'item';
+                        nuovoElemento.textContent = 'Inserito prima';
+                        
+                        elemento2.parentNode.insertBefore(nuovoElemento, elemento2);
+                    }
+                }
+                
+                function inserisciDopo() {
+                    const elemento2 = document.getElementById('item2');
+                    
+                    if (elemento2) {
+                        const nuovoElemento = document.createElement('div');
+                        nuovoElemento.className = 'item';
+                        nuovoElemento.textContent = 'Inserito dopo';
+                        
+                        elemento2.parentNode.insertBefore(nuovoElemento, elemento2.nextSibling);
+                        // Oppure: elemento2.after(nuovoElemento);
+                    }
+                }
+                
+                function cloneElemento() {
+                    const elemento5 = document.getElementById('item5');
+                    
+                    if (elemento5) {
+                        const clone = elemento5.cloneNode(true); // true per clonare anche il contenuto
+                        clone.id = 'item5-clone';
+                        clone.className += ' special';
+                        clone.textContent = 'Elemento clonato';
+                        document.getElementById('manipulate-container').appendChild(clone);
+                    }
+                }
+                
+                function resetContainer() {
+                    document.getElementById('manipulate-container').innerHTML = contenutoOriginale;
+                }
+            </script>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>4. Gestione delle classi e stili</h2>
+        
+        <div class="demo-box">
+            <div id="style-container" class="container">
+                <div id="style-target" class="item">
+                    Elemento con stile modificabile
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div>
+                    <b>Classi:</b>
+                    <button onclick="toggleClass('red')">Toggle Rosso</button>
+                    <button onclick="toggleClass('blue')">Toggle Blu</button>
+                    <button onclick="toggleClass('green')">Toggle Verde</button>
+                    <button onclick="toggleClass('bold')">Toggle Grassetto</button>
+                    <button onclick="toggleClass('italic')">Toggle Corsivo</button>
+                </div>
+                
+                <div>
+                    <b>Stile Diretto:</b>
+                    <button onclick="cambiaStileDiretto('fontSize', '24px')">Font Grande</button>
+                    <button onclick="cambiaStileDiretto('fontSize', '12px')">Font Piccolo</button>
+                    <button onclick="cambiaStileDiretto('backgroundColor', '#e0e0e0')">Sfondo Grigio</button>
+                    <button onclick="cambiaStileDiretto('backgroundColor', 'white')">Sfondo Bianco</button>
+                </div>
+                
+                <div>
+                    <button onclick="resetStile()">Reset Stile</button>
+                </div>
+            </div>
+            
+            <div id="style-info"></div>
+            
+            <script>
+                function toggleClass(className) {
+                    const element = document.getElementById('style-target');
+                    element.classList.toggle(className);
+                    
+                    mostraClassi();
+                }
+                
+                function cambiaStileDiretto(proprieta, valore) {
+                    const element = document.getElementById('style-target');
+                    element.style[proprieta] = valore;
+                    
+                    mostraStili();
+                }
+                
+                function mostraClassi() {
+                    const element = document.getElementById('style-target');
+                    const classi = Array.from(element.classList).join(', ');
+                    document.getElementById('style-info').innerHTML = `<div>Classi attuali: ${classi || 'nessuna'}</div>`;
+                }
+                
+                function mostraStili() {
+                    const element = document.getElementById('style-target');
+                    const stili = element.getAttribute('style');
+                    document.getElementById('style-info').innerHTML += `<div>Stili inline: ${stili || 'nessuno'}</div>`;
+                }
+                
+                function resetStile() {
+                    const element = document.getElementById('style-target');
+                    element.className = 'item';
+                    element.style = '';
+                    document.getElementById('style-info').textContent = '';
+                }
+            </script>
+        </div>
+    </div>
+</body>
+</html>

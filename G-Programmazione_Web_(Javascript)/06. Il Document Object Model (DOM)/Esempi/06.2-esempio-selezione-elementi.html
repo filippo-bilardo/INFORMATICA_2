@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selezione e Manipolazione degli Elementi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .demo-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .highlight {
+            background-color: yellow;
+            padding: 2px;
+        }
+        .selected {
+            border: 2px solid blue;
+            background-color: #e6f7ff;
+        }
+        .big-text {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Selezione e Manipolazione degli Elementi DOM</h1>
+    
+    <div class="section">
+        <h2>Metodi di selezione degli elementi</h2>
+        
+        <div class="demo-box" id="selezione-demo">
+            <p>Seleziona gli elementi usando diversi metodi:</p>
+            <ul>
+                <li id="item1" class="list-item">Elemento 1</li>
+                <li id="item2" class="list-item">Elemento 2</li>
+                <li id="item3" class="special list-item">Elemento 3 (speciale)</li>
+                <li id="item4" class="list-item">Elemento 4</li>
+                <li id="item5" class="special list-item">Elemento 5 (speciale)</li>
+            </ul>
+            
+            <div class="controls">
+                <button onclick="selezionaById()">getElementById</button>
+                <button onclick="selezionaByClassName()">getElementsByClassName</button>
+                <button onclick="selezionaByTagName()">getElementsByTagName</button>
+                <button onclick="selezionaByQuerySelector()">querySelector</button>
+                <button onclick="selezionaByQuerySelectorAll()">querySelectorAll</button>
+                <button onclick="resetSelezione()">Reset</button>
+            </div>
+            
+            <div id="risultato-selezione" class="risultato"></div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Manipolazione degli attributi</h2>
+        
+        <div class="demo-box" id="attributi-demo">
+            <div id="elemento-modificabile" style="padding: 10px;" data-info="Informazione originale">
+                Questo elemento ha attributi modificabili
+            </div>
+            
+            <div class="controls">
+                <button onclick="leggiAttributo()">Leggi attributo style</button>
+                <button onclick="modificaAttributo()">Modifica style</button>
+                <button onclick="aggiungiAttributo()">Aggiungi nuovo attributo</button>
+                <button onclick="rimuoviAttributo()">Rimuovi attributo</button>
+                <button onclick="controllaAttributo()">Controlla attributo</button>
+            </div>
+            
+            <div id="risultato-attributi" class="risultato"></div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Modifica delle classi CSS</h2>
+        
+        <div class="demo-box" id="classi-demo">
+            <div id="elemento-stile">Questo elemento può cambiare stile tramite classi CSS</div>
+            
+            <div class="controls">
+                <button onclick="aggiungiClasse()">Aggiungi classe</button>
+                <button onclick="rimuoviClasse()">Rimuovi classe</button>
+                <button onclick="toggleClasse()">Toggle classe</button>
+                <button onclick="controllaClasse()">Controlla classe</button>
+                <button onclick="resetClassi()">Reset</button>
+            </div>
+            
+            <div id="risultato-classi" class="risultato"></div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Manipolazione dello stile inline</h2>
+        
+        <div class="demo-box" id="stile-demo">
+            <div id="elemento-inline-stile">Questo elemento cambia stile inline</div>
+            
+            <div class="controls">
+                <button onclick="cambiaColore()">Cambia colore</button>
+                <button onclick="cambiaDimensione()">Cambia dimensione</button>
+                <button onclick="cambiaBackground()">Cambia sfondo</button>
+                <button onclick="cambiaBordo()">Cambia bordo</button>
+                <button onclick="resetStile()">Reset stile</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funzioni per la sezione di selezione
+        function resetSelezione() {
+            const items = document.querySelectorAll('#selezione-demo li');
+            items.forEach(item => item.classList.remove('selected'));
+            document.getElementById('risultato-selezione').textContent = '';
+        }
+        
+        function selezionaById() {
+            resetSelezione();
+            const elemento = document.getElementById('item3');
+            elemento.classList.add('selected');
+            document.getElementById('risultato-selezione').textContent = 
+                'Selezionato con getElementById: ' + elemento.textContent;
+        }
+        
+        function selezionaByClassName() {
+            resetSelezione();
+            const elementi = document.getElementsByClassName('special');
+            for (let el of elementi) {
+                el.classList.add('selected');
+            }
+            document.getElementById('risultato-selezione').textContent = 
+                'Selezionati ' + elementi.length + ' elementi con getElementsByClassName';
+        }
+        
+        function selezionaByTagName() {
+            resetSelezione();
+            const elementi = document.getElementsByTagName('li');
+            for (let el of elementi) {
+                el.classList.add('selected');
+            }
+            document.getElementById('risultato-selezione').textContent = 
+                'Selezionati ' + elementi.length + ' elementi con getElementsByTagName';
+        }
+        
+        function selezionaByQuerySelector() {
+            resetSelezione();
+            const elemento = document.querySelector('#item2');
+            elemento.classList.add('selected');
+            document.getElementById('risultato-selezione').textContent = 
+                'Selezionato con querySelector: ' + elemento.textContent;
+        }
+        
+        function selezionaByQuerySelectorAll() {
+            resetSelezione();
+            const elementi = document.querySelectorAll('#selezione-demo li:nth-child(odd)');
+            elementi.forEach(el => el.classList.add('selected'));
+            document.getElementById('risultato-selezione').textContent = 
+                'Selezionati ' + elementi.length + ' elementi dispari con querySelectorAll';
+        }
+        
+        // Funzioni per la sezione attributi
+        function leggiAttributo() {
+            const elemento = document.getElementById('elemento-modificabile');
+            const style = elemento.getAttribute('style');
+            document.getElementById('risultato-attributi').textContent = 
+                'Attributo style: ' + style;
+        }
+        
+        function modificaAttributo() {
+            const elemento = document.getElementById('elemento-modificabile');
+            elemento.setAttribute('style', 'padding: 20px; background-color: #f0f0f0;');
+            document.getElementById('risultato-attributi').textContent = 
+                'Attributo style modificato!';
+        }
+        
+        function aggiungiAttributo() {
+            const elemento = document.getElementById('elemento-modificabile');
+            elemento.setAttribute('title', 'Questo è un tooltip');
+            document.getElementById('risultato-attributi').textContent = 
+                'Aggiunto attributo title (passa il mouse sopra)';
+        }
+        
+        function rimuoviAttributo() {
+            const elemento = document.getElementById('elemento-modificabile');
+            elemento.removeAttribute('data-info');
+            document.getElementById('risultato-attributi').textContent = 
+                'Rimosso attributo data-info';
+        }
+        
+        function controllaAttributo() {
+            const elemento = document.getElementById('elemento-modificabile');
+            const risultato = elemento.hasAttribute('data-info') ? 
+                'L\'elemento ha l\'attributo data-info' : 
+                'L\'elemento non ha l\'attributo data-info';
+            document.getElementById('risultato-attributi').textContent = risultato;
+        }
+        
+        // Funzioni per la sezione classi CSS
+        function aggiungiClasse() {
+            const elemento = document.getElementById('elemento-stile');
+            elemento.classList.add('highlight');
+            document.getElementById('risultato-classi').textContent = 
+                'Aggiunta classe highlight';
+        }
+        
+        function rimuoviClasse() {
+            const elemento = document.getElementById('elemento-stile');
+            elemento.classList.remove('highlight');
+            document.getElementById('risultato-classi').textContent = 
+                'Rimossa classe highlight';
+        }
+        
+        function toggleClasse() {
+            const elemento = document.getElementById('elemento-stile');
+            elemento.classList.toggle('big-text');
+            const stato = elemento.classList.contains('big-text') ? 'aggiunta' : 'rimossa';
+            document.getElementById('risultato-classi').textContent = 
+                'Classe big-text ' + stato;
+        }
+        
+        function controllaClasse() {
+            const elemento = document.getElementById('elemento-stile');
+            const risultato = elemento.classList.contains('highlight') ? 
+                'L\'elemento ha la classe highlight' : 
+                'L\'elemento non ha la classe highlight';
+            document.getElementById('risultato-classi').textContent = risultato;
+        }
+        
+        function resetClassi() {
+            const elemento = document.getElementById('elemento-stile');
+            elemento.className = '';
+            document.getElementById('risultato-classi').textContent = 
+                'Reset di tutte le classi';
+        }
+        
+        // Funzioni per la sezione stile inline
+        function cambiaColore() {
+            const elemento = document.getElementById('elemento-inline-stile');
+            elemento.style.color = getRandomColor();
+        }
+        
+        function cambiaDimensione() {
+            const elemento = document.getElementById('elemento-inline-stile');
+            const size = Math.floor(Math.random() * 20) + 12;
+            elemento.style.fontSize = size + 'px';
+        }
+        
+        function cambiaBackground() {
+            const elemento = document.getElementById('elemento-inline-stile');
+            elemento.style.backgroundColor = getRandomColor();
+        }
+        
+        function cambiaBordo() {
+            const elemento = document.getElementById('elemento-inline-stile');
+            const width = Math.floor(Math.random() * 5) + 1;
+            elemento.style.border = width + 'px solid ' + getRandomColor();
+        }
+        
+        function resetStile() {
+            const elemento = document.getElementById('elemento-inline-stile');
+            elemento.style = '';
+        }
+        
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
+</body>
+</html>

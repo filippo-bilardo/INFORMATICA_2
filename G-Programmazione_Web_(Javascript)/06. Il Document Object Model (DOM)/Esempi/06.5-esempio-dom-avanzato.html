@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funzionalità DOM Avanzate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2c3e50;
+        }
+        .elemento-osservato {
+            height: 200px;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            transition: transform 0.5s, background-color 0.5s;
+        }
+        .visibile {
+            background-color: #d4edda;
+            transform: scale(1.05);
+        }
+        .box-animato {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+        .info-panel {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #17a2b8;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .spacer {
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Funzionalità DOM Avanzate</h1>
+        
+        <section id="intersection-observer">
+            <h2>IntersectionObserver API</h2>
+            <p>Scorri la pagina per vedere come gli elementi reagiscono quando diventano visibili.</p>
+            
+            <div class="spacer"></div>
+            
+            <div class="elemento-osservato" id="elemento1">
+                Elemento 1: Sarò visibile quando scorrerai
+            </div>
+            
+            <div class="elemento-osservato" id="elemento2">
+                Elemento 2: Anch'io cambierò quando diventerò visibile
+            </div>
+            
+            <div class="spacer"></div>
+            
+            <div class="elemento-osservato" id="elemento3">
+                Elemento 3: Osserva cosa succede quando mi vedi
+            </div>
+            
+            <div class="info-panel" id="intersection-info">
+                Elementi visibili: 0
+            </div>
+        </section>
+        
+        <section id="mutation-observer">
+            <h2>MutationObserver API</h2>
+            <p>Questa API permette di reagire ai cambiamenti nel DOM.</p>
+            
+            <div id="mutation-target">
+                <p>Questo è un testo che cambierà.</p>
+                <ul>
+                    <li>Elemento lista 1</li>
+                </ul>
+            </div>
+            
+            <button id="add-element">Aggiungi elemento</button>
+            <button id="change-attr">Cambia attributo</button>
+            <button id="remove-element">Rimuovi elemento</button>
+            
+            <div class="info-panel" id="mutation-log">
+                Log delle modifiche: <br>
+            </div>
+        </section>
+        
+        <section id="templates">
+            <h2>HTML Templates</h2>
+            <p>I template HTML permettono di definire frammenti di codice riutilizzabili.</p>
+            
+            <template id="card-template">
+                <div class="card">
+                    <h3 class="card-title">Titolo predefinito</h3>
+                    <p class="card-content">Contenuto predefinito</p>
+                    <button class="card-button">Azione</button>
+                </div>
+            </template>
+            
+            <button id="create-from-template">Crea elemento da template</button>
+            
+            <div id="template-container"></div>
+        </section>
+    </div>
+
+    <script>
+        // IntersectionObserver API
+        document.addEventListener('DOMContentLoaded', () => {
+            // Contatore degli elementi visibili
+            let elementiVisibili = 0;
+            const infoPanel = document.getElementById('intersection-info');
+            
+            // Crea l'observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // L'elemento è visibile nel viewport
+                        entry.target.classList.add('visibile');
+                        elementiVisibili++;
+                        infoPanel.textContent = `Elementi visibili: ${elementiVisibili}`;
+                    } else {
+                        // L'elemento non è più visibile
+                        if (entry.target.classList.contains('visibile')) {
+                            entry.target.classList.remove('visibile');
+                            elementiVisibili--;
+                            infoPanel.textContent = `Elementi visibili: ${elementiVisibili}`;
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.5 // L'elemento è considerato visibile quando è visibile al 50%
+            });
+            
+            // Osserva tutti gli elementi con classe 'elemento-osservato'
+            document.querySelectorAll('.elemento-osservato').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // MutationObserver API
+            const mutationTarget = document.getElementById('mutation-target');
+            const mutationLog = document.getElementById('mutation-log');
+            
+            // Funzione per aggiungere un log
+            function addMutationLog(message) {
+                const logEntry = document.createElement('div');
+                logEntry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+                mutationLog.appendChild(logEntry);
+            }
+            
+            // Crea l'observer
+            const mutationObserver = new MutationObserver((mutations) => {
+                mutations.forEach(mutation => {
+                    if (mutation.type === 'childList') {
+                        if (mutation.addedNodes.length > 0) {
+                            addMutationLog('Nodo aggiunto al DOM');
+                        }
+                        if (mutation.removedNodes.length > 0) {
+                            addMutationLog('Nodo rimosso dal DOM');
+                        }
+                    } else if (mutation.type === 'attributes') {
+                        addMutationLog(`Attributo "${mutation.attributeName}" modificato`);
+                    }
+                });
+            });
+            
+            // Inizia a osservare
+            mutationObserver.observe(mutationTarget, {
+                childList: true, // Osserva i cambiamenti ai figli
+                attributes: true, // Osserva i cambiamenti agli attributi
+                subtree: true, // Osserva tutti i discendenti
+                characterData: true // Osserva i cambiamenti al testo
+            });
+            
+            // Pulsanti per testare MutationObserver
+            document.getElementById('add-element').addEventListener('click', () => {
+                const newLi = document.createElement('li');
+                newLi.textContent = `Elemento lista ${mutationTarget.querySelectorAll('li').length + 1}`;
+                mutationTarget.querySelector('ul').appendChild(newLi);
+            });
+            
+            document.getElementById('change-attr').addEventListener('click', () => {
+                const paragraph = mutationTarget.querySelector('p');
+                if (paragraph.hasAttribute('data-modified')) {
+                    paragraph.removeAttribute('data-modified');
+                    paragraph.style.color = '';
+                } else {
+                    paragraph.setAttribute('data-modified', 'true');
+                    paragraph.style.color = 'blue';
+                }
+            });
+            
+            document.getElementById('remove-element').addEventListener('click', () => {
+                const list = mutationTarget.querySelector('ul');
+                const items = list.querySelectorAll('li');
+                if (items.length > 0) {
+                    list.removeChild(items[items.length - 1]);
+                }
+            });
+            
+            // HTML Templates
+            document.getElementById('create-from-template').addEventListener('click', () => {
+                const template = document.getElementById('card-template');
+                const container = document.getElementById('template-container');
+                
+                // Clona il template
+                const clone = template.content.cloneNode(true);
+                
+                // Modifica il clone
+                clone.querySelector('.card-title').textContent = 'Carta creata da template';
+                clone.querySelector('.card-content').textContent = `Generata alle ${new Date().toLocaleTimeString()}`;
+                
+                // Aggiungi un event listener al pulsante
+                const button = clone.querySelector('.card-button');
+                button.textContent = 'Elimina';
+                button.addEventListener('click', (e) => {
+                    e.target.closest('.card').remove();
+                });
+                
+                // Aggiungi stili alla card
+                const card = clone.querySelector('.card');
+                card.style.border = '1px solid #ddd';
+                card.style.padding = '15px';
+                card.style.margin = '10px 0';
+                card.style.borderRadius = '5px';
+                card.style.backgroundColor = '#f9f9f9';
+                
+                // Aggiungi il clone al DOM
+                container.appendChild(clone);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+w<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esempi base di funzioni JavaScript</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .esempio {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .output {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin-top: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+        }
+        h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+        input {
+            padding: 5px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Esempi base di funzioni JavaScript</h1>
+    <p>Questa pagina mostra esempi pratici di utilizzo delle funzioni JavaScript con il DOM.</p>
+
+    <div class="esempio">
+        <h3>1. Dichiarazione e invocazione di funzioni</h3>
+        <button onclick="saluta('Visitatore')">Saluta</button>
+        <button onclick="salutaPersonalizzato()">Saluta personalizzato</button>
+        <div class="output" id="output1"></div>
+        
+        <pre>
+function saluta(nome) {
+    document.getElementById('output1').innerHTML = 
+        'Ciao, ' + nome + '!';
+}
+
+function salutaPersonalizzato() {
+    const nome = prompt('Come ti chiami?', 'Visitatore');
+    saluta(nome);
+}
+        </pre>
+    </div>
+
+    <div class="esempio">
+        <h3>2. Parametri e valore di ritorno</h3>
+        <input type="number" id="num1" value="5" min="0"> +
+        <input type="number" id="num2" value="3" min="0">
+        <button onclick="calcolaEVisualizza()">Calcola</button>
+        <div class="output" id="output2"></div>
+        
+        <pre>
+function somma(a, b) {
+    return Number(a) + Number(b); // Convert to number
+}
+
+function calcolaEVisualizza() {
+    const n1 = document.getElementById('num1').value;
+    const n2 = document.getElementById('num2').value;
+    const risultato = somma(n1, n2);
+    
+    document.getElementById('output2').innerHTML = 
+        n1 + ' + ' + n2 + ' = ' + risultato;
+}
+        </pre>
+    </div>
+
+    <div class="esempio">
+        <h3>3. Funzioni come valori</h3>
+        <button onclick="applicaOperazione('somma')">Somma</button>
+        <button onclick="applicaOperazione('sottrazione')">Sottrazione</button>
+        <button onclick="applicaOperazione('moltiplicazione')">Moltiplicazione</button>
+        <div class="output" id="output3"></div>
+        
+        <pre>
+// Oggetto con funzioni come valori
+const operazioni = {
+    somma: (a, b) => a + b,
+    sottrazione: (a, b) => a - b,
+    moltiplicazione: (a, b) => a * b
+};
+
+function applicaOperazione(tipo) {
+    const a = 10;
+    const b = 5;
+    
+    // Seleziona la funzione dall'oggetto in base al tipo
+    const operazione = operazioni[tipo];
+    const risultato = operazione(a, b);
+    
+    document.getElementById('output3').innerHTML = 
+        `Risultato dell'operazione ${tipo}: ${risultato}`;
+}
+        </pre>
+    </div>
+
+    <div class="esempio">
+        <h3>4. Funzioni anonime e eventi</h3>
+        <button id="bottoneClick">Cliccami</button>
+        <button id="bottoneReset">Reset</button>
+        <div class="output" id="output4">Conteggio: 0</div>
+        
+        <pre>
+// Eseguito quando il documento è pronto
+document.addEventListener('DOMContentLoaded', function() {
+    let contatore = 0;
+    
+    document.getElementById('bottoneClick').addEventListener('click', function() {
+        contatore++;
+        document.getElementById('output4').innerHTML = 'Conteggio: ' + contatore;
+    });
+    
+    document.getElementById('bottoneReset').addEventListener('click', function() {
+        contatore = 0;
+        document.getElementById('output4').innerHTML = 'Conteggio: ' + contatore;
+    });
+});
+        </pre>
+    </div>
+
+    <div class="esempio">
+        <h3>5. Arrow functions</h3>
+        <div>
+            <input type="text" id="inputTesto" placeholder="Scrivi qualcosa">
+            <button id="bottoneUppercase">MAIUSCOLO</button>
+            <button id="bottoneLowercase">minuscolo</button>
+        </div>
+        <div class="output" id="output5"></div>
+        
+        <pre>
+document.addEventListener('DOMContentLoaded', () => {
+    // Arrow function per trasformare il testo
+    const trasformaTesto = (trasformazione) => {
+        const testo = document.getElementById('inputTesto').value;
+        
+        let risultato;
+        if (trasformazione === 'upper') {
+            risultato = testo.toUpperCase();
+        } else if (trasformazione === 'lower') {
+            risultato = testo.toLowerCase();
+        }
+        
+        document.getElementById('output5').innerHTML = risultato;
+    };
+    
+    document.getElementById('bottoneUppercase').addEventListener('click', 
+        () => trasformaTesto('upper'));
+    
+    document.getElementById('bottoneLowercase').addEventListener('click', 
+        () => trasformaTesto('lower'));
+});
+        </pre>
+    </div>
+
+    <script>
+        // Esempio 1
+        function saluta(nome) {
+            document.getElementById('output1').innerHTML = 'Ciao, ' + nome + '!';
+        }
+
+        function salutaPersonalizzato() {
+            const nome = prompt('Come ti chiami?', 'Visitatore');
+            saluta(nome);
+        }
+
+        // Esempio 2
+        function somma(a, b) {
+            return Number(a) + Number(b); // Convert to number
+        }
+
+        function calcolaEVisualizza() {
+            const n1 = document.getElementById('num1').value;
+            const n2 = document.getElementById('num2').value;
+            const risultato = somma(n1, n2);
+            
+            document.getElementById('output2').innerHTML = n1 + ' + ' + n2 + ' = ' + risultato;
+        }
+
+        // Esempio 3
+        const operazioni = {
+            somma: (a, b) => a + b,
+            sottrazione: (a, b) => a - b,
+            moltiplicazione: (a, b) => a * b
+        };
+
+        function applicaOperazione(tipo) {
+            const a = 10;
+            const b = 5;
+            
+            // Seleziona la funzione dall'oggetto in base al tipo
+            const operazione = operazioni[tipo];
+            const risultato = operazione(a, b);
+            
+            document.getElementById('output3').innerHTML = `Risultato dell'operazione ${tipo}: ${risultato}`;
+        }
+
+        // Esempio 4
+        document.addEventListener('DOMContentLoaded', function() {
+            let contatore = 0;
+            
+            document.getElementById('bottoneClick').addEventListener('click', function() {
+                contatore++;
+                document.getElementById('output4').innerHTML = 'Conteggio: ' + contatore;
+            });
+            
+            document.getElementById('bottoneReset').addEventListener('click', function() {
+                contatore = 0;
+                document.getElementById('output4').innerHTML = 'Conteggio: ' + contatore;
+            });
+
+            // Esempio 5
+            const trasformaTesto = (trasformazione) => {
+                const testo = document.getElementById('inputTesto').value;
+                
+                let risultato;
+                if (trasformazione === 'upper') {
+                    risultato = testo.toUpperCase();
+                } else if (trasformazione === 'lower') {
+                    risultato = testo.toLowerCase();
+                }
+                
+                document.getElementById('output5').innerHTML = risultato;
+            };
+            
+            document.getElementById('bottoneUppercase').addEventListener('click', 
+                () => trasformaTesto('upper'));
+            
+            document.getElementById('bottoneLowercase').addEventListener('click', 
+                () => trasformaTesto('lower'));
+        });
+    </script>
+</body>
+</html>

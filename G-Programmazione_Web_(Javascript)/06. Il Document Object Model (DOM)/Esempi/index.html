@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indice Esempi DOM</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        .card p {
+            color: #555;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Esempi di Document Object Model (DOM)</h1>
+        <p>Questa pagina raccoglie tutti gli esempi relativi al capitolo sul Document Object Model.</p>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>6.1 - Introduzione al DOM</h3>
+                <p>Esempio che illustra i concetti base del DOM e come JavaScript può accedere alla struttura del documento HTML.</p>
+                <a href="06.1-esempio-dom.html" class="button">Visualizza Esempio</a>
+            </div>
+            
+            <div class="card">
+                <h3>6.2 - Selezione e Manipolazione</h3>
+                <p>Mostra come selezionare elementi del DOM con vari metodi e come manipolarli interattivamente.</p>
+                <a href="06.2-esempio-selezione-elementi.html" class="button">Visualizza Esempio</a>
+            </div>
+            
+            <div class="card">
+                <h3>6.3 - Eventi e Listener</h3>
+                <p>Esempio interattivo sulla gestione degli eventi e come utilizzare event listener in JavaScript.</p>
+                <a href="06.3-esempio-eventi.html" class="button">Visualizza Esempio</a>
+            </div>
+            
+            <div class="card">
+                <h3>6.4 - Modifica Dinamica</h3>
+                <p>Dimostra come modificare dinamicamente il contenuto HTML e la struttura della pagina.</p>
+                <a href="06.4-esempio-modifica-contenuti.html" class="button">Visualizza Esempio</a>
+            </div>
+            
+            <div class="card">
+                <h3>6.5 - DOM Avanzato</h3>
+                <p>Utilizza API moderne come IntersectionObserver, MutationObserver e HTML Templates per interazioni complesse.</p>
+                <a href="06.5-esempio-dom-avanzato.html" class="button">Visualizza Esempio</a>
+            </div>
+        </div>
+        
+        <footer>
+            <p><a href="../README.md">Torna all'indice del capitolo</a></p>
+        </footer>
+    </div>
+</body>
+</html>
