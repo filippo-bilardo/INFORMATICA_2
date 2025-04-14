@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Metodi Funzionali per Array - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        .output {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .card-body {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Metodi Funzionali per Array in JavaScript</h1>
+    <p>Questo esempio dimostra l'uso dei principali metodi funzionali per array in JavaScript.</p>
+    
+    <div class="container">
+        <h2>Array di Esempio</h2>
+        <p>Modifica l'array di esempio per testare i vari metodi funzionali:</p>
+        
+        <div class="form-group">
+            <label for="sampleArray">Array (formato JSON):</label>
+            <textarea id="sampleArray">[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</textarea>
+        </div>
+        
+        <button id="parseArrayBtn">Analizza Array</button>
+        <div id="parseOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>map()</h2>
+        <p>Crea un nuovo array applicando una funzione a ciascun elemento dell'array originale.</p>
+        
+        <div class="code-container">
+            <pre><code>const numeri = [1, 2, 3, 4, 5];
+const quadrati = numeri.map(numero => numero * numero);
+console.log(quadrati); // Output: [1, 4, 9, 16, 25]</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="mapFunction">Funzione map (usa 'x' come parametro):</label>
+            <textarea id="mapFunction">x => x * x</textarea>
+        </div>
+        
+        <button id="mapBtn">Applica map()</button>
+        <div id="mapOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>filter()</h2>
+        <p>Crea un nuovo array con tutti gli elementi che soddisfano una condizione.</p>
+        
+        <div class="code-container">
+            <pre><code>const numeri = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const pari = numeri.filter(numero => numero % 2 === 0);
+console.log(pari); // Output: [2, 4, 6, 8, 10]</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="filterFunction">Funzione filter (usa 'x' come parametro):</label>
+            <textarea id="filterFunction">x => x % 2 === 0</textarea>
+        </div>
+        
+        <button id="filterBtn">Applica filter()</button>
+        <div id="filterOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>reduce()</h2>
+        <p>Riduce l'array a un singolo valore applicando una funzione accumulatore.</p>
+        
+        <div class="code-container">
+            <pre><code>const numeri = [1, 2, 3, 4, 5];
+const somma = numeri.reduce((acc, numero) => acc + numero, 0);
+console.log(somma); // Output: 15</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="reduceFunction">Funzione reduce (usa 'acc' e 'x' come parametri):</label>
+            <textarea id="reduceFunction">(acc, x) => acc + x</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="initialValue">Valore iniziale:</label>
+            <textarea id="initialValue">0</textarea>
+        </div>
+        
+        <button id="reduceBtn">Applica reduce()</button>
+        <div id="reduceOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>find() e findIndex()</h2>
+        <p>find() restituisce il primo elemento che soddisfa una condizione, findIndex() restituisce il suo indice.</p>
+        
+        <div class="code-container">
+            <pre><code>const numeri = [5, 12, 8, 130, 44];
+const trovato = numeri.find(numero => numero > 10);
+console.log(trovato); // Output: 12
+
+const indice = numeri.findIndex(numero => numero > 10);
+console.log(indice); // Output: 1</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="findFunction">Funzione find/findIndex (usa 'x' come parametro):</label>
+            <textarea id="findFunction">x => x > 5</textarea>
+        </div>
+        
+        <button id="findBtn">Applica find()</button>
+        <button id="findIndexBtn">Applica findIndex()</button>
+        <div id="findOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>some() e every()</h2>
+        <p>some() verifica se almeno un elemento soddisfa una condizione, every() verifica se tutti gli elementi la soddisfano.</p>
+        
+        <div class="code-container">
+            <pre><code>const numeri = [1, 2, 3, 4, 5];
+const almeno = numeri.some(numero => numero > 3);
+console.log(almeno); // Output: true
+
+const tutti = numeri.every(numero => numero > 0);
+console.log(tutti); // Output: true</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="testFunction">Funzione test (usa 'x' come parametro):</label>
+            <textarea id="testFunction">x => x > 3</textarea>
+        </div>
+        
+        <button id="someBtn">Applica some()</button>
+        <button id="everyBtn">Applica every()</button>
+        <div id="testOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Concatenazione di Metodi</h2>
+        <p>I metodi funzionali possono essere concatenati per operazioni complesse:</p>
+        
+        <div class="code-container">
+            <pre><code>const numeri = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Filtra i numeri pari, eleva al quadrato e calcola la somma
+const risultato = numeri
+    .filter(n => n % 2 === 0)    // [2, 4, 6, 8, 10]
+    .map(n => n * n)             // [4, 16, 36, 64, 100]
+    .reduce((acc, n) => acc + n, 0); // 220
+
+console.log(risultato); // Output: 220</code></pre>
+        </div>
+        
+        <button id="chainBtn">Dimostra Concatenazione</button>
+        <div id="chainOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Applicazione Pratica: Gestione Prodotti</h2>
+        <p>Un esempio pratico di utilizzo dei metodi funzionali per gestire un catalogo prodotti:</p>
+        
+        <div class="form-group">
+            <label for="productsArray">Array di Prodotti (formato JSON):</label>
+            <textarea id="productsArray">[
+    {"id": 1, "nome": "Laptop", "prezzo": 1200, "categoria": "elettronica", "disponibile": true},
+    {"id": 2, "nome": "Smartphone", "prezzo": 800, "categoria": "elettronica", "disponibile": true},
+    {"id": 3, "nome": "Cuffie", "prezzo": 150, "categoria": "accessori", "disponibile": false},
+    {"id": 4, "nome": "Monitor", "prezzo": 350, "categoria": "elettronica", "disponibile": true},
+    {"id": 5, "nome": "Tastiera", "prezzo": 80, "categoria": "accessori", "disponibile": true},
+    {"id": 6, "nome": "Mouse", "prezzo": 40, "categoria": "accessori", "disponibile": true}
+]</textarea>
+        </div>
+        
+        <button id="filterProductsBtn">Filtra Prodotti Disponibili</button>
+        <button id="sortProductsBtn">Ordina per Prezzo</button>
+        <button id="groupProductsBtn">Raggruppa per Categoria</button>
+        <button id="calculateTotalBtn">Calcola Totale</button>
+        
+        <div id="productsOutput" class="output"></div>
+    </div>
+    
+    <div class="note">
+        <h3>Vantaggi della Programmazione Funzionale con Array</h3>
+        <ul>
+            <li><strong>Codice Dichiarativo</strong>: Descrive cosa fare, non come farlo</li>
+            <li><strong>Immutabilità</strong>: I metodi non modificano l'array originale</li>
+            <li><strong>Leggibilità</strong>: Codice più conciso e facile da comprendere</li>
+            <li><strong>Componibilità</strong>: I metodi possono essere concatenati per operazioni complesse</li>
+            <li><strong>Meno Errori</strong>: Riduce la necessità di variabili temporanee e cicli espliciti</li>
+        </ul>
+    </div>
+
+    <script>
+        // Funzione per analizzare l'array di input
+        function parseArray() {
+            const arrayInput = document.getElementById('sampleArray').value;
+            try {
+                const array = JSON.parse(arrayInput);
+                if (!Array.isArray(array)) {
+                    throw new Error('L\'input non è un array valido');
+                }
+                return array;
+            } catch (error) {
+                document.getElementById('parseOutput').textContent = `Errore: ${error.message}`;
+                return null;
+            }
+        }
+        
+        // Inizializzazione
+        document.getElementById('parseArrayBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (array) {
+                document.getElementById('parseOutput').textContent = `Array valido con ${array.length} elementi: ${JSON.stringify(array)}`;
+            }
+        });
+        
+        // map()
+        document.getElementById('mapBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (!array) return;
+            
+            try {
+                const mapFunctionText = document.getElementById('mapFunction').value;
+                const mapFunction = new Function('x', `return ${mapFunctionText}`);
+                
+                const result = array.map(x => mapFunction(x));
+                document.getElementById('mapOutput').textContent = 
+                    `Array originale: ${JSON.stringify(array)}\n` +
+                    `Risultato map(): ${JSON.stringify(result)}`;
+            } catch (error) {
+                document.getElementById('mapOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        // filter()
+        document.getElementById('filterBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (!array) return;
+            
+            try {
+                const filterFunctionText = document.getElementById('filterFunction').value;
+                const filterFunction = new Function('x', `return ${filterFunctionText}`);
+                
+                const result = array.filter(x => filterFunction(x));
+                document.getElementById('filterOutput').textContent = 
+                    `Array originale: ${JSON.stringify(array)}\n` +
+                    `Risultato filter(): ${JSON.stringify(result)}`;
+            } catch (error) {
+                document.getElementById('filterOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        // reduce()
+        document.getElementById('reduceBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (!array) return;
+            
+            try {
+                const reduceFunctionText = document.getElementById('reduceFunction').value;
+                const reduceFunction = new Function('acc', 'x', `return ${reduceFunctionText}`);
+                
+                const initialValueText = document.getElementById('initialValue').value;
+                let initialValue;
+                
+                try {
+                    initialValue = JSON.parse(initialValueText);
+                } catch (e) {
+                    // Se non è JSON valido, usa il testo come stringa
+                    initialValue = initialValueText;
+                }
+                
+                const result = array.reduce((acc, x) => reduceFunction(acc, x), initialValue);
+                document.getElementById('reduceOutput').textContent = 
+                    `Array originale: ${JSON.stringify(array)}\n` +
+                    `Valore iniziale: ${JSON.stringify(initialValue)}\n` +
+                    `Risultato reduce(): ${JSON.stringify(result)}`;
+            } catch (error) {
+                document.getElementById('reduceOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        // find() e findIndex()
+        document.getElementById('findBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (!array) return;
+            
+            try {
+                const findFunctionText = document.getElementById('findFunction').value;
+                const findFunction = new Function('x', `return ${findFunctionText}`);
+                
+                const result = array.find(x => findFunction(x));
+                document.getElementById('findOutput').textContent = 
+                    `Array originale: ${JSON.stringify(array)}\n` +
+                    `Risultato find(): ${JSON.stringify(result)}`;
+            } catch (error) {
+                document.getElementById('findOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        document.getElementById('findIndexBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (!array) return;
+            
+            try {
+                const findFunctionText = document.getElementById('findFunction').value;
+                const findFunction = new Function('x', `return ${findFunctionText}`);
+                
+                const result = array.findIndex(x => findFunction(x));
+                document.getElementById('findOutput').textContent = 
+                    `Array originale: ${JSON.stringify(array)}\n` +
+                    `Risultato findIndex(): ${result}`;
+            } catch (error) {
+                document.getElementById('findOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        // some() e every()
+        document.getElementById('someBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (!array) return;
+            
+            try {
+                const testFunctionText = document.getElementById('testFunction').value;
+                const testFunction = new Function('x', `return ${testFunctionText}`);
+                
+                const result = array.some(x => testFunction(x));
+                document.getElementById('testOutput').textContent = 
+                    `Array originale: ${JSON.stringify(array)}\n` +
+                    `Risultato some(): ${result}`;
+            } catch (error) {
+                document.getElementById('testOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        document.getElementById('everyBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (!array) return;
+            
+            try {
+                const testFunctionText = document.getElementById('testFunction').value;
+                const testFunction = new Function('x', `return ${testFunctionText}`);
+                
+                const result = array.every(x => testFunction(x));
+                document.getElementById('testOutput').textContent = 
+                    `Array originale: ${JSON.stringify(array)}\n` +
+                    `Risultato every(): ${result}`;
+            } catch (error) {
+                document.getElementById('testOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        // Concatenazione di metodi
+        document.getElementById('chainBtn').addEventListener('click', function() {
+            const array = parseArray();
+            if (!array) return;
+            
+            try {
+                // Filtra i numeri pari, eleva al quadrato e calcola la somma
+                const result = array
+                    .filter(n => n % 2 === 0)    // Filtra i numeri pari
+                    .map(n => n * n)             // Eleva al quadrato
+                    .reduce((acc, n) => acc + n, 0); // Calcola la somma
+                
+                let output = `Array originale: ${JSON.stringify(array)}\n`;
+                output += `Numeri pari: ${JSON.stringify(array.filter(n => n % 2 === 0))}\n`;
+                output += `Quadrati dei pari: ${JSON.stringify(array.filter(n => n % 2 === 0).map(n => n * n))}\n`;
+                output += `Somma dei quadrati: ${result}`;
+                
+                document.getElementById('chainOutput').textContent = output;
+            } catch (error) {
+                document.getElementById('chainOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        // Gestione prodotti
+        function parseProducts() {
+            const productsInput = document.getElementById('productsArray').value;
+            try {
+                const products = JSON.parse(productsInput);
+                if (!Array.isArray(products)) {
+                    throw new Error('L\'input non è un array valido');
+                }
+                return products;
+            } catch (error) {
+                document.getElementById('productsOutput').textContent = `Errore: ${error.message}`;
+                return null;
+            }
+        }
+        
+        document.getElementById('filterProductsBtn').addEventListener('click', function() {
+            const products = parseProducts();
+            if (!products) return;
+            
+            try {
+                // Filtra i prodotti disponibili
+                const availableProducts = products.filter(product => product.disponibile);
+                
+                let output = `Prodotti disponibili (${availableProducts.length}/${products.length}):\n`;
+                output += JSON.stringify(availableProducts, null, 2);
+                
+                document.getElementById('productsOutput').textContent = output;
+            } catch (error) {
+                document.getElementById('productsOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        document.getElementById('sortProductsBtn').addEventListener('click', function() {
+            const products = parseProducts();
+            if (!products) return;
+            
+            try {
+                // Ordina i prodotti per prezzo (dal più economico al più costoso)
+                const sortedProducts = [...products].sort((a, b) => a.prezzo - b.prezzo);
+                
+                let output = `Prodotti ordinati per prezzo (crescente):\n`;
+                output += JSON.stringify(sortedProducts, null, 2);
+                
+                document.getElementById('productsOutput').textContent = output;
+            } catch (error) {
+                document.getElementById('productsOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        document.getElementById('groupProductsBtn').addEventListener('click', function() {
+            const products = parseProducts();
+            if (!products) return;
+            
+            try {
+                // Raggruppa i prodotti per categoria
+                const groupedProducts = products.reduce((acc, product) => {
+                    const categoria = product.categoria;
+                    if (!acc[categoria]) {
+                        acc[categoria] = [];
+                    }
+                    acc[categoria].push(product);
+                    return acc;
+                }, {});
+                
+                let output = `Prodotti raggruppati per categoria:\n`;
+                for (const categoria in groupedProducts) {
+                    output += `\n${categoria.toUpperCase()} (${groupedProducts[categoria].length} prodotti):\n`;
+                    output += JSON.stringify(groupedProducts[categoria], null, 2);
+                }
+                
+                document.getElementById('productsOutput').textContent = output;
+            } catch (error) {
+                document.getElementById('productsOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+        
+        document.getElementById('calculateTotalBtn').addEventListener('click', function() {
+            const products = parseProducts();
+            if (!products) return;
+            
+            try {
+                // Calcola il valore totale dei prodotti disponibili
+                const totalValue = products
+                    .filter(product => product.disponibile)
+                    .reduce((total, product) => total + product.prezzo, 0);
+                
+                // Calcola il prezzo medio
+                const averagePrice = totalValue / products.filter(product => product.disponibile).length;
+                
+                // Trova il prodotto più costoso
+                const mostExpensive = products.reduce((max, product) => 
+                    product.prezzo > max.prezzo ? product : max, products[0]);
+                
+                let output = `Analisi dei prodotti:\n`;
+                output += `\nValore totale dei prodotti disponibili: €${totalValue.toFixed(2)}\n`;
+                output += `Prezzo medio dei prodotti disponibili: €${averagePrice.toFixed(2)}\n`;
+                output += `Prodotto più costoso: ${mostExpensive.nome} (€${mostExpensive.prezzo.toFixed(2)})\n`;
+                
+                document.getElementById('productsOutput').textContent = output;
+            } catch (error) {
+                document.getElementById('productsOutput').textContent = `Errore: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

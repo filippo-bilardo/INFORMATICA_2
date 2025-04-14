@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript RegExp - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input, textarea {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .output {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .highlight {
+            background-color: #ffff99;
+            padding: 2px;
+        }
+        .valid {
+            color: green;
+            font-weight: bold;
+        }
+        .invalid {
+            color: red;
+            font-weight: bold;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Espressioni Regolari (RegExp) in JavaScript</h1>
+    <p>Questo esempio dimostra l'uso delle espressioni regolari per cercare, validare e manipolare stringhe.</p>
+    
+    <div class="container">
+        <h2>Ricerca di Pattern</h2>
+        <p>Inserisci un testo e un pattern da cercare:</p>
+        
+        <textarea id="searchText" rows="4" placeholder="Inserisci un testo...">JavaScript è un linguaggio di programmazione versatile. JS è ampiamente utilizzato nel web development.</textarea>
+        <input type="text" id="searchPattern" placeholder="Inserisci un pattern RegExp..." value="J[a-z]+">
+        
+        <div class="code-container">
+            <pre><code>// Ricerca di un pattern in una stringa
+const testo = "JavaScript è un linguaggio di programmazione versatile";
+const pattern = /J[a-z]+/g; // Trova parole che iniziano con J
+const risultati = testo.match(pattern);
+console.log(risultati); // ["JavaScript"]</code></pre>
+        </div>
+        
+        <button id="searchBtn">Cerca Pattern</button>
+        <div id="searchOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Sostituzione di Testo</h2>
+        <p>Sostituisci parti di testo usando le espressioni regolari:</p>
+        
+        <textarea id="replaceText" rows="4" placeholder="Inserisci un testo...">Il mio indirizzo email è esempio@dominio.com e il mio secondo email è altro@esempio.it</textarea>
+        <div class="code-container">
+            <pre><code>// Sostituzione usando RegExp
+const testo = "Il mio indirizzo email è esempio@dominio.com";
+const emailPattern = /[\w.-]+@[\w.-]+\.[a-z]{2,}/g;
+const testoAnonimizzato = testo.replace(emailPattern, "[EMAIL NASCOSTA]");
+console.log(testoAnonimizzato); // "Il mio indirizzo email è [EMAIL NASCOSTA]"</code></pre>
+        </div>
+        
+        <button id="replaceBtn">Nascondi Email</button>
+        <div id="replaceOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Validazione di Input</h2>
+        <p>Verifica se un input corrisponde a un formato specifico:</p>
+        
+        <input type="text" id="validateEmail" placeholder="Inserisci un'email..." value="utente@esempio.com">
+        <input type="text" id="validatePhone" placeholder="Inserisci un numero di telefono..." value="+39 123 456 7890">
+        
+        <div class="code-container">
+            <pre><code>// Validazione di un'email
+const emailPattern = /^[\w.-]+@[\w.-]+\.[a-z]{2,}$/i;
+const isValidEmail = emailPattern.test("utente@esempio.com");
+console.log(isValidEmail); // true
+
+// Validazione di un numero di telefono
+const phonePattern = /^\+?[0-9\s]{10,15}$/;
+const isValidPhone = phonePattern.test("+39 123 456 7890");
+console.log(isValidPhone); // true</code></pre>
+        </div>
+        
+        <button id="validateBtn">Valida Input</button>
+        <div id="validateOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Estrazione di Informazioni</h2>
+        <p>Estrai informazioni specifiche da un testo:</p>
+        
+        <textarea id="extractText" rows="4" placeholder="Inserisci un testo...">La temperatura oggi è di 25°C e l'umidità è al 60%. Ieri la temperatura era di 22°C.</textarea>
+        
+        <div class="code-container">
+            <pre><code>// Estrazione di numeri con unità di misura
+const testo = "La temperatura oggi è di 25°C e l'umidità è al 60%";
+const pattern = /(\d+)(°C|%)/g;
+let match;
+const valori = [];
+
+while ((match = pattern.exec(testo)) !== null) {
+    valori.push({
+        valore: match[1],
+        unità: match[2]
+    });
+}
+
+console.log(valori); // [{valore: "25", unità: "°C"}, {valore: "60", unità: "%"}]</code></pre>
+        </div>
+        
+        <button id="extractBtn">Estrai Dati</button>
+        <div id="extractOutput" class="output"></div>
+    </div>
+    
+    <div class="note">
+        <h3>Caratteri Speciali nelle RegExp</h3>
+        <ul>
+            <li><strong>.</strong> - Qualsiasi carattere tranne newline</li>
+            <li><strong>\w</strong> - Carattere alfanumerico (lettera, numero, underscore)</li>
+            <li><strong>\d</strong> - Cifra (0-9)</li>
+            <li><strong>\s</strong> - Spazio bianco (spazio, tab, newline)</li>
+            <li><strong>^</strong> - Inizio della stringa</li>
+            <li><strong>$</strong> - Fine della stringa</li>
+            <li><strong>*</strong> - 0 o più occorrenze</li>
+            <li><strong>+</strong> - 1 o più occorrenze</li>
+            <li><strong>?</strong> - 0 o 1 occorrenza</li>
+            <li><strong>{n}</strong> - Esattamente n occorrenze</li>
+            <li><strong>{n,}</strong> - Almeno n occorrenze</li>
+            <li><strong>{n,m}</strong> - Da n a m occorrenze</li>
+            <li><strong>[]</strong> - Insieme di caratteri</li>
+            <li><strong>|</strong> - Alternativa (OR)</li>
+            <li><strong>()</strong> - Gruppo di cattura</li>
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const text = document.getElementById('searchText').value;
+            const patternStr = document.getElementById('searchPattern').value;
+            const output = document.getElementById('searchOutput');
+            
+            try {
+                // Creare un pattern RegExp con flag global
+                const pattern = new RegExp(patternStr, 'g');
+                
+                // Trovare tutte le corrispondenze
+                const matches = text.match(pattern);
+                
+                // Evidenziare le corrispondenze nel testo
+                let highlightedText = text;
+                if (matches) {
+                    // Ordina le corrispondenze dalla più lunga alla più corta per evitare problemi di sostituzione
+                    const sortedMatches = [...matches].sort((a, b) => b.length - a.length);
+                    
+                    for (const match of sortedMatches) {
+                        const regex = new RegExp(match, 'g');
+                        highlightedText = highlightedText.replace(regex, `<span class="highlight">${match}</span>`);
+                    }
+                    
+                    output.innerHTML = `<p>Trovate ${matches.length} corrispondenze: ${matches.join(', ')}</p>`;
+                    output.innerHTML += `<p>Testo con evidenziazioni:</p><div>${highlightedText}</div>`;
+                } else {
+                    output.innerHTML = "Nessuna corrispondenza trovata.";
+                }
+            } catch (error) {
+                output.innerHTML = `Errore nell'espressione regolare: ${error.message}`;
+            }
+        });
+        
+        document.getElementById('replaceBtn').addEventListener('click', function() {
+            const text = document.getElementById('replaceText').value;
+            const output = document.getElementById('replaceOutput');
+            
+            // Pattern per trovare indirizzi email
+            const emailPattern = /[\w.-]+@[\w.-]+\.[a-z]{2,}/gi;
+            
+            // Sostituire le email con [EMAIL NASCOSTA]
+            const anonymizedText = text.replace(emailPattern, '[EMAIL NASCOSTA]');
+            
+            output.innerHTML = `<p>Testo originale:</p><div>${text}</div>`;
+            output.innerHTML += `<p>Testo con email nascoste:</p><div>${anonymizedText}</div>`;
+        });
+        
+        document.getElementById('validateBtn').addEventListener('click', function() {
+            const email = document.getElementById('validateEmail').value;
+            const phone = document.getElementById('validatePhone').value;
+            const output = document.getElementById('validateOutput');
+            
+            // Pattern per validare email
+            const emailPattern = /^[\w.-]+@[\w.-]+\.[a-z]{2,}$/i;
+            const isValidEmail = emailPattern.test(email);
+            
+            // Pattern per validare numero di telefono
+            const phonePattern = /^\+?[0-9\s]{10,15}$/;
+            const isValidPhone = phonePattern.test(phone);
+            
+            output.innerHTML = `<p>Email: ${email} - <span class="${isValidEmail ? 'valid' : 'invalid'}">${isValidEmail ? 'Valida' : 'Non valida'}</span></p>`;
+            output.innerHTML += `<p>Telefono: ${phone} - <span class="${isValidPhone ? 'valid' : 'invalid'}">${isValidPhone ? 'Valido' : 'Non valido'}</span></p>`;
+        });
+        
+        document.getElementById('extractBtn').addEventListener('click', function() {
+            const text = document.getElementById('extractText').value;
+            const output = document.getElementById('extractOutput');
+            
+            // Pattern per estrarre numeri con unità di misura
+            const pattern = /(\d+)(°C|%)/g;
+            let match;
+            const values = [];
+            
+            // Trovare tutte le corrispondenze
+            while ((match = pattern.exec(text)) !== null) {
+                values.push({
+                    valore: match[1],
+                    unità: match[2]
+                });
+            }
+            
+            if (values.length > 0) {
+                let html = '<p>Valori estratti:</p><ul>';
+                for (const value of values) {
+                    html += `<li>${value.valore}${value.unità}</li>`;
+                }
+                html += '</ul>';
+                
+                output.innerHTML = html;
+            } else {
+                output.innerHTML = "Nessun valore trovato con il pattern specificato.";
+            }
+        });
+    </script>
+</body>
+</html>

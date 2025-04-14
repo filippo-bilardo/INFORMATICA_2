@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript JSON e Serializzazione - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        .output {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON e Serializzazione in JavaScript</h1>
+    <p>Questo esempio dimostra come lavorare con JSON per serializzare e deserializzare dati in JavaScript.</p>
+    
+    <div class="container">
+        <h2>Serializzazione di Oggetti JavaScript in JSON</h2>
+        <p>Converti un oggetto JavaScript in una stringa JSON:</p>
+        
+        <div class="code-container">
+            <pre><code>// Oggetto JavaScript
+const persona = {
+    nome: "Mario",
+    cognome: "Rossi",
+    età: 30,
+    indirizzo: {
+        via: "Via Roma 123",
+        città: "Milano",
+        cap: "20100"
+    },
+    hobbies: ["lettura", "calcio", "viaggi"]
+};
+
+// Conversione in JSON
+const personaJSON = JSON.stringify(persona);
+console.log(personaJSON);</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="jsonInput">Modifica l'oggetto JavaScript:</label>
+            <textarea id="jsonInput">{
+    "nome": "Mario",
+    "cognome": "Rossi",
+    "età": 30,
+    "indirizzo": {
+        "via": "Via Roma 123",
+        "città": "Milano",
+        "cap": "20100"
+    },
+    "hobbies": ["lettura", "calcio", "viaggi"]
+}</textarea>
+        </div>
+        
+        <button id="serializeBtn">Serializza in JSON</button>
+        <button id="formatBtn">Formatta JSON</button>
+        <div id="serializeOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Deserializzazione di JSON in Oggetti JavaScript</h2>
+        <p>Converti una stringa JSON in un oggetto JavaScript:</p>
+        
+        <div class="code-container">
+            <pre><code>// Stringa JSON
+const jsonString = '{"nome":"Mario","cognome":"Rossi","età":30}';
+
+// Conversione in oggetto JavaScript
+const persona = JSON.parse(jsonString);
+console.log(persona.nome); // "Mario"
+console.log(persona.età);  // 30</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="jsonStringInput">Inserisci una stringa JSON:</label>
+            <textarea id="jsonStringInput">{"nome":"Mario","cognome":"Rossi","età":30}</textarea>
+        </div>
+        
+        <button id="deserializeBtn">Deserializza da JSON</button>
+        <div id="deserializeOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Gestione di Date in JSON</h2>
+        <p>JSON non supporta nativamente le date, ma possiamo gestirle con metodi personalizzati:</p>
+        
+        <div class="code-container">
+            <pre><code>// Oggetto con data
+const evento = {
+    titolo: "Riunione",
+    data: new Date(2023, 5, 15, 10, 30),
+    partecipanti: ["Mario", "Luigi", "Giovanna"]
+};
+
+// Serializzazione con gestione date
+const eventoJSON = JSON.stringify(evento, (key, value) => {
+    if (value instanceof Date) {
+        return value.toISOString();
+    }
+    return value;
+});
+
+// Deserializzazione con gestione date
+const eventoObj = JSON.parse(eventoJSON, (key, value) => {
+    if (key === 'data' && typeof value === 'string') {
+        return new Date(value);
+    }
+    return value;
+});</code></pre>
+        </div>
+        
+        <button id="dateBtn">Dimostra Gestione Date</button>
+        <div id="dateOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Creazione di un Form Dinamico</h2>
+        <p>Crea un form dinamico basato su uno schema JSON:</p>
+        
+        <div class="code-container">
+            <pre><code>// Schema del form in JSON
+const formSchema = {
+    "titolo": "Registrazione Utente",
+    "campi": [
+        { "tipo": "text", "nome": "nome", "etichetta": "Nome" },
+        { "tipo": "text", "nome": "email", "etichetta": "Email" },
+        { "tipo": "password", "nome": "password", "etichetta": "Password" },
+        { "tipo": "select", "nome": "ruolo", "etichetta": "Ruolo", 
+          "opzioni": ["Utente", "Moderatore", "Amministratore"] }
+    ]
+};</code></pre>
+        </div>
+        
+        <button id="formBtn">Genera Form</button>
+        <div id="formContainer"></div>
+        <div id="formOutput" class="output"></div>
+    </div>
+    
+    <div class="note">
+        <h3>Note Importanti su JSON</h3>
+        <ul>
+            <li>JSON supporta solo stringhe con doppi apici (")
+            <li>JSON non supporta commenti</li>
+            <li>JSON non supporta funzioni, undefined, o riferimenti circolari</li>
+            <li>Le chiavi in JSON devono essere stringhe</li>
+            <li>JSON è un formato di scambio dati indipendente dal linguaggio</li>
+        </ul>
+    </div>
+
+    <script>
+        // Serializzazione
+        document.getElementById('serializeBtn').addEventListener('click', function() {
+            const output = document.getElementById('serializeOutput');
+            const jsonInput = document.getElementById('jsonInput').value;
+            
+            try {
+                // Parsificare l'input come oggetto JavaScript
+                const obj = JSON.parse(jsonInput);
+                
+                // Serializzare l'oggetto in JSON
+                const jsonString = JSON.stringify(obj);
+                
+                output.innerHTML = jsonString;
+                output.classList.remove('error');
+            } catch (error) {
+                output.innerHTML = `Errore: ${error.message}`;
+                output.classList.add('error');
+            }
+        });
+        
+        // Formattazione JSON
+        document.getElementById('formatBtn').addEventListener('click', function() {
+            const output = document.getElementById('serializeOutput');
+            const jsonInput = document.getElementById('jsonInput').value;
+            
+            try {
+                // Parsificare e riformattare il JSON
+                const obj = JSON.parse(jsonInput);
+                const formattedJson = JSON.stringify(obj, null, 4);
+                
+                // Aggiornare sia l'output che l'input
+                output.innerHTML = formattedJson;
+                document.getElementById('jsonInput').value = formattedJson;
+                output.classList.remove('error');
+            } catch (error) {
+                output.innerHTML = `Errore: ${error.message}`;
+                output.classList.add('error');
+            }
+        });
+        
+        // Deserializzazione
+        document.getElementById('deserializeBtn').addEventListener('click', function() {
+            const output = document.getElementById('deserializeOutput');
+            const jsonString = document.getElementById('jsonStringInput').value;
+            
+            try {
+                // Deserializzare la stringa JSON in un oggetto JavaScript
+                const obj = JSON.parse(jsonString);
+                
+                // Mostrare le proprietà dell'oggetto
+                let result = 'Oggetto JavaScript:\n';
+                for (const key in obj) {
+                    const value = typeof obj[key] === 'object' ? 
+                        JSON.stringify(obj[key]) : obj[key];
+                    result += `${key}: ${value}\n`;
+                }
+                
+                output.innerHTML = result;
+                output.classList.remove('error');
+            } catch (error) {
+                output.innerHTML = `Errore: ${error.message}`;
+                output.classList.add('error');
+            }
+        });
+        
+        // Gestione Date
+        document.getElementById('dateBtn').addEventListener('click', function() {
+            const output = document.getElementById('dateOutput');
+            
+            // Oggetto con data
+            const evento = {
+                titolo: "Riunione",
+                data: new Date(),
+                partecipanti: ["Mario", "Luigi", "Giovanna"]
+            };
+            
+            // Serializzazione standard (la data diventa una stringa)
+            const standardJSON = JSON.stringify(evento);
+            
+            // Serializzazione con gestione date personalizzata
+            const customJSON = JSON.stringify(evento, (key, value) => {
+                if (value instanceof Date) {
+                    return `__DATE__${value.toISOString()}`;
+                }
+                return value;
+            });
+            
+            // Deserializzazione con gestione date personalizzata
+            const eventoObj = JSON.parse(customJSON, (key, value) => {
+                if (typeof value === 'string' && value.startsWith('__DATE__')) {
+                    return new Date(value.substring(8));
+                }
+                return value;
+            });
+            
+            let result = 'Oggetto originale:\n';
+            result += `Titolo: ${evento.titolo}\n`;
+            result += `Data: ${evento.data} (${evento.data.toLocaleString()})\n`;
+            result += `Partecipanti: ${evento.partecipanti.join(', ')}\n\n`;
+            
+            result += 'JSON standard:\n';
+            result += `${standardJSON}\n\n`;
+            
+            result += 'JSON con gestione date personalizzata:\n';
+            result += `${customJSON}\n\n`;
+            
+            result += 'Oggetto dopo deserializzazione:\n';
+            result += `Titolo: ${eventoObj.titolo}\n`;
+            result += `Data: ${eventoObj.data} (${eventoObj.data.toLocaleString()})\n`;
+            result += `Partecipanti: ${eventoObj.partecipanti.join(', ')}\n`;
+            
+            output.innerHTML = result;
+        });
+        
+        // Form Dinamico
+        document.getElementById('formBtn').addEventListener('click', function() {
+            const formContainer = document.getElementById('formContainer');
+            const output = document.getElementById('formOutput');
+            
+            // Schema del form in JSON
+            const formSchema = {
+                "titolo": "Registrazione Utente",
+                "campi": [
+                    { "tipo": "text", "nome": "nome", "etichetta": "Nome" },
+                    { "tipo": "email", "nome": "email", "etichetta": "Email" },
+                    { "tipo": "password", "nome": "password", "etichetta": "Password" },
+                    { "tipo": "select", "nome": "ruolo", "etichetta": "Ruolo", 
+                      "opzioni": ["Utente", "Moderatore", "Amministratore"] }
+                ]
+            };
+            
+            // Generare il form HTML dal JSON
+            let formHtml = `<div class="container"><h3>${formSchema.titolo}</h3><form id="dynamicForm">`;
+            
+            for (const campo of formSchema.campi) {
+                formHtml += `<div class="form-group"><label for="${campo.nome}">${campo.etichetta}:</label>`;
+                
+                if (campo.tipo === 'select') {
+                    formHtml += `<select id="${campo.nome}" name="${campo.nome}">`;
+                    for (const opzione of campo.opzioni) {
+                        formHtml += `<option value="${opzione.toLowerCase()}">${opzione}</option>`;
+                    }
+                    formHtml += `</select>`;
+                } else {
+                    formHtml += `<input type="${campo.tipo}" id="${campo.nome}" name="${campo.nome}">`;
+                }
+                
+                formHtml += `</div>`;
+            }
+            
+            formHtml += `<button type="button" id="submitForm">Invia</button></form></div>`;
+            
+            formContainer.innerHTML = formHtml;
+            
+            // Gestire l'invio del form
+            document.getElementById('submitForm').addEventListener('click', function() {
+                const form = document.getElementById('dynamicForm');
+                const formData = {};
+                
+                // Raccogliere i dati dal form
+                for (const campo of formSchema.campi) {
+                    const element = document.getElementById(campo.nome);
+                    formData[campo.nome] = element.value;
+                }
+                
+                // Mostrare i dati come JSON
+                output.innerHTML = JSON.stringify(formData, null, 2);
+            });
+        });
+    </script>
+</body>
+</html>

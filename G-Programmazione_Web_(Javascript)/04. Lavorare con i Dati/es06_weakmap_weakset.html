@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript WeakMap e WeakSet - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>WeakMap e WeakSet in JavaScript</h1>
+    <p>Questo esempio dimostra l'uso di WeakMap e WeakSet, strutture dati che mantengono riferimenti "deboli" agli oggetti.</p>
+    
+    <div class="container">
+        <h2>WeakMap</h2>
+        <p>WeakMap è una collezione di coppie chiave-valore dove le chiavi devono essere oggetti e i riferimenti sono "deboli".</p>
+        
+        <div class="code-container">
+            <pre><code>// Creare un WeakMap
+const wm = new WeakMap();
+
+// Creare oggetti da usare come chiavi
+const obj1 = {};
+const obj2 = {};
+
+// Aggiungere elementi al WeakMap
+wm.set(obj1, 'Valore associato a obj1');
+wm.set(obj2, 'Valore associato a obj2');
+
+// Ottenere valori dal WeakMap
+console.log(wm.get(obj1)); // 'Valore associato a obj1'
+console.log(wm.has(obj1)); // true
+
+// Quando l'oggetto viene rimosso, il suo valore nel WeakMap può essere garbage-collected
+// obj1 = null; // In un contesto reale, quando non ci sono più riferimenti all'oggetto</code></pre>
+        </div>
+        
+        <button id="demoWeakMap">Dimostra WeakMap</button>
+        <div id="weakMapOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>WeakSet</h2>
+        <p>WeakSet è una collezione di oggetti unici dove i riferimenti sono "deboli".</p>
+        
+        <div class="code-container">
+            <pre><code>// Creare un WeakSet
+const ws = new WeakSet();
+
+// Creare oggetti da aggiungere al WeakSet
+const obj3 = {};
+const obj4 = {};
+
+// Aggiungere elementi al WeakSet
+ws.add(obj3);
+ws.add(obj4);
+ws.add(obj3); // Aggiungere lo stesso oggetto non ha effetto (set di valori unici)
+
+// Verificare la presenza di un oggetto
+console.log(ws.has(obj3)); // true
+
+// Rimuovere un oggetto
+ws.delete(obj4);
+console.log(ws.has(obj4)); // false</code></pre>
+        </div>
+        
+        <button id="demoWeakSet">Dimostra WeakSet</button>
+        <div id="weakSetOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Caso d'uso: Memorizzazione di dati privati</h2>
+        <p>WeakMap è utile per associare dati privati a oggetti DOM o altre istanze senza causare memory leak.</p>
+        
+        <div class="code-container">
+            <pre><code>// Utilizzo di WeakMap per memorizzare dati privati
+const privateData = new WeakMap();
+
+class User {
+    constructor(name, age) {
+        this.name = name; // pubblico
+        privateData.set(this, { age: age }); // privato
+    }
+    
+    getAge() {
+        return privateData.get(this).age;
+    }
+    
+    incrementAge() {
+        const data = privateData.get(this);
+        data.age++;
+    }
+}
+
+const user = new User('Mario', 30);
+console.log(user.name); // 'Mario' (pubblico)
+console.log(user.getAge()); // 30 (privato)
+user.incrementAge();
+console.log(user.getAge()); // 31</code></pre>
+        </div>
+        
+        <button id="demoPrivateData">Dimostra Dati Privati</button>
+        <div id="privateDataOutput" class="output"></div>
+    </div>
+    
+    <div class="note">
+        <p><strong>Nota:</strong> A differenza di Map e Set, WeakMap e WeakSet:</p>
+        <ul>
+            <li>Non sono iterabili (non hanno metodi come forEach, keys(), values())</li>
+            <li>Non hanno una proprietà size</li>
+            <li>Non possono essere svuotati con clear()</li>
+            <li>Permettono al garbage collector di rimuovere oggetti non più referenziati altrove</li>
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById('demoWeakMap').addEventListener('click', function() {
+            const output = document.getElementById('weakMapOutput');
+            output.innerHTML = '';
+            
+            // Creare un WeakMap
+            const wm = new WeakMap();
+            
+            // Creare oggetti da usare come chiavi
+            const obj1 = {};
+            const obj2 = {};
+            
+            // Aggiungere elementi al WeakMap
+            wm.set(obj1, 'Valore associato a obj1');
+            wm.set(obj2, 'Valore associato a obj2');
+            
+            // Dimostrare l'uso del WeakMap
+            output.innerHTML += `wm.get(obj1): ${wm.get(obj1)}<br>`;
+            output.innerHTML += `wm.has(obj1): ${wm.has(obj1)}<br>`;
+            output.innerHTML += `wm.has(obj2): ${wm.has(obj2)}<br>`;
+            
+            // Rimuovere un riferimento e verificare
+            output.innerHTML += `<br>Rimuovendo il riferimento a obj2...<br>`;
+            // In un contesto reale, quando l'oggetto non ha più riferimenti
+            // viene garbage-collected insieme al suo valore nel WeakMap
+            wm.delete(obj2);
+            output.innerHTML += `wm.has(obj2) dopo delete: ${wm.has(obj2)}<br>`;
+        });
+        
+        document.getElementById('demoWeakSet').addEventListener('click', function() {
+            const output = document.getElementById('weakSetOutput');
+            output.innerHTML = '';
+            
+            // Creare un WeakSet
+            const ws = new WeakSet();
+            
+            // Creare oggetti da aggiungere al WeakSet
+            const obj3 = {};
+            const obj4 = {};
+            
+            // Aggiungere elementi al WeakSet
+            ws.add(obj3);
+            ws.add(obj4);
+            ws.add(obj3); // Aggiungere lo stesso oggetto non ha effetto
+            
+            // Dimostrare l'uso del WeakSet
+            output.innerHTML += `ws.has(obj3): ${ws.has(obj3)}<br>`;
+            output.innerHTML += `ws.has(obj4): ${ws.has(obj4)}<br>`;
+            
+            // Rimuovere un oggetto
+            output.innerHTML += `<br>Rimuovendo obj4 dal WeakSet...<br>`;
+            ws.delete(obj4);
+            output.innerHTML += `ws.has(obj4) dopo delete: ${ws.has(obj4)}<br>`;
+        });
+        
+        document.getElementById('demoPrivateData').addEventListener('click', function() {
+            const output = document.getElementById('privateDataOutput');
+            output.innerHTML = '';
+            
+            // Utilizzo di WeakMap per memorizzare dati privati
+            const privateData = new WeakMap();
+            
+            class User {
+                constructor(name, age) {
+                    this.name = name; // pubblico
+                    privateData.set(this, { age: age }); // privato
+                }
+                
+                getAge() {
+                    return privateData.get(this).age;
+                }
+                
+                incrementAge() {
+                    const data = privateData.get(this);
+                    data.age++;
+                }
+            }
+            
+            const user = new User('Mario', 30);
+            output.innerHTML += `user.name (pubblico): ${user.name}<br>`;
+            output.innerHTML += `user.getAge() (privato): ${user.getAge()}<br>`;
+            
+            output.innerHTML += `<br>Incrementando l'età...<br>`;
+            user.incrementAge();
+            output.innerHTML += `user.getAge() dopo incremento: ${user.getAge()}<br>`;
+            
+            // Dimostrare che age non è accessibile direttamente
+            output.innerHTML += `<br>Tentativo di accesso diretto a age: ${user.age} (undefined)<br>`;
+        });
+    </script>
+</body>
+</html>

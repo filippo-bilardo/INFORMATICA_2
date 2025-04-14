@@ -21,6 +21,11 @@
 - [ES03 - Date](<es03_date.html>)
 - [ES04 - Map](<es04_map.html>)
 - [ES05 - Set](<es05_set.html>)
+- [ES06 - WeakMap e WeakSet](<es06_weakmap_weakset.html>)
+- [ES07 - RegExp](<es07_regexp.html>)
+- [ES08 - JSON e Serializzazione](<es08_json.html>)
+- [ES09 - Web Storage](<es09_web_storage.html>)
+- [ES10 - Metodi Funzionali per Array](<es10_metodi_funzionali_array.html>)
 - [ES99 - Ciclo forEach](<es99_foreach.html>)
 
 ### Approfondimenti Suggeriti

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Web Storage - Esempio Interattivo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input, textarea {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .output {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .task-item:hover {
+            background-color: #f9f9f9;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Web Storage in JavaScript</h1>
+    <p>Questo esempio dimostra come utilizzare localStorage e sessionStorage per memorizzare dati nel browser.</p>
+    
+    <div class="container">
+        <h2>localStorage vs sessionStorage</h2>
+        <p>Confronto tra le due modalità di archiviazione:</p>
+        
+        <table>
+            <tr>
+                <th>Caratteristica</th>
+                <th>localStorage</th>
+                <th>sessionStorage</th>
+            </tr>
+            <tr>
+                <td>Persistenza</td>
+                <td>Permanente fino a cancellazione esplicita</td>
+                <td>Dura solo per la sessione del browser</td>
+            </tr>
+            <tr>
+                <td>Ambito</td>
+                <td>Disponibile per tutte le finestre/tab dello stesso dominio</td>
+                <td>Limitato alla finestra/tab corrente</td>
+            </tr>
+            <tr>
+                <td>Capacità</td>
+                <td>~5-10 MB (varia per browser)</td>
+                <td>~5-10 MB (varia per browser)</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="container">
+        <h2>Operazioni Base con Web Storage</h2>
+        <p>Prova le operazioni fondamentali di lettura e scrittura:</p>
+        
+        <div class="code-container">
+            <pre><code>// Salvare un dato
+localStorage.setItem('chiave', 'valore');
+
+// Leggere un dato
+const valore = localStorage.getItem('chiave');
+
+// Rimuovere un dato
+localStorage.removeItem('chiave');
+
+// Cancellare tutti i dati
+localStorage.clear();</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="storageKey">Chiave:</label>
+            <input type="text" id="storageKey" placeholder="Inserisci una chiave...">
+        </div>
+        
+        <div class="form-group">
+            <label for="storageValue">Valore:</label>
+            <input type="text" id="storageValue" placeholder="Inserisci un valore...">
+        </div>
+        
+        <div class="form-group">
+            <label>Tipo di Storage:</label>
+            <label><input type="radio" name="storageType" value="local" checked> localStorage</label>
+            <label><input type="radio" name="storageType" value="session"> sessionStorage</label>
+        </div>
+        
+        <button id="saveBtn">Salva</button>
+        <button id="loadBtn">Carica</button>
+        <button id="removeBtn">Rimuovi</button>
+        <button id="clearBtn">Cancella Tutto</button>
+        
+        <div id="basicOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Memorizzazione di Oggetti</h2>
+        <p>Web Storage memorizza solo stringhe, ma possiamo usare JSON per salvare oggetti complessi:</p>
+        
+        <div class="code-container">
+            <pre><code>// Salvare un oggetto
+const utente = { nome: 'Mario', età: 30, ruolo: 'admin' };
+localStorage.setItem('utente', JSON.stringify(utente));
+
+// Recuperare un oggetto
+const utenteRecuperato = JSON.parse(localStorage.getItem('utente'));
+console.log(utenteRecuperato.nome); // 'Mario'</code></pre>
+        </div>
+        
+        <div class="form-group">
+            <label for="objectData">Oggetto JSON:</label>
+            <textarea id="objectData" placeholder="Inserisci un oggetto JSON...">{
+    "nome": "Mario",
+    "età": 30,
+    "ruolo": "admin",
+    "preferenze": {
+        "tema": "scuro",
+        "notifiche": true
+    }
+}</textarea>
+        </div>
+        
+        <button id="saveObjectBtn">Salva Oggetto</button>
+        <button id="loadObjectBtn">Carica Oggetto</button>
+        
+        <div id="objectOutput" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Applicazione Pratica: Lista delle Attività</h2>
+        <p>Un esempio di applicazione che utilizza localStorage per salvare una lista di attività:</p>
+        
+        <div class="form-group">
+            <label for="taskInput">Nuova Attività:</label>
+            <input type="text" id="taskInput" placeholder="Inserisci un'attività...">
+            <button id="addTaskBtn">Aggiungi</button>
+        </div>
+        
+        <div id="taskList"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Monitoraggio dello Spazio Utilizzato</h2>
+        <p>Verifica quanto spazio stai utilizzando nel Web Storage:</p>
+        
+        <button id="checkStorageBtn">Controlla Spazio</button>
+        <div id="storageOutput" class="output"></div>
+    </div>
+    
+    <div class="warning">
+        <h3>Limitazioni del Web Storage</h3>
+        <ul>
+            <li>Capacità limitata (generalmente 5-10 MB per dominio)</li>
+            <li>Memorizza solo stringhe (necessario serializzare oggetti complessi)</li>
+            <li>Operazioni sincrone (può influire sulle prestazioni)</li>
+            <li>Nessun supporto per indici o query complesse</li>
+            <li>Accessibile solo da JavaScript (non inviato automaticamente al server)</li>
+        </ul>
+    </div>
+
+    <script>
+        // Funzioni di utilità
+        function getSelectedStorage() {
+            return document.querySelector('input[name="storageType"]:checked').value === 'local' ? 
+                localStorage : sessionStorage;
+        }
+        
+        function updateOutput(outputId, message) {
+            document.getElementById(outputId).textContent = message;
+        }
+        
+        // Operazioni base
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            const key = document.getElementById('storageKey').value;
+            const value = document.getElementById('storageValue').value;
+            
+            if (!key) {
+                updateOutput('basicOutput', 'Errore: Inserisci una chiave');
+                return;
+            }
+            
+            const storage = getSelectedStorage();
+            storage.setItem(key, value);
+            updateOutput('basicOutput', `Salvato "${value}" con chiave "${key}" in ${storage === localStorage ? 'localStorage' : 'sessionStorage'}`);
+        });
+        
+        document.getElementById('loadBtn').addEventListener('click', function() {
+            const key = document.getElementById('storageKey').value;
+            
+            if (!key) {
+                updateOutput('basicOutput', 'Errore: Inserisci una chiave');
+                return;
+            }
+            
+            const storage = getSelectedStorage();
+            const value = storage.getItem(key);
+            
+            if (value === null) {
+                updateOutput('basicOutput', `Nessun valore trovato per la chiave "${key}"`);
+            } else {
+                updateOutput('basicOutput', `Valore per "${key}": "${value}"`);
+            }
+        });
+        
+        document.getElementById('removeBtn').addEventListener('click', function() {
+            const key = document.getElementById('storageKey').value;
+            
+            if (!key) {
+                updateOutput('basicOutput', 'Errore: Inserisci una chiave');
+                return;
+            }
+            
+            const storage = getSelectedStorage();
+            storage.removeItem(key);
+            updateOutput('basicOutput', `Rimossa la chiave "${key}"`);
+        });
+        
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            if (confirm('Sei sicuro di voler cancellare tutti i dati?')) {
+                const storage = getSelectedStorage();
+                storage.clear();
+                updateOutput('basicOutput', `Tutti i dati sono stati cancellati da ${storage === localStorage ? 'localStorage' : 'sessionStorage'}`);
+            }
+        });
+        
+        // Memorizzazione di oggetti
+        document.getElementById('saveObjectBtn').addEventListener('click', function() {
+            const jsonData = document.getElementById('objectData').value;
+            
+            try {
+                const obj = JSON.parse(jsonData);
+                localStorage.setItem('savedObject', JSON.stringify(obj));
+                updateOutput('objectOutput', 'Oggetto salvato con successo in localStorage');
+            } catch (error) {
+                updateOutput('objectOutput', `Errore: ${error.message}`);
+            }
+        });
+        
+        document.getElementById('loadObjectBtn').addEventListener('click', function() {
+            const savedObject = localStorage.getItem('savedObject');
+            
+            if (savedObject === null) {
+                updateOutput('objectOutput', 'Nessun oggetto trovato in localStorage');
+            } else {
+                try {
+                    const obj = JSON.parse(savedObject);
+                    document.getElementById('objectData').value = JSON.stringify(obj, null, 4);
+                    updateOutput('objectOutput', 'Oggetto caricato con successo');
+                } catch (error) {
+                    updateOutput('objectOutput', `Errore: ${error.message}`);
+                }
+            }
+        });
+        
+        // Lista delle attività
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            
+            const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<p>Nessuna attività. Aggiungi la tua prima attività!</p>';
+                return;
+            }
+            
+            for (let i = 0; i < tasks.length; i++) {
+                const task = tasks[i];
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item';
+                
+                const taskText = document.createElement('span');
+                taskText.textContent = task.text;
+                if (task.completed) {
+                    taskText.classList.add('completed');
+                }
+                
+                taskText.addEventListener('click', function() {
+                    tasks[i].completed = !tasks[i].completed;
+                    localStorage.setItem('tasks', JSON.stringify(tasks));
+                    renderTasks();
+                });
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Elimina';
+                deleteBtn.addEventListener('click', function() {
+                    tasks.splice(i, 1);
+                    localStorage.setItem('tasks', JSON.stringify(tasks));
+                    renderTasks();
+                });
+                
+                taskItem.appendChild(taskText);
+                taskItem.appendChild(deleteBtn);
+                taskList.appendChild(taskItem);
+            }
+        }
+        
+        document.getElementById('addTaskBtn').addEventListener('click', function() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+            
+            if (taskText) {
+                const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                tasks.push({ text: taskText, completed: false });
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                
+                taskInput.value = '';
+                renderTasks();
+            }
+        });
+        
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('addTaskBtn').click();
+            }
+        });
+        
+        // Monitoraggio dello spazio
+        document.getElementById('checkStorageBtn').addEventListener('click', function() {
+            const output = document.getElementById('storageOutput');
+            
+            // Calcolare lo spazio utilizzato in localStorage
+            let localSize = 0;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                localSize += key.length + value.length;
+            }
+            
+            // Calcolare lo spazio utilizzato in sessionStorage
+            let sessionSize = 0;
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                const value = sessionStorage.getItem(key);
+                sessionSize += key.length + value.length;
+            }
+            
+            // Mostrare i risultati
+            output.innerHTML = `
+                <p><strong>localStorage:</strong> ${localSize} caratteri (circa ${(localSize / 1024).toFixed(2)} KB)</p>
+                <p><strong>sessionStorage:</strong> ${sessionSize} caratteri (circa ${(sessionSize / 1024).toFixed(2)} KB)</p>
+                <p><strong>Chiavi in localStorage (${localStorage.length}):</strong></p>
+                <ul>${Array.from({ length: localStorage.length }, (_, i) => 
+                    `<li>${localStorage.key(i)}</li>`).join('')}</ul>
+            `;
+        });
+        
+        // Inizializzare la lista delle attività
+        renderTasks();
+    </script>
+</body>
+</html>
