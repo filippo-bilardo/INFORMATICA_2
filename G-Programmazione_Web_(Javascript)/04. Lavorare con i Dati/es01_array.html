@@ -91,6 +91,31 @@
     </div>
     
     <div class="container">
+        <h2>Esempio Pratico: Lista della Spesa</h2>
+        <p>Questo esempio mostra come utilizzare gli array per gestire una lista della spesa interattiva.</p>
+        
+        <div class="code-container">
+            <p>// Esempio di array con oggetti complessi
+let listaSpesa = [
+  { nome: "Latte", quantità: 1, completato: false },
+  { nome: "Pane", quantità: 2, completato: false },
+  { nome: "Uova", quantità: 6, completato: false }
+];</p>
+        </div>
+        
+        <div>
+            <input type="text" id="item-name" placeholder="Nome prodotto">
+            <input type="number" id="item-quantity" placeholder="Quantità" min="1" value="1">
+            <button onclick="aggiungiProdotto()">Aggiungi alla lista</button>
+        </div>
+        
+        <div>
+            <h3>La tua lista della spesa:</h3>
+            <ul id="shopping-list" class="output" style="list-style-type: none; padding: 0;"></ul>
+        </div>
+    </div>
+    
+    <div class="container">
         <h2>Operazioni comuni sugli Array</h2>
         
         <div class="methods-grid">
@@ -151,6 +176,103 @@
         
         // Inizializza la visualizzazione
         updateArrayDisplay();
+        
+        // ESEMPIO PRATICO: Lista della spesa
+        // Array di oggetti per la lista della spesa
+        let listaSpesa = [
+            { nome: "Latte", quantità: 1, completato: false },
+            { nome: "Pane", quantità: 2, completato: false },
+            { nome: "Uova", quantità: 6, completato: false }
+        ];
+        
+        // Funzione per aggiornare la visualizzazione della lista della spesa
+        function aggiornaListaSpesa() {
+            const lista = document.getElementById('shopping-list');
+            lista.innerHTML = '';
+            
+            listaSpesa.forEach((prodotto, index) => {
+                const li = document.createElement('li');
+                li.style.padding = '8px';
+                li.style.margin = '4px 0';
+                li.style.backgroundColor = prodotto.completato ? '#e8f5e9' : '#fff';
+                li.style.borderRadius = '4px';
+                li.style.border = '1px solid #ddd';
+                li.style.display = 'flex';
+                li.style.justifyContent = 'space-between';
+                li.style.alignItems = 'center';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = prodotto.completato;
+                checkbox.onchange = function() {
+                    listaSpesa[index].completato = checkbox.checked;
+                    aggiornaListaSpesa();
+                };
+                
+                const span = document.createElement('span');
+                span.textContent = `${prodotto.nome} (${prodotto.quantità})`;
+                if (prodotto.completato) {
+                    span.style.textDecoration = 'line-through';
+                    span.style.color = '#7cb342';
+                }
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = '❌';
+                deleteBtn.style.background = 'none';
+                deleteBtn.style.border = 'none';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.style.color = '#e53935';
+                deleteBtn.onclick = function() {
+                    rimuoviProdotto(index);
+                };
+                
+                li.appendChild(checkbox);
+                li.appendChild(span);
+                li.appendChild(deleteBtn);
+                lista.appendChild(li);
+            });
+            
+            // Se la lista è vuota, mostra un messaggio
+            if (listaSpesa.length === 0) {
+                const emptyMsg = document.createElement('p');
+                emptyMsg.textContent = 'La tua lista della spesa è vuota!';
+                emptyMsg.style.fontStyle = 'italic';
+                emptyMsg.style.color = '#757575';
+                lista.appendChild(emptyMsg);
+            }
+        }
+        
+        // Funzione per aggiungere un prodotto alla lista
+        function aggiungiProdotto() {
+            const nome = document.getElementById('item-name').value.trim();
+            const quantità = parseInt(document.getElementById('item-quantity').value);
+            
+            if (nome && quantità > 0) {
+                // Utilizziamo push() per aggiungere un elemento all'array
+                listaSpesa.push({
+                    nome: nome,
+                    quantità: quantità,
+                    completato: false
+                });
+                
+                // Resettiamo i campi di input
+                document.getElementById('item-name').value = '';
+                document.getElementById('item-quantity').value = '1';
+                
+                // Aggiorniamo la visualizzazione
+                aggiornaListaSpesa();
+            }
+        }
+        
+        // Funzione per rimuovere un prodotto dalla lista
+        function rimuoviProdotto(index) {
+            // Utilizziamo splice() per rimuovere un elemento dall'array
+            listaSpesa.splice(index, 1);
+            aggiornaListaSpesa();
+        }
+        
+        // Inizializza la visualizzazione della lista della spesa
+        aggiornaListaSpesa();
         
         // Funzione per aggiungere un elemento all'array
         function addItem() {

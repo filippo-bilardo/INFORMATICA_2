@@ -104,6 +104,64 @@
     </div>
     
     <div class="container">
+        <h2>Esempio Pratico: Catalogo Prodotti</h2>
+        <p>Questo esempio mostra come utilizzare gli oggetti per gestire un catalogo prodotti con diverse categorie.</p>
+        
+        <div class="code-container">
+            <p>// Esempio di oggetto complesso con metodi
+let catalogo = {
+  elettronica: [],
+  abbigliamento: [],
+  alimentari: [],
+  aggiungiProdotto: function(categoria, prodotto) {
+    if (this[categoria]) {
+      this[categoria].push(prodotto);
+      return true;
+    }
+    return false;
+  },
+  trovaPerPrezzo: function(prezzoMax) {
+    let risultati = [];
+    for (let cat in this) {
+      if (Array.isArray(this[cat])) {
+        risultati = risultati.concat(
+          this[cat].filter(p => p.prezzo <= prezzoMax)
+        );
+      }
+    }
+    return risultati;
+  }
+};</p>
+        </div>
+        
+        <div>
+            <h3>Aggiungi un prodotto al catalogo:</h3>
+            <div class="property-form">
+                <select id="product-category">
+                    <option value="elettronica">Elettronica</option>
+                    <option value="abbigliamento">Abbigliamento</option>
+                    <option value="alimentari">Alimentari</option>
+                </select>
+                <input type="text" id="product-name" placeholder="Nome prodotto">
+                <input type="number" id="product-price" placeholder="Prezzo" min="0" step="0.01">
+                <button onclick="aggiungiAlCatalogo()">Aggiungi</button>
+            </div>
+            
+            <div>
+                <h3>Filtra per prezzo massimo:</h3>
+                <input type="number" id="max-price" placeholder="Prezzo massimo" min="0" step="0.01">
+                <button onclick="filtraPerPrezzo()">Filtra</button>
+            </div>
+            
+            <h3>Catalogo prodotti:</h3>
+            <div id="catalog-display" class="output"></div>
+            
+            <h3>Risultati filtro:</h3>
+            <div id="filter-results" class="output"></div>
+        </div>
+    </div>
+    
+    <div class="container">
         <h2>Operazioni comuni sugli Oggetti</h2>
         
         <div class="methods-grid">
@@ -174,6 +232,43 @@ Persona.prototype.saluta = function() {
         <div id="prototype-result" class="output"></div>
     </div>
 
+    <div class="container">
+        <h2>Differenza tra Notazione Letterale e Classi</h2>
+        
+        <div class="code-container">
+            <p>// Notazione letterale (oggetto singolo)
+let persona = {
+  nome: "Mario",
+  cognome: "Rossi",
+  saluta: function() {
+    return "Ciao, sono " + this.nome;
+  }
+};
+
+// Classe (modello per creare più oggetti)
+class Persona {
+  constructor(nome, cognome) {
+    this.nome = nome;
+    this.cognome = cognome;
+  }
+  
+  saluta() {
+    return "Ciao, sono " + this.nome;
+  }
+}</p>
+        </div>
+        
+        <div class="methods-grid">
+            <button onclick="compareObjects()">Confronta Oggetti</button>
+            <button onclick="compareMemory()">Confronta Memoria</button>
+            <button onclick="compareInheritance()">Confronta Ereditarietà</button>
+            <button onclick="compareUsage()">Casi d'Uso</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="compare-result" class="output"></div>
+    </div>
+
     <script>
         // Oggetto iniziale
         let persona = {
@@ -191,6 +286,111 @@ Persona.prototype.saluta = function() {
         
         // Inizializza la visualizzazione
         updateObjectDisplay();
+        
+        // ESEMPIO PRATICO: Catalogo Prodotti
+        // Oggetto catalogo con metodi
+        let catalogo = {
+            elettronica: [],
+            abbigliamento: [],
+            alimentari: [],
+            aggiungiProdotto: function(categoria, prodotto) {
+                if (this[categoria]) {
+                    this[categoria].push(prodotto);
+                    return true;
+                }
+                return false;
+            },
+            trovaPerPrezzo: function(prezzoMax) {
+                let risultati = [];
+                for (let cat in this) {
+                    if (Array.isArray(this[cat])) {
+                        risultati = risultati.concat(
+                            this[cat].filter(p => p.prezzo <= prezzoMax)
+                        );
+                    }
+                }
+                return risultati;
+            }
+        };
+        
+        // Aggiungiamo alcuni prodotti di esempio
+        catalogo.aggiungiProdotto('elettronica', { nome: 'Smartphone', prezzo: 299.99, disponibile: true });
+        catalogo.aggiungiProdotto('elettronica', { nome: 'Laptop', prezzo: 899.99, disponibile: true });
+        catalogo.aggiungiProdotto('abbigliamento', { nome: 'Jeans', prezzo: 49.99, disponibile: true });
+        catalogo.aggiungiProdotto('alimentari', { nome: 'Pasta', prezzo: 1.99, disponibile: true });
+        
+        // Funzione per aggiornare la visualizzazione del catalogo
+        function aggiornaCatalogo() {
+            const catalogoEl = document.getElementById('catalog-display');
+            let html = '';
+            
+            // Utilizziamo Object.keys() per iterare sulle proprietà dell'oggetto
+            Object.keys(catalogo).forEach(categoria => {
+                // Verifichiamo che la proprietà sia un array (escludiamo i metodi)
+                if (Array.isArray(catalogo[categoria])) {
+                    if (catalogo[categoria].length > 0) {
+                        html += `<strong>${categoria.charAt(0).toUpperCase() + categoria.slice(1)}:</strong><br>`;
+                        catalogo[categoria].forEach(prodotto => {
+                            html += `- ${prodotto.nome}: €${prodotto.prezzo.toFixed(2)} `;
+                            html += prodotto.disponibile ? '✅' : '❌';
+                            html += '<br>';
+                        });
+                        html += '<br>';
+                    }
+                }
+            });
+            
+            catalogoEl.innerHTML = html || 'Nessun prodotto nel catalogo';
+        }
+        
+        // Funzione per aggiungere un prodotto al catalogo
+        function aggiungiAlCatalogo() {
+            const categoria = document.getElementById('product-category').value;
+            const nome = document.getElementById('product-name').value.trim();
+            const prezzo = parseFloat(document.getElementById('product-price').value);
+            
+            if (nome && !isNaN(prezzo) && prezzo >= 0) {
+                // Utilizziamo il metodo dell'oggetto per aggiungere il prodotto
+                catalogo.aggiungiProdotto(categoria, {
+                    nome: nome,
+                    prezzo: prezzo,
+                    disponibile: true
+                });
+                
+                // Resettiamo i campi di input
+                document.getElementById('product-name').value = '';
+                document.getElementById('product-price').value = '';
+                
+                // Aggiorniamo la visualizzazione
+                aggiornaCatalogo();
+            }
+        }
+        
+        // Funzione per filtrare i prodotti per prezzo
+        function filtraPerPrezzo() {
+            const prezzoMax = parseFloat(document.getElementById('max-price').value);
+            
+            if (!isNaN(prezzoMax) && prezzoMax >= 0) {
+                // Utilizziamo il metodo dell'oggetto per filtrare i prodotti
+                const risultati = catalogo.trovaPerPrezzo(prezzoMax);
+                
+                // Visualizziamo i risultati
+                const risultatiEl = document.getElementById('filter-results');
+                
+                if (risultati.length > 0) {
+                    let html = `<p>Prodotti con prezzo fino a €${prezzoMax.toFixed(2)}:</p>`;
+                    risultati.forEach(prodotto => {
+                        html += `- ${prodotto.nome}: €${prodotto.prezzo.toFixed(2)}<br>`;
+                    });
+                    risultatiEl.innerHTML = html;
+                } else {
+                    risultatiEl.innerHTML = `Nessun prodotto trovato con prezzo fino a €${prezzoMax.toFixed(2)}`;
+                }
+            }
+        }
+        
+        // Inizializza la visualizzazione del catalogo
+        aggiornaCatalogo();
         
         // Funzione per aggiungere o modificare una proprietà
         function addProperty() {

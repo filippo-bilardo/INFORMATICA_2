@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add to Calendar with Form</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f5f7;
+    }
+
+    .calendar-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .calendar-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background-color: white;
+      color: #333;
+      border: 2px solid #1a73e8;
+      border-radius: 24px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      transition: background-color 0.2s;
+    }
+
+    .calendar-button:hover {
+      background-color: #f0f7ff;
+    }
+
+    .calendar-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: 250px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f5f5f7;
+    }
+
+    .calendar-icon {
+      margin-right: 12px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .date-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #ff4949;
+      color: white;
+      padding: 2px;
+      border-radius: 4px;
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .date-month {
+      font-size: 8px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .date-day {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .google-calendar-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .show {
+      display: block;
+    }
+
+    /* Event form styles */
+    .event-form-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      display: none;
+    }
+
+    .event-form {
+      background-color: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .form-cancel {
+      padding: 10px 16px;
+      background-color: #f5f5f7;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .form-submit {
+      padding: 10px 16px;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .form-cancel:hover {
+      background-color: #e5e5e7;
+    }
+
+    .form-submit:hover {
+      background-color: #1760c4;
+    }
+  </style>
+</head>
+<body>
+  <div class="calendar-container">
+    <button class="calendar-button" id="calendarButton">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+      Add to calendar
+    </button>
+    
+    <div class="calendar-dropdown" id="calendarDropdown">
+      <div class="dropdown-item" id="basicCalendarOption">
+        <div class="calendar-icon">
+          <div class="date-box">
+            <span class="date-month">Dec</span>
+            <span class="date-day">22</span>
+          </div>
+        </div>
+        <span>Add to calendar</span>
+      </div>
+      
+      <div class="dropdown-item" id="googleCalendarOption">
+        <div class="calendar-icon google-calendar-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <path d="M21.5,2h-19C1.673,2,1,2.673,1,3.5v17C1,21.327,1.673,22,2.5,22h19c0.827,0,1.5-0.673,1.5-1.5v-17C23,2.673,22.327,2,21.5,2z" fill="#fff"/>
+            <path d="M21.5,3c0.276,0,0.5,0.224,0.5,0.5v17c0,0.276-0.224,0.5-0.5,0.5h-19C2.224,21,2,20.776,2,20.5v-17C2,3.224,2.224,3,2.5,3H21.5 M21.5,2h-19C1.673,2,1,2.673,1,3.5v17C1,21.327,1.673,22,2.5,22h19c0.827,0,1.5-0.673,1.5-1.5v-17C23,2.673,22.327,2,21.5,2L21.5,2z" fill="#E6E6E6"/>
+            <path d="M6,3v2h12V3H6z M10,17.5c0,0,0-0.5,0-1h4c0,0.5,0,1,0,1H10z M15.5,14h-7C7.673,14,7,13.327,7,12.5v-5C7,6.673,7.673,6,8.5,6h7c0.827,0,1.5,0.673,1.5,1.5v5C17,13.327,16.327,14,15.5,14z" fill="#4285F4"/>
+            <g>
+              <rect x="5" y="10" width="2" height="2" fill="#FBBC05"/>
+              <rect x="5" y="7" width="2" height="2" fill="#EA4335"/>
+              <rect x="5" y="13" width="2" height="2" fill="#34A853"/>
+              <rect x="5" y="16" width="2" height="2" fill="#4285F4"/>
+              <rect x="17" y="10" width="2" height="2" fill="#FBBC05"/>
+              <rect x="17" y="7" width="2" height="2" fill="#EA4335"/>
+              <rect x="17" y="13" width="2" height="2" fill="#34A853"/>
+              <rect x="17" y="16" width="2" height="2" fill="#4285F4"/>
+            </g>
+          </svg>
+        </div>
+        <span>Add to Google Calendar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Form Modal -->
+  <div class="event-form-container" id="eventFormContainer">
+    <div class="event-form">
+      <div class="form-title">Event Details</div>
+      <form id="eventDetailsForm">
+        <div class="form-group">
+          <label for="eventTitle">Event Title</label>
+          <input type="text" id="eventTitle" name="eventTitle" value="Olimpiadi invernali Milano-Cortina 2026: Come massimizzare le opportunità!" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eventDate">Date</label>
+            <input type="date" id="eventDate" name="eventDate" value="2025-04-17" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="eventStartTime">Start Time</label>
+            <input type="time" id="eventStartTime" name="eventStartTime" value="09:00" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="eventEndTime">End Time</label>
+            <input type="time" id="eventEndTime" name="eventEndTime" value="10:00" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="eventLocation">Location</label>
+          <input type="text" id="eventLocation" name="eventLocation" value="virtual">
+        </div>
+        
+        <div class="form-group">
+          <label for="eventDescription">Description / URL</label>
+          <textarea id="eventDescription" name="eventDescription">https://webapp.spotme.com/login/booking/olimpiadi-invernali-milano-cortina-2026</textarea>
+        </div>
+        
+        <div class="form-buttons">
+          <button type="button" class="form-cancel" id="cancelEventForm">Cancel</button>
+          <button type="submit" class="form-submit">Add to Calendar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const calendarButton = document.getElementById('calendarButton');
+    const calendarDropdown = document.getElementById('calendarDropdown');
+    const basicCalendarOption = document.getElementById('basicCalendarOption');
+    const googleCalendarOption = document.getElementById('googleCalendarOption');
+    const eventFormContainer = document.getElementById('eventFormContainer');
+    const cancelEventForm = document.getElementById('cancelEventForm');
+    const eventDetailsForm = document.getElementById('eventDetailsForm');
+    
+    // Toggle dropdown when button is clicked
+    calendarButton.addEventListener('click', function() {
+      calendarDropdown.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    window.addEventListener('click', function(event) {
+      if (!event.target.closest('.calendar-container')) {
+        calendarDropdown.classList.remove('show');
+      }
+    });
+
+    // Show event form when Google Calendar option is clicked
+    googleCalendarOption.addEventListener('click', function() {
+      calendarDropdown.classList.remove('show');
+      eventFormContainer.style.display = 'flex';
+    });
+
+    // Basic calendar option
+    basicCalendarOption.addEventListener('click', function() {
+      calendarDropdown.classList.remove('show');
+      eventFormContainer.style.display = 'flex';
+    });
+
+    // Close form when cancel button is clicked
+    cancelEventForm.addEventListener('click', function() {
+      eventFormContainer.style.display = 'none';
+    });
+
+    // Form submission handling
+    eventDetailsForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form values
+      const title = encodeURIComponent(document.getElementById('eventTitle').value);
+      const eventDate = document.getElementById('eventDate').value;
+      const startTime = document.getElementById('eventStartTime').value;
+      const endTime = document.getElementById('eventEndTime').value;
+      const location = encodeURIComponent(document.getElementById('eventLocation').value);
+      const description = encodeURIComponent(document.getElementById('eventDescription').value);
+      
+      // Format dates for Google Calendar (YYYYMMDDTHHMMSSZ)
+      const startDateTime = formatDateForGoogleCalendar(eventDate, startTime);
+      const endDateTime = formatDateForGoogleCalendar(eventDate, endTime);
+      
+      // Generate unique ID for the event
+      const uid = generateUID();
+      
+      // Construct Google Calendar URL
+      const googleCalendarUrl = `https://calendar.google.com/calendar/u/0/r/eventedit?pli=1&sf=true&output=xml&text=${title}&dates=${startDateTime}/${endDateTime}&details=${description}&uid=${uid}&location=${location}#thispage_6`;
+      
+      // Open the URL in a new tab
+      window.open(googleCalendarUrl, '_blank');
+      
+      // Close the form
+      eventFormContainer.style.display = 'none';
+    });
+
+    // Helper function to format date for Google Calendar
+    function formatDateForGoogleCalendar(date, time) {
+      // Remove hyphens from date
+      const formattedDate = date.replace(/-/g, '');
+      
+      // Remove colons from time and add seconds
+      const formattedTime = time.replace(/:/g, '') + '00';
+      
+      // Combine date and time with 'T' separator and 'Z' for UTC
+      return formattedDate + 'T' + formattedTime + 'Z';
+    }
+
+    // Helper function to generate a unique ID
+    function generateUID() {
+      return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+  </script>
+</body>
+</html>

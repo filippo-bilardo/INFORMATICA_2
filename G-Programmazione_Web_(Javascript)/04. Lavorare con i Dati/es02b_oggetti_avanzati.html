@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Oggetti Avanzati - Esempi Interattivi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .code-container {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px;
+            width: 150px;
+        }
+        .output {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 20px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .property-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .property-form input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Oggetti Avanzati - Esempi Interattivi</h1>
+    
+    <div class="container">
+        <h2>Proprietà Getter e Setter</h2>
+        <div class="code-container">
+            <p>const prodotto = {
+  _nome: "Smartphone",
+  _prezzo: 499.99,
+  
+  get nome() {
+    return this._nome;
+  },
+  
+  set nome(nuovoNome) {
+    if (nuovoNome.trim() === '') {
+      throw new Error('Il nome non può essere vuoto');
+    }
+    this._nome = nuovoNome;
+  },
+  
+  get prezzo() {
+    return this._prezzo;
+  },
+  
+  set prezzo(nuovoPrezzo) {
+    if (nuovoPrezzo < 0) {
+      throw new Error('Il prezzo non può essere negativo');
+    }
+    this._prezzo = nuovoPrezzo;
+  },
+  
+  get prezzoFormattato() {
+    return `€ ${this._prezzo.toFixed(2)}`;
+  }
+};</p>
+        </div>
+        
+        <div class="property-form">
+            <input type="text" id="product-name" placeholder="Nuovo nome">
+            <button onclick="setProductName()">Imposta Nome</button>
+        </div>
+        
+        <div class="property-form">
+            <input type="number" id="product-price" placeholder="Nuovo prezzo">
+            <button onclick="setProductPrice()">Imposta Prezzo</button>
+        </div>
+        
+        <button onclick="getFormattedPrice()">Mostra Prezzo Formattato</button>
+        
+        <p>Stato del prodotto:</p>
+        <div id="getter-setter-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Destrutturazione di Oggetti</h2>
+        <div class="code-container">
+            <p>const utente = {
+  id: 42,
+  nome: "Marco",
+  cognome: "Verdi",
+  indirizzo: {
+    via: "Via Roma 123",
+    città: "Milano",
+    cap: "20100"
+  },
+  contatti: {
+    email: "marco.verdi@example.com",
+    telefono: "123-456789"
+  }
+};</p>
+        </div>
+        
+        <div class="methods-grid">
+            <button onclick="basicDestructuring()">Destrutturazione Base</button>
+            <button onclick="renameVariables()">Rinomina Variabili</button>
+            <button onclick="defaultValues()">Valori Predefiniti</button>
+            <button onclick="nestedDestructuring()">Destrutturazione Annidata</button>
+            <button onclick="restOperator()">Rest Operator</button>
+            <button onclick="functionParameters()">Parametri Funzione</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="destructuring-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Oggetti come Mappe (Dizionari)</h2>
+        <div class="code-container">
+            <p>// Oggetto come mappa
+const dizionarioUtenti = {
+  "user123": { nome: "Alice", ruolo: "Admin" },
+  "user456": { nome: "Bob", ruolo: "Editor" },
+  "user789": { nome: "Carlo", ruolo: "Visitatore" }
+};</p>
+        </div>
+        
+        <div class="property-form">
+            <input type="text" id="user-key" placeholder="Chiave utente">
+            <button onclick="getUserByKey()">Trova Utente</button>
+        </div>
+        
+        <div class="property-form">
+            <input type="text" id="new-user-key" placeholder="Nuova chiave">
+            <input type="text" id="new-user-name" placeholder="Nome">
+            <input type="text" id="new-user-role" placeholder="Ruolo">
+            <button onclick="addUserToMap()">Aggiungi Utente</button>
+        </div>
+        
+        <button onclick="compareWithMap()">Confronta con Map</button>
+        
+        <p>Risultato:</p>
+        <div id="map-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Serializzazione e Deserializzazione</h2>
+        <div class="code-container">
+            <p>const persona = {
+  nome: "Anna",
+  età: 29,
+  hobbies: ["lettura", "nuoto"],
+  indirizzo: {
+    città: "Milano",
+    via: "Via Roma 123"
+  },
+  dataNascita: new Date(1994, 5, 15)
+};</p>
+        </div>
+        
+        <div class="methods-grid">
+            <button onclick="basicStringify()">JSON.stringify Base</button>
+            <button onclick="formattedStringify()">JSON Formattato</button>
+            <button onclick="filterProperties()">Filtra Proprietà</button>
+            <button onclick="customReplacer()">Replacer Personalizzato</button>
+            <button onclick="parseWithReviver()">Parse con Reviver</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="json-result" class="output"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Method Chaining (Concatenazione di Metodi)</h2>
+        <div class="code-container">
+            <p>class StringProcessor {
+  constructor(stringa) {
+    this.stringa = stringa;
+  }
+  
+  toUpperCase() {
+    this.stringa = this.stringa.toUpperCase();
+    return this;
+  }
+  
+  trim() {
+    this.stringa = this.stringa.trim();
+    return this;
+  }
+  
+  replace(searchValue, replaceValue) {
+    this.stringa = this.stringa.replace(searchValue, replaceValue);
+    return this;
+  }
+  
+  get() {
+    return this.stringa;
+  }
+}</p>
+        </div>
+        
+        <div class="property-form">
+            <input type="text" id="input-string" placeholder="Testo da elaborare" value="  hello world  ">
+        </div>
+        
+        <div class="methods-grid">
+            <button onclick="processString('trim')">Trim</button>
+            <button onclick="processString('uppercase')">Maiuscolo</button>
+            <button onclick="processString('replace')">Sostituisci 'world'</button>
+            <button onclick="processString('chain')">Concatena Tutto</button>
+        </div>
+        
+        <p>Risultato:</p>
+        <div id="chaining-result" class="output"></div>
+    </div>
+
+    <script>
+        // Getter e Setter
+        const prodotto = {
+            _nome: "Smartphone",
+            _prezzo: 499.99,
+            
+            get nome() {
+                return this._nome;
+            },
+            
+            set nome(nuovoNome) {
+                if (nuovoNome.trim() === '') {
+                    throw new Error('Il nome non può essere vuoto');
+                }
+                this._nome = nuovoNome;
+            },
+            
+            get prezzo() {
+                return this._prezzo;
+            },
+            
+            set prezzo(nuovoPrezzo) {
+                if (nuovoPrezzo < 0) {
+                    throw new Error('Il prezzo non può essere negativo');
+                }
+                this._prezzo = nuovoPrezzo;
+            },
+            
+            get prezzoFormattato() {
+                return `€ ${this._prezzo.toFixed(2)}`;
+            }
+        };
+        
+        function updateProductDisplay() {
+            document.getElementById('getter-setter-result').textContent = 
+                `Nome: ${prodotto.nome}\nPrezzo: ${prodotto.prezzo}\nPrezzo Formattato: ${prodotto.prezzoFormattato}`;
+        }
+        
+        function setProductName() {
+            const nameInput = document.getElementById('product-name').value;
+            try {
+                prodotto.nome = nameInput;
+                updateProductDisplay();
+            } catch (error) {
+                document.getElementById('getter-setter-result').textContent = `Errore: ${error.message}`;
+            }
+        }
+        
+        function setProductPrice() {
+            const priceInput = parseFloat(document.getElementById('product-price').value);
+            try {
+                prodotto.prezzo = priceInput;
+                updateProductDisplay();
+            } catch (error) {
+                document.getElementById('getter-setter-result').textContent = `Errore: ${error.message}`;
+            }
+        }
+        
+        function getFormattedPrice() {
+            document.getElementById('getter-setter-result').textContent = 
+                `Prezzo Formattato: ${prodotto.prezzoFormattato}`;
+        }
+        
+        // Inizializza la visualizzazione del prodotto
+        updateProductDisplay();
+        
+        // Destrutturazione
+        const utente = {
+            id: 42,
+            nome: "Marco",
+            cognome: "Verdi",
+            indirizzo: {
+                via: "Via Roma 123",
+                città: "Milano",
+                cap: "20100"
+            },
+            contatti: {
+                email: "marco.verdi@example.com",
+                telefono: "123-456789"
+            }
+        };
+        
+        function basicDestructuring() {
+            const { nome, cognome } = utente;
+            document.getElementById('destructuring-result').textContent = 
+                `Nome: ${nome}\nCognome: ${cognome}`;
+        }
+        
+        function renameVariables() {
+            const { nome: firstName, cognome: lastName } = utente;
+            document.getElementById('destructuring-result').textContent = 
+                `firstName: ${firstName}\nlastName: ${lastName}`;
+        }
+        
+        function defaultValues() {
+            const { nome, età = 30, professione = "Non specificata" } = utente;
+            document.getElementById('destructuring-result').textContent = 
+                `Nome: ${nome}\nEtà: ${età}\nProfessione: ${professione}`;
+        }
+        
+        function nestedDestructuring() {
+            const { indirizzo: { città, cap }, contatti: { email } } = utente;
+            document.getElementById('destructuring-result').textContent = 
+                `Città: ${città}\nCAP: ${cap}\nEmail: ${email}`;
+        }
+        
+        function restOperator() {
+            const { id, nome, ...rest } = utente;
+            document.getElementById('destructuring-result').textContent = 
+                `Proprietà estratte: id, nome\nRest: ${JSON.stringify(rest, null, 2)}`;
+        }
+        
+        function functionParameters() {
+            function mostraInfo({ nome, cognome, indirizzo: { città } }) {
+                return `${nome} ${cognome} vive a ${città}`;
+            }
+            
+            const info = mostraInfo(utente);
+            document.getElementById('destructuring-result').textContent = info;
+        }
+        
+        // Oggetti come Mappe
+        const dizionarioUtenti = {
+            "user123": { nome: "Alice", ruolo: "Admin" },
+            "user456": { nome: "Bob", ruolo: "Editor" },
+            "user789": { nome: "Carlo", ruolo: "Visitatore" }
+        };
+        
+        function getUserByKey() {
+            const key = document.getElementById('user-key').value;
+            const result = document.getElementById('map-result');
+            
+            if (key in dizionarioUtenti) {
+                result.textContent = JSON.stringify(dizionarioUtenti[key], null, 2);
+            } else {
+                result.textContent = "Utente non trovato";
+            }
+        }
+        
+        function addUserToMap() {
+            const key = document.getElementById('new-user-key').value;
+            const name = document.getElementById('new-user-name').value;
+            const role = document.getElementById('new-user-role').value;
+            
+            if (key && name && role) {
+                dizionarioUtenti[key] = { nome: name, ruolo: role };
+                document.getElementById('map-result').textContent = 
+                    `Utente aggiunto:\n${JSON.stringify(dizionarioUtenti, null, 2)}`;
+            } else {
+                document.getElementById('map-result').textContent = 
+                    "Inserisci tutti i campi richiesti";
+            }
+        }
+        
+        function compareWithMap() {
+            // Creare un Map equivalente
+            const utenteMap = new Map();
+            for (const key in dizionarioUtenti) {
+                utenteMap.set(key, dizionarioUtenti[key]);
+            }
+            
+            // Aggiungere un elemento con chiave non stringa
+            utenteMap.set(42, { nome: "Utente Speciale", ruolo: "VIP" });
+            
+            let output = "Oggetto come mappa:\n";
+            output += JSON.stringify(dizionarioUtenti, null, 2);
+            
+            output += "\n\nMap:\n";
+            output += "Dimensione: " + utenteMap.size + "\n";
+            output += "Contiene chiave 'user123': " + utenteMap.has("user123") + "\n";
+            output += "Contiene chiave numerica 42: " + utenteMap.has(42) + "\n";
+            output += "Valore per chiave 42: " + JSON.stringify(utenteMap.get(42));
+            
+            document.getElementById('map-result').textContent = output;
+        }
+        
+        // Serializzazione e Deserializzazione
+        const persona = {
+            nome: "Anna",
+            età: 29,
+            hobbies: ["lettura", "nuoto"],
+            indirizzo: {
+                città: "Milano",
+                via: "Via Roma 123"
+            },
+            dataNascita: new Date(1994, 5, 15)
+        };
+        
+        function basicStringify() {
+            const json = JSON.stringify(persona);
+            document.getElementById('json-result').textContent = json;
+        }
+        
+        function formattedStringify() {
+            const json = JSON.stringify(persona, null, 2);
+            document.getElementById('json-result').textContent = json;
+        }
+        
+        function filterProperties() {
+            const json = JSON.stringify(persona, ["nome", "età", "hobbies"], 2);
+            document.getElementById('json-result').textContent = json;
+        }
+        
+        function customReplacer() {
+            const replacer = (key, value) => {
+                // Trasforma l'età in una stringa descrittiva
+                if (key === "età") {
+                    return value + " anni";
+                }
+                // Formatta la data in modo leggibile
+                if (value instanceof Date) {
+                    return value.toLocaleDateString();
+                }
+                return value;
+            };
+            
+            const json = JSON.stringify(persona, replacer, 2);
+            document.getElementById('json-result').textContent = json;
+        }
+        
+        function parseWithReviver() {
+            // Prima serializziamo
+            const json = JSON.stringify(persona);
+            
+            // Poi deserializziamo con un reviver
+            const reviver = (key, value) => {
+                // Riconvertiamo la data da stringa a oggetto Date
+                if (key === "dataNascita" && typeof value === "string") {
+                    return new Date(value);
+                }
+                return value;
+            };
+            
+            const parsed = JSON.parse(json, reviver);
+            
+            let output = "Oggetto deserializzato:\n";
+            output += JSON.stringify(parsed, null, 2) + "\n\n";
+            
+            // Verifichiamo se dataNascita è un oggetto Date
+            output += "dataNascita è un oggetto Date: " + (parsed.dataNascita instanceof Date) + "\n";
+            if (parsed.dataNascita instanceof Date) {
+                output += "Anno di nascita: " + parsed.dataNascita.getFullYear();
+            }
+            
+            document.getElementById('json-result').textContent = output;
+        }
+        
+        // Method Chaining
+        class StringProcessor {
+            constructor(stringa) {
+                this.stringa = stringa;
+            }
+            
+            toUpperCase() {
+                this.stringa = this.stringa.toUpperCase();
+                return this;
+            }
+            
+            trim() {
+                this.stringa = this.stringa.trim();
+                return this;
+            }
+            
+            replace(searchValue, replaceValue) {
+                this.stringa = this.stringa.replace(searchValue, replaceValue);
+                return this;
+            }
+            
+            get() {
+                return this.stringa;
+            }
+        }
+        
+        function processString(operation) {
+            const inputString = document.getElementById('input-string').value;
+            const processor = new StringProcessor(inputString);
+            let result = "";
+            
+            switch(operation) {
+                case 'trim':
+                    result = processor.trim().get();
+                    break;
+                case 'uppercase':
+                    result = processor.toUpperCase().get();
+                    break;
+                case 'replace':
+                    result = processor.replace('world', 'JavaScript').get();
+                    break;
+                case 'chain':
+                    result = processor
+                        .trim()
+                        .toUpperCase()
+                        .replace('WORLD', 'JAVASCRIPT')
+                        .get();
+                    break;
+            }
+            
+            document.getElementById('chaining-result').textContent = 
+                `Originale: "${inputString}"\nRisultato: "${result}"`;
+        }
+    </script>
+</body>
+</html>
