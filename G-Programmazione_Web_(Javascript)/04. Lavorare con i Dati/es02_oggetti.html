@@ -137,7 +137,7 @@ let catalogo = {
         <div>
             <h3>Aggiungi un prodotto al catalogo:</h3>
             <div class="property-form">
-                <select id="product-category">
+                <select name="s1" title="prodotti" id="product-category">
                     <option value="elettronica">Elettronica</option>
                     <option value="abbigliamento">Abbigliamento</option>
                     <option value="alimentari">Alimentari</option>
@@ -569,14 +569,13 @@ class Persona {
             }
             
             Persona.prototype.saluta = function() {
-                return "Ciao, sono " + this.nome;;
+                return "Ciao, sono " + this.nome;
             };
             
             const persona1 = new Persona("Giovanni", 25);
             const saluto = persona1.saluta();
             
-            showResult('prototype-result', 
-                `persona1.saluta() = "${saluto}"`);
+            showResult('prototype-result', `persona1.saluta() = "${saluto}"`);
         }
         
         function showPrototypeChain() {
@@ -587,3 +586,283 @@ class Persona {
             
             Persona.prototype.saluta = function() {
                 return "Ciao, sono " + this.nome;
+            };
+            
+            const persona1 = new Persona("Giovanni", 25);
+            
+            let result = "Catena dei prototipi:\n";
+            result += "persona1.__proto__ === Persona.prototype: " + (persona1.__proto__ === Persona.prototype) + "\n";
+            result += "persona1.__proto__.__proto__ === Object.prototype: " + (persona1.__proto__.__proto__ === Object.prototype) + "\n";
+            
+            showResult('prototype-result', result);
+        }
+        
+        function classExample() {
+            class Persona {
+                constructor(nome, età) {
+                    this.nome = nome;
+                    this.età = età;
+                }
+                
+                saluta() {
+                    return "Ciao, sono " + this.nome;
+                }
+            }
+            
+            const persona1 = new Persona("Giovanni", 25);
+            const saluto = persona1.saluta();
+            
+            showResult('prototype-result', 
+                `class Persona {...}\n` +
+                `const persona1 = new Persona("Giovanni", 25);\n` +
+                `persona1.saluta() = "${saluto}"`);
+        }
+        
+        // Funzioni per confrontare notazione letterale e classi
+        function compareObjects() {
+            // Oggetto con notazione letterale
+            const personaLetterale = {
+                nome: "Mario",
+                cognome: "Rossi",
+                saluta: function() {
+                    return "Ciao, sono " + this.nome;
+                }
+            };
+            
+            // Classe
+            class Persona {
+                constructor(nome, cognome) {
+                    this.nome = nome;
+                    this.cognome = cognome;
+                }
+                
+                saluta() {
+                    return "Ciao, sono " + this.nome;
+                }
+            }
+            
+            const personaClasse = new Persona("Mario", "Rossi");
+            
+            let result = "Confronto tra oggetti:\n";
+            result += "Oggetto letterale: " + JSON.stringify(personaLetterale, (k, v) => typeof v === 'function' ? '[Function]' : v) + "\n";
+            result += "Istanza di classe: " + JSON.stringify(personaClasse, (k, v) => typeof v === 'function' ? '[Function]' : v) + "\n";
+            result += "\nEntrambi producono lo stesso risultato quando chiamiamo il metodo saluta():\n";
+            result += "personaLetterale.saluta(): " + personaLetterale.saluta() + "\n";
+            result += "personaClasse.saluta(): " + personaClasse.saluta();
+            
+            showResult('compare-result', result);
+        }
+        
+        function compareMemory() {
+            let result = "Efficienza della memoria:\n\n";
+            result += "Con la notazione letterale, ogni oggetto ha la propria copia dei metodi.\n";
+            result += "Con le classi, i metodi sono condivisi attraverso il prototipo, risparmiando memoria quando si creano molte istanze.";
+            
+            showResult('compare-result', result);
+        }
+        
+        function compareInheritance() {
+            // Ereditarietà con notazione letterale
+            const persona = {
+                saluta() { return "Ciao"; }
+            };
+            
+            const studente = Object.create(persona);
+            studente.studia = function() { return "Sto studiando"; };
+            
+            // Ereditarietà con classi
+            class Persona {
+                saluta() { return "Ciao"; }
+            }
+            
+            class Studente extends Persona {
+                studia() { return "Sto studiando"; }
+            }
+            
+            const studenteClasse = new Studente();
+            
+            let result = "Confronto ereditarietà:\n\n";
+            result += "Con notazione letterale (Object.create):\n";
+            result += "studente.saluta(): " + studente.saluta() + "\n";
+            result += "studente.studia(): " + studente.studia() + "\n\n";
+            
+            result += "Con classi (extends):\n";
+            result += "studenteClasse.saluta(): " + studenteClasse.saluta() + "\n";
+            result += "studenteClasse.studia(): " + studenteClasse.studia();
+            
+            showResult('compare-result', result);
+        }
+        
+        function compareUsage() {
+            let result = "Casi d'uso consigliati:\n\n";
+            result += "Usa la notazione letterale quando:\n";
+            result += "- Hai bisogno di un oggetto singolo\n";
+            result += "- Stai creando oggetti di configurazione\n";
+            result += "- Lavori con dati JSON\n\n";
+            
+            result += "Usa le classi quando:\n";
+            result += "- Devi creare più istanze con la stessa struttura\n";
+            result += "- Hai bisogno di ereditarietà\n";
+            result += "- Stai costruendo un'applicazione orientata agli oggetti";
+            
+            showResult('compare-result', result);
+        }
+        
+        // Funzione di utilità per mostrare i risultati
+        function showResult(elementId, text) {
+            document.getElementById(elementId).textContent = text;
+        }
+        
+        function usePrototype() {
+            function Persona(nome, età) {
+                this.nome = nome;
+                this.età = età;
+            }
+            
+            Persona.prototype.saluta = function() {
+                return "Ciao, sono " + this.nome;
+            };
+            
+            const persona1 = new Persona("Giovanni", 25);
+            const saluto = persona1.saluta();
+            
+            showResult('prototype-result', `persona1.saluta() = "${saluto}"`);
+        }
+        
+        function showPrototypeChain() {
+            function Persona(nome, età) {
+                this.nome = nome;
+                this.età = età;
+            }
+            
+            Persona.prototype.saluta = function() {
+                return "Ciao, sono " + this.nome;
+            };
+            
+            const persona1 = new Persona("Giovanni", 25);
+            
+            let result = "Catena dei prototipi:\n";
+            result += "persona1.__proto__ === Persona.prototype: " + (persona1.__proto__ === Persona.prototype) + "\n";
+            result += "persona1.__proto__.__proto__ === Object.prototype: " + (persona1.__proto__.__proto__ === Object.prototype) + "\n";
+            
+            showResult('prototype-result', result);
+        }
+        
+        function classExample() {
+            class Persona {
+                constructor(nome, età) {
+                    this.nome = nome;
+                    this.età = età;
+                }
+                
+                saluta() {
+                    return "Ciao, sono " + this.nome;
+                }
+            }
+            
+            const persona1 = new Persona("Giovanni", 25);
+            const saluto = persona1.saluta();
+            
+            showResult('prototype-result', 
+                `class Persona {...}\n` +
+                `const persona1 = new Persona("Giovanni", 25);\n` +
+                `persona1.saluta() = "${saluto}"`);
+        }
+        
+        // Funzioni per confrontare notazione letterale e classi
+        function compareObjects() {
+            // Oggetto con notazione letterale
+            const personaLetterale = {
+                nome: "Mario",
+                cognome: "Rossi",
+                saluta: function() {
+                    return "Ciao, sono " + this.nome;
+                }
+            };
+            
+            // Classe
+            class Persona {
+                constructor(nome, cognome) {
+                    this.nome = nome;
+                    this.cognome = cognome;
+                }
+                
+                saluta() {
+                    return "Ciao, sono " + this.nome;
+                }
+            }
+            
+            const personaClasse = new Persona("Mario", "Rossi");
+            
+            let result = "Confronto tra oggetti:\n";
+            result += "Oggetto letterale: " + JSON.stringify(personaLetterale, (k, v) => typeof v === 'function' ? '[Function]' : v) + "\n";
+            result += "Istanza di classe: " + JSON.stringify(personaClasse, (k, v) => typeof v === 'function' ? '[Function]' : v) + "\n";
+            result += "\nEntrambi producono lo stesso risultato quando chiamiamo il metodo saluta():\n";
+            result += "personaLetterale.saluta(): " + personaLetterale.saluta() + "\n";
+            result += "personaClasse.saluta(): " + personaClasse.saluta();
+            
+            showResult('compare-result', result);
+        }
+        
+        function compareMemory() {
+            let result = "Efficienza della memoria:\n\n";
+            result += "Con la notazione letterale, ogni oggetto ha la propria copia dei metodi.\n";
+            result += "Con le classi, i metodi sono condivisi attraverso il prototipo, risparmiando memoria quando si creano molte istanze.";
+            
+            showResult('compare-result', result);
+        }
+        
+        function compareInheritance() {
+            // Ereditarietà con notazione letterale
+            const persona = {
+                saluta() { return "Ciao"; }
+            };
+            
+            const studente = Object.create(persona);
+            studente.studia = function() { return "Sto studiando"; };
+            
+            // Ereditarietà con classi
+            class Persona {
+                saluta() { return "Ciao"; }
+            }
+            
+            class Studente extends Persona {
+                studia() { return "Sto studiando"; }
+            }
+            
+            const studenteClasse = new Studente();
+            
+            let result = "Confronto ereditarietà:\n\n";
+            result += "Con notazione letterale (Object.create):\n";
+            result += "studente.saluta(): " + studente.saluta() + "\n";
+            result += "studente.studia(): " + studente.studia() + "\n\n";
+            
+            result += "Con classi (extends):\n";
+            result += "studenteClasse.saluta(): " + studenteClasse.saluta() + "\n";
+            result += "studenteClasse.studia(): " + studenteClasse.studia();
+            
+            showResult('compare-result', result);
+        }
+        
+        function compareUsage() {
+            let result = "Casi d'uso consigliati:\n\n";
+            result += "Usa la notazione letterale quando:\n";
+            result += "- Hai bisogno di un oggetto singolo\n";
+            result += "- Stai creando oggetti di configurazione\n";
+            result += "- Lavori con dati JSON\n\n";
+            
+            result += "Usa le classi quando:\n";
+            result += "- Devi creare più istanze con la stessa struttura\n";
+            result += "- Hai bisogno di ereditarietà\n";
+            result += "- Stai costruendo un'applicazione orientata agli oggetti";
+            
+            showResult('compare-result', result);
+        }
+        
+        // Funzione di utilità per mostrare i risultati
+        function showResult(elementId, text) {
+            document.getElementById(elementId).textContent = text;
+        }
+    </script>
+</body>
+</html>
