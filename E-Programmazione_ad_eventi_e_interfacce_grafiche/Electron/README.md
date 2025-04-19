@@ -1,6 +1,6 @@
 # Corso completo su Electron e Node.js
 
-Crea un corso completo su Electron e Node.js per insegnare la programmazione visuale e ad eventi, strutturato in moduli di difficoltà progressiva. Il corso deve guidare gli studenti dalla comprensione dei concetti base fino alla realizzazione di progetti complessi. Ogni modulo deve includere:
+Corso completo su Electron e Node.js per imparare la programmazione visuale e ad eventi, strutturato in moduli di difficoltà progressiva. Il corso guida gli studenti dalla comprensione dei concetti base fino alla realizzazione di progetti complessi. Ogni modulo include:
 
 1. **Obiettivi di apprendimento** chiari e misurabili
 2. **Concetti teorici** con spiegazioni dettagliate e visualizzazioni 
