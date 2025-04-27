@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket con Autenticazione</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #login-container {
+            display: block;
+        }
+        #message-container {
+            display: none;
+        }
+        #messages {
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .system-message {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .user-message {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            text-align: right;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        #connection-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .connected {
+            background-color: #4CAF50;
+        }
+        .disconnected {
+            background-color: #f44336;
+        }
+        .authenticating {
+            background-color: #ffc107;
+        }
+        #message-form {
+            display: flex;
+        }
+        #message-input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        #user-info {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket con Autenticazione</h1>
+    
+    <div id="connection-status">
+        <div class="status-indicator disconnected" id="status-dot"></div>
+        <span id="status-text">Disconnesso</span>
+    </div>
+    
+    <div id="login-container" class="container">
+        <h2>Accedi</h2>
+        <div class="form-group">
+            <label for="username">Nome utente:</label>
+            <input type="text" id="username" placeholder="Inserisci il tuo nome utente">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Inserisci la tua password">
+        </div>
+        <button id="login-btn">Accedi</button>
+        <p id="login-error" style="color: red; display: none;"></p>
+    </div>
+    
+    <div id="message-container" class="container">
+        <div id="user-info">Connesso come: <span id="user-name"></span></div>
+        <div id="messages"></div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Scrivi un messaggio...">
+            <button type="submit">Invia</button>
+        </form>
+        <button id="logout-btn" style="margin-top: 10px;">Disconnetti</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementi DOM
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const loginContainer = document.getElementById('login-container');
+            const messageContainer = document.getElementById('message-container');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('login-btn');
+            const loginError = document.getElementById('login-error');
+            const userNameSpan = document.getElementById('user-name');
+            const messagesDiv = document.getElementById('messages');
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            const logoutBtn = document.getElementById('logout-btn');
+            
+            let ws;
+            let token = '';
+            let username = '';
+            let reconnectAttempts = 0;
+            const maxReconnectAttempts = 5;
+            const reconnectDelay = 3000; // 3 secondi
+            
+            // Funzione per connettersi al server WebSocket
+            function connectWebSocket() {
+                // Crea una nuova connessione WebSocket
+                ws = new WebSocket('ws://localhost:8084');
+                
+                // Gestione dell'apertura della connessione
+                ws.addEventListener('open', () => {
+                    console.log('Connessione WebSocket stabilita');
+                    updateConnectionStatus('authenticating');
+                    
+                    // Se abbiamo già un token, proviamo ad autenticarci automaticamente
+                    if (token) {
+                        sendAuthToken();
+                    }
+                });
+                
+                // Gestione dei messaggi ricevuti
+                ws.addEventListener('message', (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('Messaggio ricevuto:', data);
+                        
+                        handleServerMessage(data);
+                    } catch (error) {
+                        console.error('Errore nel parsing del messaggio:', error);
+                    }
+                });
+                
+                // Gestione degli errori
+                ws.addEventListener('error', (error) => {
+                    console.error('Errore WebSocket:', error);
+                    addMessage('Si è verificato un errore di connessione.', 'error');
+                });
+                
+                // Gestione della chiusura della connessione
+                ws.addEventListener('close', (event) => {
+                    console.log(`Connessione WebSocket chiusa: ${event.code} ${event.reason}`);
+                    updateConnectionStatus('disconnected');
+                    
+                    // Se eravamo autenticati, proviamo a riconnetterci
+                    if (token && reconnectAttempts < maxReconnectAttempts) {
+                        reconnectAttempts++;
+                        console.log(`Tentativo di riconnessione ${reconnectAttempts}/${maxReconnectAttempts} in ${reconnectDelay}ms...`);
+                        setTimeout(connectWebSocket, reconnectDelay);
+                        
+                        addMessage(`Tentativo di riconnessione ${reconnectAttempts}/${maxReconnectAttempts}...`, 'system');
+                    } else if (reconnectAttempts >= maxReconnectAttempts) {
+                        // Troppi tentativi, resettiamo lo stato
+                        token = '';
+                        username = '';
+                        showLoginForm();
+                        addMessage('Impossibile riconnettersi al server dopo multipli tentativi.', 'error');
+                    }
+                });
+            }
+            
+            // Funzione per gestire i messaggi dal server
+            function handleServerMessage(data) {
+                switch (data.type) {
+                    case 'auth_success':
+                        // Autenticazione riuscita
+                        token = data.token;
+                        username = data.username;
+                        reconnectAttempts = 0;
+                        updateConnectionStatus('connected');
+                        showMessageContainer();
+                        addMessage('Autenticazione riuscita!', 'system');
+                        break;
+                        
+                    case 'auth_error':
+                        // Errore di autenticazione
+                        token = '';
+                        updateConnectionStatus('disconnected');
+                        showLoginError(data.message);
+                        break;
+                        
+                    case 'message':
+                        // Messaggio ricevuto
+                        addMessage(data.message, data.sender === username ? 'user' : '');
+                        break;
+                        
+                    case 'system':
+                        // Messaggio di sistema
+                        addMessage(data.message, 'system');
+                        break;
+                }
+            }
+            
+            // Funzione per inviare il token di autenticazione
+            function sendAuthToken() {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'auth',
+                        token: token
+                    }));
+                }
+            }
+            
+            // Funzione per effettuare il login
+            function login(username, password) {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    updateConnectionStatus('authenticating');
+                    ws.send(JSON.stringify({
+                        type: 'login',
+                        username: username,
+                        password: password
+                    }));
+                } else {
+                    showLoginError('Impossibile connettersi al server.');
+                }
+            }
+            
+            // Funzione per effettuare il logout
+            function logout() {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'logout'
+                    }));
+                }
+                
+                // Resetta lo stato
+                token = '';
+                username = '';
+                reconnectAttempts = 0;
+                
+                // Mostra il form di login
+                showLoginForm();
+                
+                // Chiudi la connessione
+                if (ws) {
+                    ws.close();
+                }
+            }
+            
+            // Funzione per aggiungere un messaggio alla chat
+            function addMessage(message, type = '') {
+                const messageEl = document.createElement('div');
+                messageEl.className = `message ${type}-message`;
+                messageEl.textContent = message;
+                
+                messagesDiv.appendChild(messageEl);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+            
+            // Funzione per aggiornare lo stato della connessione nell'UI
+            function updateConnectionStatus(status) {
+                statusDot.className = 'status-indicator';
+                
+                switch (status) {
+                    case 'connected':
+                        statusDot.classList.add('connected');
+                        statusText.textContent = 'Connesso';
+                        break;
+                    case 'disconnected':
+                        statusDot.classList.add('disconnected');
+                        statusText.textContent = 'Disconnesso';
+                        break;
+                    case 'authenticating':
+                        statusDot.classList.add('authenticating');
+                        statusText.textContent = 'Autenticazione in corso...';
+                        break;
+                }
+            }
+            
+            // Funzione per mostrare il form di login
+            function showLoginForm() {
+                loginContainer.style.display = 'block';
+                messageContainer.style.display = 'none';
+                loginError.style.display = 'none';
+                usernameInput.value = '';
+                passwordInput.value = '';
+            }
+            
+            // Funzione per mostrare il container dei messaggi
+            function showMessageContainer() {
+                loginContainer.style.display = 'none';
+                messageContainer.style.display = 'block';
+                userNameSpan.textContent = username;
+                messagesDiv.innerHTML = ''; // Pulisci i messaggi precedenti
+            }
+            
+            // Funzione per mostrare un errore di login
+            function showLoginError(message) {
+                loginError.textContent = message;
+                loginError.style.display = 'block';
+            }
+            
+            // Gestione del click sul pulsante di login
+            loginBtn.addEventListener('click', () => {
+                const user = usernameInput.value.trim();
+                const pass = passwordInput.value.trim();
+                
+                if (user && pass) {
+                    login(user, pass);
+                } else {
+                    showLoginError('Inserisci nome utente e password.');
+                }
+            });
+            
+            // Gestione dell'invio del form dei messaggi
+            messageForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const message = messageInput.value.trim();
+                if (message && ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'message',
+                        message: message
+                    }));
+                    
+                    messageInput.value = '';
+                }
+            });
+            
+            // Gestione del click sul pulsante di logout
+            logoutBtn.addEventListener('click', logout);
+            
+            // Connetti al server WebSocket all'avvio
+            connectWebSocket();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selettore di Tema con Local Storage</title>
+    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --text-color: #333;
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --card-bg: #ffffff;
+            --header-bg: #ffffff;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #f5f5f5;
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --card-bg: #2c2c2c;
+            --header-bg: #2c2c2c;
+            --border-color: #444;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="sepia"] {
+            --bg-color: #f4ecd8;
+            --text-color: #5c4b37;
+            --primary-color: #8b7355;
+            --secondary-color: #a67b5b;
+            --accent-color: #c19a6b;
+            --card-bg: #f8f0dd;
+            --header-bg: #f8f0dd;
+            --border-color: #d3c6a6;
+            --shadow-color: rgba(92, 75, 55, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .theme-switcher {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .theme-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .theme-button.light {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .theme-button.dark {
+            background-color: #333;
+            color: #f5f5f5;
+            border: 1px solid #444;
+        }
+
+        .theme-button.sepia {
+            background-color: #f4ecd8;
+            color: #5c4b37;
+            border: 1px solid #d3c6a6;
+        }
+
+        .theme-button.active {
+            transform: scale(1.05);
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .card p {
+            margin-bottom: 0;
+        }
+
+        .font-size-controls {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .font-button {
+            padding: 5px 15px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .font-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        pre {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--text-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Selettore di Tema con Local Storage</h1>
+            <p>Questa pagina dimostra come utilizzare il localStorage per memorizzare le preferenze dell'utente riguardo al tema e alla dimensione del testo.</p>
+        </header>
+
+        <div class="card">
+            <h2>Seleziona un tema</h2>
+            <p>Scegli il tema che preferisci. La tua scelta verrà salvata nel localStorage e sarà ricordata la prossima volta che visiterai questa pagina.</p>
+            <div class="theme-switcher">
+                <button class="theme-button light" data-theme="light">Chiaro</button>
+                <button class="theme-button dark" data-theme="dark">Scuro</button>
+                <button class="theme-button sepia" data-theme="sepia">Seppia</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Dimensione del testo</h2>
+            <p>Puoi anche regolare la dimensione del testo. Anche questa preferenza verrà salvata nel localStorage.</p>
+            <div class="font-size-controls">
+                <button class="font-button" data-size="small">Piccolo</button>
+                <button class="font-button" data-size="medium">Medio</button>
+                <button class="font-button" data-size="large">Grande</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Come funziona</h2>
+            <p>Questa pagina utilizza il localStorage per memorizzare le preferenze dell'utente. Ecco il codice JavaScript che gestisce il salvataggio e il recupero delle preferenze:</p>
+            <pre><code>// Salva il tema selezionato nel localStorage
+function saveTheme(theme) {
+    localStorage.setItem('userTheme', theme);
+}
+
+// Recupera il tema dal localStorage
+function loadTheme() {
+    return localStorage.getItem('userTheme') || 'light';
+}
+
+// Applica il tema al documento
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    // Aggiorna anche l'interfaccia utente
+    updateThemeButtons(theme);
+}
+
+// All'avvio dell'applicazione
+const savedTheme = loadTheme();
+applyTheme(savedTheme);</code></pre>
+        </div>
+
+        <div class="card">
+            <h2>Vantaggi dell'utilizzo del localStorage per le preferenze utente</h2>
+            <p>L'utilizzo del localStorage per memorizzare le preferenze dell'utente offre diversi vantaggi:</p>
+            <ul>
+                <li>Migliora l'esperienza utente mantenendo le preferenze tra le sessioni</li>
+                <li>Riduce la necessità di richieste al server per le preferenze di base</li>
+                <li>Funziona anche offline</li>
+                <li>È facile da implementare e utilizzare</li>
+                <li>Non richiede autenticazione dell'utente</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Esercitazione 15: Local Storage - Esempio di selettore di tema</p>
+    </footer>
+
+    <script>
+        // Elementi DOM
+        const themeButtons = document.querySelectorAll('.theme-button');
+        const fontButtons = document.querySelectorAll('.font-button');
+        const bodyElement = document.body;
+
+        // Funzioni per gestire il tema
+        function saveTheme(theme) {
+            localStorage.setItem('userTheme', theme);
+        }
+
+        function loadTheme() {
+            return localStorage.getItem('userTheme') || 'light';
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeButtons(theme);
+        }
+
+        function updateThemeButtons(activeTheme) {
+            themeButtons.forEach(button => {
+                if (button.dataset.theme === activeTheme) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Funzioni per gestire la dimensione del testo
+        function saveFontSize(size) {
+            localStorage.setItem('userFontSize', size);
+        }
+
+        function loadFontSize() {
+            return localStorage.getItem('userFontSize') || 'medium';
+        }
+
+        function applyFontSize(size) {
+            let fontSize;
+            switch (size) {
+                case 'small':
+                    fontSize = '14px';
+                    break;
+                case 'medium':
+                    fontSize = '16px';
+                    break;
+                case 'large':
+                    fontSize = '18px';
+                    break;
+                default:
+                    fontSize = '16px';
+            }
+            bodyElement.style.fontSize = fontSize;
+            updateFontButtons(size);
+        }
+
+        function updateFontButtons(activeSize) {
+            fontButtons.forEach(button => {
+                if (button.dataset.size === activeSize) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Event listeners per i pulsanti del tema
+        themeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const theme = button.dataset.theme;
+                applyTheme(theme);
+                saveTheme(theme);
+            });
+        });
+
+        // Event listeners per i pulsanti della dimensione del testo
+        fontButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const size = button.dataset.size;
+                applyFontSize(size);
+                saveFontSize(size);
+            });
+        });
+
+        // Inizializzazione: carica le preferenze salvate
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carica e applica il tema
+            const savedTheme = loadTheme();
+            applyTheme(savedTheme);
+
+            // Carica e applica la dimensione del testo
+            const savedFontSize = loadFontSize();
+            applyFontSize(savedFontSize);
+
+            console.log('Preferenze caricate dal localStorage:', {
+                tema: savedTheme,
+                dimensioneTesto: savedFontSize
+            });
+        });
+    </script>
+</body>
+</html>

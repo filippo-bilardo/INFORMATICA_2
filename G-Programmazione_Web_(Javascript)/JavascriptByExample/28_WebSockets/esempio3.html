@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifiche in Tempo Reale con WebSockets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #notification-container {
+            margin-top: 20px;
+        }
+        .notification {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .info {
+            background-color: #e3f2fd;
+            border-left: 5px solid #2196F3;
+        }
+        .success {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4CAF50;
+        }
+        .warning {
+            background-color: #fff3e0;
+            border-left: 5px solid #FF9800;
+        }
+        .error {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .notification-time {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #999;
+        }
+        .close-btn:hover {
+            color: #333;
+        }
+        #control-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        #control-panel h2 {
+            margin-top: 0;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .info-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        .success-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .warning-btn {
+            background-color: #FF9800;
+            color: white;
+        }
+        .error-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        #connection-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .connected {
+            background-color: #4CAF50;
+        }
+        .disconnected {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>Notifiche in Tempo Reale con WebSockets</h1>
+    
+    <div id="connection-status">
+        <div class="status-indicator disconnected" id="status-dot"></div>
+        <span id="status-text">Disconnesso</span>
+    </div>
+    
+    <div id="notification-container">
+        <!-- Le notifiche verranno aggiunte qui dinamicamente -->
+    </div>
+    
+    <div id="control-panel">
+        <h2>Pannello di Controllo</h2>
+        <p>Simula l'invio di notifiche dal server utilizzando i pulsanti sottostanti:</p>
+        <div class="button-group">
+            <button class="info-btn" id="info-btn">Notifica Info</button>
+            <button class="success-btn" id="success-btn">Notifica Successo</button>
+            <button class="warning-btn" id="warning-btn">Notifica Avviso</button>
+            <button class="error-btn" id="error-btn">Notifica Errore</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const notificationContainer = document.getElementById('notification-container');
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const infoBtnEl = document.getElementById('info-btn');
+            const successBtnEl = document.getElementById('success-btn');
+            const warningBtnEl = document.getElementById('warning-btn');
+            const errorBtnEl = document.getElementById('error-btn');
+            
+            let ws;
+            let reconnectAttempts = 0;
+            const maxReconnectAttempts = 5;
+            const reconnectDelay = 3000; // 3 secondi
+            
+            // Funzione per connettersi al server WebSocket
+            function connectWebSocket() {
+                // Crea una nuova connessione WebSocket
+                ws = new WebSocket('ws://localhost:8082');
+                
+                // Gestione dell'apertura della connessione
+                ws.addEventListener('open', () => {
+                    console.log('Connessione WebSocket stabilita');
+                    updateConnectionStatus(true);
+                    reconnectAttempts = 0; // Resetta i tentativi di riconnessione
+                    
+                    // Aggiungi una notifica di connessione
+                    addNotification({
+                        type: 'info',
+                        title: 'Connessione stabilita',
+                        message: 'Sei ora connesso al server di notifiche.',
+                        timestamp: new Date().toISOString()
+                    });
+                });
+                
+                // Gestione dei messaggi ricevuti
+                ws.addEventListener('message', (event) => {
+                    try {
+                        const notification = JSON.parse(event.data);
+                        console.log('Notifica ricevuta:', notification);
+                        addNotification(notification);
+                    } catch (error) {
+                        console.error('Errore nel parsing della notifica:', error);
+                    }
+                });
+                
+                // Gestione degli errori
+                ws.addEventListener('error', (error) => {
+                    console.error('Errore WebSocket:', error);
+                });
+                
+                // Gestione della chiusura della connessione
+                ws.addEventListener('close', (event) => {
+                    console.log(`Connessione WebSocket chiusa: ${event.code} ${event.reason}`);
+                    updateConnectionStatus(false);
+                    
+                    // Tenta di riconnettersi se la connessione è stata persa
+                    if (reconnectAttempts < maxReconnectAttempts) {
+                        reconnectAttempts++;
+                        console.log(`Tentativo di riconnessione ${reconnectAttempts}/${maxReconnectAttempts} in ${reconnectDelay}ms...`);
+                        setTimeout(connectWebSocket, reconnectDelay);
+                        
+                        addNotification({
+                            type: 'warning',
+                            title: 'Connessione persa',
+                            message: `Tentativo di riconnessione ${reconnectAttempts}/${maxReconnectAttempts}...`,
+                            timestamp: new Date().toISOString()
+                        });
+                    } else {
+                        addNotification({
+                            type: 'error',
+                            title: 'Connessione fallita',
+                            message: 'Impossibile connettersi al server dopo multipli tentativi.',
+                            timestamp: new Date().toISOString()
+                        });
+                    }
+                });
+            }
+            
+            // Funzione per aggiornare lo stato della connessione nell'UI
+            function updateConnectionStatus(connected) {
+                if (connected) {
+                    statusDot.classList.remove('disconnected');
+                    statusDot.classList.add('connected');
+                    statusText.textContent = 'Connesso';
+                } else {
+                    statusDot.classList.remove('connected');
+                    statusDot.classList.add('disconnected');
+                    statusText.textContent = 'Disconnesso';
+                }
+            }
+            
+            // Funzione per aggiungere una notifica all'UI
+            function addNotification(notification) {
+                const notificationEl = document.createElement('div');
+                notificationEl.className = `notification ${notification.type}`;
+                
+                const closeBtn = document.createElement('span');
+                closeBtn.className = 'close-btn';
+                closeBtn.innerHTML = '&times;';
+                closeBtn.addEventListener('click', () => {
+                    notificationEl.remove();
+                });
+                
+                const title = document.createElement('div');
+                title.className = 'notification-title';
+                title.textContent = notification.title;
+                
+                const message = document.createElement('div');
+                message.textContent = notification.message;
+                
+                const time = document.createElement('div');
+                time.className = 'notification-time';
+                time.textContent = new Date(notification.timestamp).toLocaleTimeString();
+                
+                notificationEl.appendChild(closeBtn);
+                notificationEl.appendChild(title);
+                notificationEl.appendChild(message);
+                notificationEl.appendChild(time);
+                
+                notificationContainer.prepend(notificationEl);
+                
+                // Rimuovi automaticamente la notifica dopo 10 secondi
+                setTimeout(() => {
+                    if (notificationEl.parentNode) {
+                        notificationEl.remove();
+                    }
+                }, 10000);
+            }
+            
+            // Gestione dei pulsanti di test
+            infoBtnEl.addEventListener('click', () => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ action: 'test', type: 'info' }));
+                } else {
+                    addNotification({
+                        type: 'error',
+                        title: 'Errore',
+                        message: 'Non sei connesso al server.',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            });
+            
+            successBtnEl.addEventListener('click', () => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ action: 'test', type: 'success' }));
+                } else {
+                    addNotification({
+                        type: 'error',
+                        title: 'Errore',
+                        message: 'Non sei connesso al server.',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            });
+            
+            warningBtnEl.addEventListener('click', () => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ action: 'test', type: 'warning' }));
+                } else {
+                    addNotification({
+                        type: 'error',
+                        title: 'Errore',
+                        message: 'Non sei connesso al server.',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            });
+            
+            errorBtnEl.addEventListener('click', () => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ action: 'test', type: 'error' }));
+                } else {
+                    addNotification({
+                        type: 'error',
+                        title: 'Errore',
+                        message: 'Non sei connesso al server.',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            });
+            
+            // Connetti al server WebSocket all'avvio
+            connectWebSocket();
+        });
+    </script>
+</body>
+</html>

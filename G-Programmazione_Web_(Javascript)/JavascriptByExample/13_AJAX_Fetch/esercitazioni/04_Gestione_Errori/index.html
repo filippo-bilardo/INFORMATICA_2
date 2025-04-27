@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercitazione 4: Gestione degli Errori</title>
+    <link rel="stylesheet" href="style.css"> <!-- Opzionale -->
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #message-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .success {
+            color: green;
+        }
+        .loading {
+            color: blue;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Gestione Errori Fetch</h1>
+
+    <button id="fetch-404">Carica Risorsa Inesistente (404)</button>
+    <button id="fetch-network-error">Simula Errore di Rete</button>
+    <button id="fetch-success">Carica Risorsa Valida (Test Successo)</button> <!-- Aggiunto per testare il caso di successo -->
+
+    <div id="message-area">
+        Clicca un pulsante per testare la richiesta Fetch...
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

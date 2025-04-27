@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Demo - Strategie di Caching</title>
+  
+  <!-- Collegamenti per PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2196f3">
+  
+  <!-- Meta tag per iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="PWA Demo">
+  <link rel="apple-touch-icon" href="images/icon-192.png">
+  
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #2196f3;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    button {
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background-color: #0b7dda;
+    }
+    #install-banner {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .status {
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .online {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    .offline {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+    .strategy-info {
+      background-color: #d9edf7;
+      color: #31708f;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    #data-container {
+      min-height: 100px;
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PWA - Strategie di Caching</h1>
+    <p>Esempio di diverse strategie di caching per PWA</p>
+  </header>
+  
+  <div id="install-banner">
+    <h3>Installa questa app!</h3>
+    <p>Installa questa applicazione sul tuo dispositivo per:</p>
+    <ul>
+      <li>Accesso rapido dalla schermata home</li>
+      <li>Funzionamento offline</li>
+      <li>Esperienza a schermo intero</li>
+    </ul>
+    <button id="install-button">Installa ora</button>
+    <button id="dismiss-button">Non ora</button>
+  </div>
+  
+  <div class="card">
+    <h2>Stato Connessione</h2>
+    <div id="connection-status" class="status online">Sei online</div>
+    <p>Prova a mettere il dispositivo in modalità aereo o disattiva la connessione per vedere come funziona offline.</p>
+  </div>
+  
+  <div class="card">
+    <h2>Strategie di Caching</h2>
+    <p>Seleziona una strategia di caching e fai una richiesta per vedere come funziona:</p>
+    
+    <div>
+      <button id="cache-first">Cache First</button>
+      <button id="network-first">Network First</button>
+      <button id="stale-while-revalidate">Stale While Revalidate</button>
+    </div>
+    
+    <div class="strategy-info" id="strategy-info">
+      Seleziona una strategia per vedere le informazioni.
+    </div>
+    
+    <h3>Risultato:</h3>
+    <div id="data-container">
+      I risultati appariranno qui...
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Gestione della Cache</h2>
+    <p>Puoi gestire manualmente la cache dell'applicazione:</p>
+    <button id="clear-cache">Svuota Cache</button>
+    <button id="update-cache">Aggiorna Cache</button>
+    <div id="cache-status" class="status"></div>
+  </div>
+  
+  <script src="esempio2.js"></script>
+</body>
+</html>

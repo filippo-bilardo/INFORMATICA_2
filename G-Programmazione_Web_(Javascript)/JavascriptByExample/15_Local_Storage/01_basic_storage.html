@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilizzo Base del Local Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 8px;
+            margin-right: 5px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        #storedData {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Utilizzo Base del Local Storage</h1>
+    
+    <div class="container">
+        <h2>Salva un dato nel Local Storage</h2>
+        <div class="controls">
+            <input type="text" id="keyInput" placeholder="Chiave">
+            <input type="text" id="valueInput" placeholder="Valore">
+            <button id="saveButton">Salva</button>
+            <button id="getButton">Recupera</button>
+            <button id="removeButton">Rimuovi</button>
+            <button id="clearButton">Cancella tutto</button>
+        </div>
+        <div id="status"></div>
+    </div>
+
+    <div class="container">
+        <h2>Dati memorizzati nel Local Storage</h2>
+        <div id="storedData">Nessun dato memorizzato.</div>
+    </div>
+
+    <div class="container">
+        <h2>Codice JavaScript</h2>
+        <pre><code>// Salva un dato nel localStorage
+localStorage.setItem('chiave', 'valore');
+
+// Recupera un dato dal localStorage
+const valore = localStorage.getItem('chiave');
+
+// Rimuovi un dato dal localStorage
+localStorage.removeItem('chiave');
+
+// Cancella tutti i dati nel localStorage
+localStorage.clear();</code></pre>
+    </div>
+
+    <script>
+        // Elementi DOM
+        const keyInput = document.getElementById('keyInput');
+        const valueInput = document.getElementById('valueInput');
+        const saveButton = document.getElementById('saveButton');
+        const getButton = document.getElementById('getButton');
+        const removeButton = document.getElementById('removeButton');
+        const clearButton = document.getElementById('clearButton');
+        const statusElement = document.getElementById('status');
+        const storedDataElement = document.getElementById('storedData');
+
+        // Funzione per aggiornare la visualizzazione dei dati memorizzati
+        function updateStoredDataDisplay() {
+            if (localStorage.length === 0) {
+                storedDataElement.innerHTML = 'Nessun dato memorizzato.';
+                return;
+            }
+
+            let html = '<table border="1" style="width: 100%; border-collapse: collapse;">';
+            html += '<tr><th style="padding: 8px; text-align: left;">Chiave</th><th style="padding: 8px; text-align: left;">Valore</th></tr>';
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                html += `<tr><td style="padding: 8px;">${key}</td><td style="padding: 8px;">${value}</td></tr>`;
+            }
+            
+            html += '</table>';
+            storedDataElement.innerHTML = html;
+        }
+
+        // Funzione per mostrare un messaggio di stato
+        function showStatus(message, isError = false) {
+            statusElement.textContent = message;
+            statusElement.className = isError ? 'error' : 'success';
+            
+            // Nascondi il messaggio dopo 3 secondi
+            setTimeout(() => {
+                statusElement.textContent = '';
+                statusElement.className = '';
+            }, 3000);
+        }
+
+        // Event listener per il pulsante Salva
+        saveButton.addEventListener('click', () => {
+            const key = keyInput.value.trim();
+            const value = valueInput.value.trim();
+            
+            if (!key) {
+                showStatus('Inserisci una chiave!', true);
+                return;
+            }
+            
+            try {
+                localStorage.setItem(key, value);
+                showStatus(`Dato salvato con successo: ${key} = ${value}`);
+                keyInput.value = '';
+                valueInput.value = '';
+                updateStoredDataDisplay();
+            } catch (e) {
+                showStatus(`Errore durante il salvataggio: ${e.message}`, true);
+            }
+        });
+
+        // Event listener per il pulsante Recupera
+        getButton.addEventListener('click', () => {
+            const key = keyInput.value.trim();
+            
+            if (!key) {
+                showStatus('Inserisci una chiave da recuperare!', true);
+                return;
+            }
+            
+            const value = localStorage.getItem(key);
+            
+            if (value === null) {
+                showStatus(`Nessun dato trovato per la chiave: ${key}`, true);
+            } else {
+                valueInput.value = value;
+                showStatus(`Dato recuperato: ${key} = ${value}`);
+            }
+        });
+
+        // Event listener per il pulsante Rimuovi
+        removeButton.addEventListener('click', () => {
+            const key = keyInput.value.trim();
+            
+            if (!key) {
+                showStatus('Inserisci una chiave da rimuovere!', true);
+                return;
+            }
+            
+            if (localStorage.getItem(key) === null) {
+                showStatus(`Nessun dato trovato per la chiave: ${key}`, true);
+                return;
+            }
+            
+            localStorage.removeItem(key);
+            showStatus(`Dato rimosso: ${key}`);
+            keyInput.value = '';
+            valueInput.value = '';
+            updateStoredDataDisplay();
+        });
+
+        // Event listener per il pulsante Cancella tutto
+        clearButton.addEventListener('click', () => {
+            if (localStorage.length === 0) {
+                showStatus('Il localStorage è già vuoto!');
+                return;
+            }
+            
+            if (confirm('Sei sicuro di voler cancellare tutti i dati nel localStorage?')) {
+                localStorage.clear();
+                showStatus('Tutti i dati sono stati cancellati!');
+                keyInput.value = '';
+                valueInput.value = '';
+                updateStoredDataDisplay();
+            }
+        });
+
+        // Inizializza la visualizzazione dei dati memorizzati
+        updateStoredDataDisplay();
+    </script>
+</body>
+</html>

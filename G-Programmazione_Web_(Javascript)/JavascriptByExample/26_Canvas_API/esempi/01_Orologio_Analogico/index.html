@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orologio Analogico con Canvas</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .clock-container {
+            text-align: center;
+        }
+        
+        canvas {
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <h1>Orologio Analogico con Canvas</h1>
+        <canvas id="clockCanvas" width="300" height="300"></canvas>
+    </div>
+
+    <script>
+        // Ottieni il riferimento al canvas e al contesto 2D
+        const canvas = document.getElementById('clockCanvas');
+        const ctx = canvas.getContext('2d');
+        const radius = canvas.width / 2 * 0.9; // Raggio dell'orologio (90% del raggio del canvas)
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        // Funzione principale per disegnare l'orologio
+        function drawClock() {
+            // Pulisci il canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Disegna il quadrante
+            drawFace();
+            
+            // Disegna i numeri
+            drawNumbers();
+            
+            // Ottieni l'ora corrente
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            // Disegna le lancette
+            drawHand(hours * 30 + minutes * 0.5, radius * 0.5, radius * 0.07, '#333'); // Lancetta delle ore
+            drawHand(minutes * 6, radius * 0.7, radius * 0.05, '#333');               // Lancetta dei minuti
+            drawHand(seconds * 6, radius * 0.85, radius * 0.02, '#E74C3C');           // Lancetta dei secondi
+            
+            // Disegna il punto centrale
+            drawCenter();
+        }
+
+        // Funzione per disegnare il quadrante dell'orologio
+        function drawFace() {
+            // Disegna il cerchio esterno
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            
+            // Disegna il bordo
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = radius * 0.04;
+            ctx.stroke();
+            
+            // Disegna i segni delle ore
+            ctx.lineWidth = radius * 0.02;
+            for (let i = 0; i < 12; i++) {
+                const angle = i * Math.PI / 6;
+                const x1 = centerX + Math.sin(angle) * radius * 0.85;
+                const y1 = centerY - Math.cos(angle) * radius * 0.85;
+                const x2 = centerX + Math.sin(angle) * radius * 0.95;
+                const y2 = centerY - Math.cos(angle) * radius * 0.95;
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+            
+            // Disegna i segni dei minuti
+            ctx.lineWidth = radius * 0.01;
+            for (let i = 0; i < 60; i++) {
+                if (i % 5 !== 0) { // Salta i segni delle ore già disegnati
+                    const angle = i * Math.PI / 30;
+                    const x1 = centerX + Math.sin(angle) * radius * 0.9;
+                    const y1 = centerY - Math.cos(angle) * radius * 0.9;
+                    const x2 = centerX + Math.sin(angle) * radius * 0.95;
+                    const y2 = centerY - Math.cos(angle) * radius * 0.95;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Funzione per disegnare i numeri dell'orologio
+        function drawNumbers() {
+            ctx.font = radius * 0.15 + 'px Arial';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            for (let i = 1; i <= 12; i++) {
+                const angle = i * Math.PI / 6;
+                const x = centerX + Math.sin(angle) * radius * 0.75;
+                const y = centerY - Math.cos(angle) * radius * 0.75;
+                
+                ctx.fillText(i.toString(), x, y);
+            }
+        }
+
+        // Funzione per disegnare una lancetta
+        function drawHand(angle, length, width, color) {
+            // Converti l'angolo da gradi a radianti
+            const radians = (angle - 90) * Math.PI / 180;
+            
+            ctx.beginPath();
+            ctx.lineWidth = width;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = color;
+            
+            // Punto di partenza (centro)
+            ctx.moveTo(centerX, centerY);
+            
+            // Punto finale (estremità della lancetta)
+            const x = centerX + Math.cos(radians) * length;
+            const y = centerY + Math.sin(radians) * length;
+            ctx.lineTo(x, y);
+            
+            ctx.stroke();
+        }
+
+        // Funzione per disegnare il punto centrale
+        function drawCenter() {
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius * 0.04, 0, 2 * Math.PI);
+            ctx.fillStyle = '#E74C3C';
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius * 0.02, 0, 2 * Math.PI);
+            ctx.fillStyle = '#333';
+            ctx.fill();
+        }
+
+        // Aggiorna l'orologio ogni secondo
+        setInterval(drawClock, 1000);
+        
+        // Disegna l'orologio iniziale
+        drawClock();
+    </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Task Manager App - Progetto Finale JavaScript">
+    <title>Task Manager - Progetto Finale JavaScript</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/icons/favicon.png">
+    <!-- Font Awesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-tasks"></i> Task Manager</h1>
+            <div class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="task-controls">
+            <div class="task-form">
+                <form id="task-form">
+                    <div class="form-group">
+                        <input type="text" id="task-title" placeholder="Aggiungi un nuovo task..." required>
+                        <textarea id="task-description" placeholder="Descrizione (opzionale)"></textarea>
+                        <div class="task-options">
+                            <div class="date-group">
+                                <label for="task-due-date">Scadenza:</label>
+                                <input type="date" id="task-due-date">
+                            </div>
+                            <div class="priority-group">
+                                <label for="task-priority">Priorità:</label>
+                                <select id="task-priority">
+                                    <option value="low">Bassa</option>
+                                    <option value="medium" selected>Media</option>
+                                    <option value="high">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Aggiungi Task
+                    </button>
+                </form>
+            </div>
+
+            <div class="task-filters">
+                <div class="search-box">
+                    <input type="text" id="search-tasks" placeholder="Cerca tasks...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="filter-options">
+                    <select id="filter-priority">
+                        <option value="all">Tutte le priorità</option>
+                        <option value="high">Alta priorità</option>
+                        <option value="medium">Media priorità</option>
+                        <option value="low">Bassa priorità</option>
+                    </select>
+                    <select id="filter-status">
+                        <option value="all">Tutti gli stati</option>
+                        <option value="pending">Da fare</option>
+                        <option value="completed">Completati</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="tasks-container">
+            <h2>I Tuoi Task <span id="task-counter">(0)</span></h2>
+            <div class="tasks-list" id="tasks-list">
+                <!-- I task verranno inseriti qui dinamicamente -->
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>Non hai ancora nessun task. Aggiungine uno per iniziare!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Progetto Finale - Corso di JavaScript</p>
+            <p>Sviluppato utilizzando HTML, CSS e JavaScript puro</p>
+        </div>
+    </footer>
+
+    <!-- Template per i task -->
+    <template id="task-template">
+        <div class="task-item" draggable="true">
+            <div class="task-content">
+                <div class="task-header">
+                    <h3 class="task-title"></h3>
+                    <span class="task-priority"></span>
+                </div>
+                <p class="task-description"></p>
+                <div class="task-meta">
+                    <span class="task-date"><i class="far fa-calendar-alt"></i> <span class="date-text"></span></span>
+                </div>
+            </div>
+            <div class="task-actions">
+                <button class="btn-complete" title="Segna come completato">
+                    <i class="fas fa-check"></i>
+                </button>
+                <button class="btn-edit" title="Modifica task">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-delete" title="Elimina task">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Modal per modifica task -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Modifica Task</h2>
+            <form id="edit-form">
+                <div class="form-group">
+                    <label for="edit-title">Titolo:</label>
+                    <input type="text" id="edit-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Descrizione:</label>
+                    <textarea id="edit-description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-due-date">Scadenza:</label>
+                    <input type="date" id="edit-due-date">
+                </div>
+                <div class="form-group">
+                    <label for="edit-priority">Priorità:</label>
+                    <select id="edit-priority">
+                        <option value="low">Bassa</option>
+                        <option value="medium">Media</option>
+                        <option value="high">Alta</option>
+                    </select>
+                </div>
+                <input type="hidden" id="edit-id">
+                <button type="submit" class="btn btn-primary">Salva Modifiche</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notifiche -->
+    <div class="notification-container" id="notification-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/app.js" type="module"></script>
+    <script>
+        // Registrazione del service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrato con successo:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Registrazione Service Worker fallita:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

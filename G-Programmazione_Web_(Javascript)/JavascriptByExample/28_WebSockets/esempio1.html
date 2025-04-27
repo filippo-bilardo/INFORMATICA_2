@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat in Tempo Reale con WebSockets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #chat-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        #message-form {
+            display: flex;
+        }
+        #message-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #e3f2fd;
+            text-align: right;
+        }
+        .other-message {
+            background-color: #f1f1f1;
+        }
+        .system-message {
+            background-color: #fff3cd;
+            text-align: center;
+            font-style: italic;
+        }
+        #username-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat in Tempo Reale con WebSockets</h1>
+    
+    <div id="username-container">
+        <label for="username">Il tuo nome:</label>
+        <input type="text" id="username" placeholder="Inserisci il tuo nome">
+        <button id="join-btn">Entra nella chat</button>
+    </div>
+    
+    <div id="chat-interface" style="display: none;">
+        <div id="chat-container"></div>
+        
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Scrivi un messaggio..." autocomplete="off">
+            <button type="submit">Invia</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const usernameContainer = document.getElementById('username-container');
+            const chatInterface = document.getElementById('chat-interface');
+            const usernameInput = document.getElementById('username');
+            const joinBtn = document.getElementById('join-btn');
+            const chatContainer = document.getElementById('chat-container');
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            
+            let username = '';
+            let ws;
+            
+            // Gestione dell'ingresso nella chat
+            joinBtn.addEventListener('click', () => {
+                username = usernameInput.value.trim();
+                if (username) {
+                    // Nascondi il form del nome utente e mostra l'interfaccia della chat
+                    usernameContainer.style.display = 'none';
+                    chatInterface.style.display = 'block';
+                    
+                    // Connessione al server WebSocket
+                    connectToWebSocket();
+                } else {
+                    alert('Per favore, inserisci un nome utente');
+                }
+            });
+            
+            // Funzione per connettersi al server WebSocket
+            function connectToWebSocket() {
+                // Crea una nuova connessione WebSocket
+                ws = new WebSocket('ws://localhost:8080');
+                
+                // Gestione dell'apertura della connessione
+                ws.addEventListener('open', () => {
+                    console.log('Connessione WebSocket stabilita');
+                    // Invia un messaggio di ingresso nella chat
+                    const joinMessage = {
+                        type: 'join',
+                        username: username,
+                        timestamp: new Date().getTime()
+                    };
+                    ws.send(JSON.stringify(joinMessage));
+                    
+                    // Aggiungi un messaggio di sistema nella chat
+                    addMessage({
+                        type: 'system',
+                        content: 'Connesso alla chat. Benvenuto!',
+                        timestamp: new Date().getTime()
+                    });
+                });
+                
+                // Gestione della ricezione dei messaggi
+                ws.addEventListener('message', (event) => {
+                    const message = JSON.parse(event.data);
+                    addMessage(message);
+                });
+                
+                // Gestione degli errori
+                ws.addEventListener('error', (error) => {
+                    console.error('Errore WebSocket:', error);
+                    addMessage({
+                        type: 'system',
+                        content: 'Errore di connessione. Riprova più tardi.',
+                        timestamp: new Date().getTime()
+                    });
+                });
+                
+                // Gestione della chiusura della connessione
+                ws.addEventListener('close', () => {
+                    console.log('Connessione WebSocket chiusa');
+                    addMessage({
+                        type: 'system',
+                        content: 'Disconnesso dal server. Ricarica la pagina per riconnetterti.',
+                        timestamp: new Date().getTime()
+                    });
+                });
+            }
+            
+            // Gestione dell'invio dei messaggi
+            messageForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const content = messageInput.value.trim();
+                
+                if (content && ws && ws.readyState === WebSocket.OPEN) {
+                    // Crea l'oggetto messaggio
+                    const message = {
+                        type: 'chat',
+                        username: username,
+                        content: content,
+                        timestamp: new Date().getTime()
+                    };
+                    
+                    // Invia il messaggio al server
+                    ws.send(JSON.stringify(message));
+                    
+                    // Pulisci il campo di input
+                    messageInput.value = '';
+                }
+            });
+            
+            // Funzione per aggiungere un messaggio alla chat
+            function addMessage(message) {
+                const messageElement = document.createElement('div');
+                const time = new Date(message.timestamp).toLocaleTimeString();
+                
+                // Imposta la classe in base al tipo di messaggio
+                if (message.type === 'system') {
+                    messageElement.className = 'message system-message';
+                    messageElement.textContent = `${message.content}`;
+                } else if (message.type === 'join' || message.type === 'leave') {
+                    messageElement.className = 'message system-message';
+                    const action = message.type === 'join' ? 'è entrato nella' : 'ha lasciato la';
+                    messageElement.textContent = `${message.username} ${action} chat (${time})`;
+                } else {
+                    // Messaggio di chat normale
+                    if (message.username === username) {
+                        messageElement.className = 'message user-message';
+                        messageElement.textContent = `${message.content} (${time})`;
+                    } else {
+                        messageElement.className = 'message other-message';
+                        messageElement.textContent = `${message.username}: ${message.content} (${time})`;
+                    }
+                }
+                
+                // Aggiungi il messaggio al container
+                chatContainer.appendChild(messageElement);
+                
+                // Scorri automaticamente verso il basso
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestore Attività</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Gestore Attività</h1>
+    
+    <div class="input-container">
+      <input type="text" id="nuovaAttivita" placeholder="Aggiungi una nuova attività...">
+      <button id="aggiungiBtn">Aggiungi</button>
+    </div>
+    
+    <div class="filtri">
+      <button id="tutteBtn" class="attivo">Tutte</button>
+      <button id="attiveBtn">Attive</button>
+      <button id="completateBtn">Completate</button>
+    </div>
+    
+    <ul id="listaAttivita"></ul>
+    
+    <div class="info">
+      <span id="contatore">0 attività rimaste</span>
+      <button id="pulisciBtn">Pulisci completate</button>
+    </div>
+  </div>
+
+  <!-- Nota l'uso di type="module" per abilitare i moduli ES -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

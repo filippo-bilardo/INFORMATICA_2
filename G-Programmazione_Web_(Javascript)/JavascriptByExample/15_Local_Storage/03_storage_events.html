@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventi di Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 8px;
+            margin-right: 5px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        #eventLog {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+        }
+        .event-item {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .event-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+        }
+        .instructions {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>Eventi di Storage</h1>
+    
+    <div class="instructions">
+        <h3>Istruzioni</h3>
+        <p>Questa pagina dimostra come utilizzare gli eventi di storage per comunicare tra diverse schede del browser:</p>
+        <ol>
+            <li>Apri questa pagina in <strong>due o più schede diverse</strong> del browser.</li>
+            <li>Modifica i dati nel localStorage in una scheda.</li>
+            <li>Osserva come le modifiche vengono rilevate automaticamente nelle altre schede.</li>
+        </ol>
+        <p><strong>Nota:</strong> Gli eventi di storage vengono attivati solo nelle altre schede, non in quella che ha effettuato la modifica.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Modifica il Local Storage</h2>
+        <div class="controls">
+            <input type="text" id="keyInput" placeholder="Chiave">
+            <input type="text" id="valueInput" placeholder="Valore">
+            <button id="saveButton">Salva</button>
+            <button id="removeButton">Rimuovi</button>
+            <button id="clearButton">Cancella tutto</button>
+        </div>
+        <div id="status"></div>
+    </div>
+
+    <div class="container">
+        <h2>Log degli Eventi di Storage</h2>
+        <p>Qui verranno visualizzati gli eventi di storage rilevati da altre schede:</p>
+        <div id="eventLog"></div>
+    </div>
+
+    <div class="container">
+        <h2>Dati attuali nel Local Storage</h2>
+        <div id="storedData">Nessun dato memorizzato.</div>
+    </div>
+
+    <div class="container">
+        <h2>Codice JavaScript per gli eventi di storage</h2>
+        <pre><code>// Ascolta l'evento storage
+window.addEventListener('storage', (event) => {
+  console.log('Modifiche al localStorage rilevate in un\'altra scheda/finestra');
+  console.log('Chiave modificata:', event.key);
+  console.log('Vecchio valore:', event.oldValue);
+  console.log('Nuovo valore:', event.newValue);
+  console.log('URL della pagina che ha effettuato la modifica:', event.url);
+});</code></pre>
+    </div>
+
+    <script>
+        // Elementi DOM
+        const keyInput = document.getElementById('keyInput');
+        const valueInput = document.getElementById('valueInput');
+        const saveButton = document.getElementById('saveButton');
+        const removeButton = document.getElementById('removeButton');
+        const clearButton = document.getElementById('clearButton');
+        const statusElement = document.getElementById('status');
+        const eventLogElement = document.getElementById('eventLog');
+        const storedDataElement = document.getElementById('storedData');
+
+        // Genera un ID univoco per questa scheda
+        const tabId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+        console.log('ID di questa scheda:', tabId);
+
+        // Funzione per aggiornare la visualizzazione dei dati memorizzati
+        function updateStoredDataDisplay() {
+            if (localStorage.length === 0) {
+                storedDataElement.innerHTML = 'Nessun dato memorizzato.';
+                return;
+            }
+
+            let html = '<table border="1" style="width: 100%; border-collapse: collapse;">';
+            html += '<tr><th style="padding: 8px; text-align: left;">Chiave</th><th style="padding: 8px; text-align: left;">Valore</th></tr>';
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                html += `<tr><td style="padding: 8px;">${key}</td><td style="padding: 8px;">${value}</td></tr>`;
+            }
+            
+            html += '</table>';
+            storedDataElement.innerHTML = html;
+        }
+
+        // Funzione per mostrare un messaggio di stato
+        function showStatus(message, isError = false) {
+            statusElement.textContent = message;
+            statusElement.className = isError ? 'error' : 'success';
+            
+            // Nascondi il messaggio dopo 3 secondi
+            setTimeout(() => {
+                statusElement.textContent = '';
+                statusElement.className = '';
+            }, 3000);
+        }
+
+        // Funzione per aggiungere un evento al log
+        function addEventToLog(eventData) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            
+            const eventItem = document.createElement('div');
+            eventItem.className = 'event-item';
+            
+            const eventTime = document.createElement('div');
+            eventTime.className = 'event-time';
+            eventTime.textContent = timeString;
+            
+            const eventContent = document.createElement('div');
+            eventContent.innerHTML = eventData;
+            
+            eventItem.appendChild(eventTime);
+            eventItem.appendChild(eventContent);
+            
+            eventLogElement.appendChild(eventItem);
+            eventLogElement.scrollTop = eventLogElement.scrollHeight; // Auto-scroll to bottom
+        }
+
+        // Event listener per il pulsante Salva
+        saveButton.addEventListener('click', () => {
+            const key = keyInput.value.trim();
+            const value = valueInput.value.trim();
+            
+            if (!key) {
+                showStatus('Inserisci una chiave!', true);
+                return;
+            }
+            
+            try {
+                // Aggiungi l'ID della scheda al valore per dimostrare quale scheda ha effettuato la modifica
+                const valueWithTabId = `${value} (modificato dalla scheda ${tabId.substr(0, 6)})`;
+                localStorage.setItem(key, valueWithTabId);
+                showStatus(`Dato salvato con successo: ${key} = ${valueWithTabId}`);
+                keyInput.value = '';
+                valueInput.value = '';
+                updateStoredDataDisplay();
+            } catch (e) {
+                showStatus(`Errore durante il salvataggio: ${e.message}`, true);
+            }
+        });
+
+        // Event listener per il pulsante Rimuovi
+        removeButton.addEventListener('click', () => {
+            const key = keyInput.value.trim();
+            
+            if (!key) {
+                showStatus('Inserisci una chiave da rimuovere!', true);
+                return;
+            }
+            
+            if (localStorage.getItem(key) === null) {
+                showStatus(`Nessun dato trovato per la chiave: ${key}`, true);
+                return;
+            }
+            
+            localStorage.removeItem(key);
+            showStatus(`Dato rimosso: ${key}`);
+            keyInput.value = '';
+            valueInput.value = '';
+            updateStoredDataDisplay();
+        });
+
+        // Event listener per il pulsante Cancella tutto
+        clearButton.addEventListener('click', () => {
+            if (localStorage.length === 0) {
+                showStatus('Il localStorage è già vuoto!');
+                return;
+            }
+            
+            if (confirm('Sei sicuro di voler cancellare tutti i dati nel localStorage?')) {
+                localStorage.clear();
+                showStatus('Tutti i dati sono stati cancellati!');
+                keyInput.value = '';
+                valueInput.value = '';
+                updateStoredDataDisplay();
+            }
+        });
+
+        // Ascolta l'evento storage
+        window.addEventListener('storage', (event) => {
+            console.log('Evento storage rilevato:', event);
+            
+            let eventHTML = '';
+            
+            if (event.key === null) {
+                eventHTML = '<strong>Tutti i dati sono stati cancellati</strong> in un\'altra scheda.';
+            } else if (event.newValue === null) {
+                eventHTML = `<strong>Chiave rimossa:</strong> "${event.key}"<br>`;
+                eventHTML += `<strong>Valore precedente:</strong> "${event.oldValue}"`;
+            } else {
+                eventHTML = `<strong>Chiave modificata:</strong> "${event.key}"<br>`;
+                eventHTML += `<strong>Valore precedente:</strong> "${event.oldValue || '(nessuno)'}"<br>`;
+                eventHTML += `<strong>Nuovo valore:</strong> "${event.newValue}"`;
+            }
+            
+            addEventToLog(eventHTML);
+            updateStoredDataDisplay();
+        });
+
+        // Aggiungi un messaggio iniziale al log
+        addEventToLog(`<strong>Scheda inizializzata</strong> con ID: ${tabId.substr(0, 6)}.<br>Apri un'altra scheda e modifica i dati per vedere gli eventi di storage.`);
+
+        // Inizializza la visualizzazione dei dati memorizzati
+        updateStoredDataDisplay();
+    </script>
+</body>
+</html>

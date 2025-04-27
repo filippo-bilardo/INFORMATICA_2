@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Demo - Esempio Base</title>
+  
+  <!-- Collegamenti per PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2196f3">
+  
+  <!-- Meta tag per iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="PWA Demo">
+  <link rel="apple-touch-icon" href="images/icon-192.png">
+  
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #2196f3;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .install-button {
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      display: none;
+    }
+    .install-button:hover {
+      background-color: #0b7dda;
+    }
+    .status {
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .online {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    .offline {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Progressive Web App Demo</h1>
+    <p>Un esempio di base di PWA con manifest e service worker</p>
+  </header>
+  
+  <div class="card">
+    <h2>Caratteristiche di questa PWA</h2>
+    <ul>
+      <li>Web App Manifest per l'installazione</li>
+      <li>Service Worker per funzionalità offline</li>
+      <li>Responsive design</li>
+      <li>Installabile su dispositivi mobili e desktop</li>
+    </ul>
+    <button id="install-button" class="install-button">Installa App</button>
+  </div>
+  
+  <div class="card">
+    <h2>Stato Connessione</h2>
+    <div id="connection-status" class="status online">Sei online</div>
+  </div>
+  
+  <div class="card">
+    <h2>Contenuto Dinamico</h2>
+    <p>Questo contenuto viene aggiornato ogni volta che visiti la pagina:</p>
+    <p><strong>Data e ora attuali:</strong> <span id="current-time"></span></p>
+    <p>Questo contenuto sarà disponibile anche offline dopo la prima visita!</p>
+  </div>
+  
+  <script src="esempio1.js"></script>
+</body>
+</html>

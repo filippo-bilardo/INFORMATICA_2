@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Workers - Esempio 5: Worker Pool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    
+    .description {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    
+    .controls {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+    }
+    
+    button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    
+    #terminateButton {
+      background-color: #f44336;
+    }
+    
+    #terminateButton:hover {
+      background-color: #d32f2f;
+    }
+    
+    #log {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background-color: #f5f5f5;
+      font-family: monospace;
+      margin-top: 20px;
+    }
+    
+    #log div {
+      border-bottom: 1px solid #eee;
+      padding: 5px 0;
+    }
+    
+    .navigation {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <h1>Web Workers - Esempio 5: Worker Pool</h1>
+  
+  <div class="description">
+    <p>Questo esempio dimostra come implementare un pool di Web Workers per distribuire il carico di lavoro tra più thread paralleli.</p>
+    <p>Il pool gestisce automaticamente l'assegnazione dei task ai worker disponibili, ottimizzando l'utilizzo delle risorse e migliorando le prestazioni per operazioni intensive.</p>
+  </div>
+  
+  <div class="controls">
+    <button id="startButton">Avvia Elaborazione Parallela</button>
+    <button id="terminateButton">Termina Worker Pool</button>
+  </div>
+  
+  <div id="log"></div>
+
+  <div class="navigation">
+    <a href="esempio4.html">&laquo; Esempio Precedente</a>
+    <a href="../25_Service_Workers/esempio1.js">Prossimo Modulo &raquo;</a>
+  </div>
+
+  <script src="esempio5.js"></script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorizzare Oggetti nel Local Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-family: monospace;
+        }
+        button {
+            padding: 8px 16px;
+            margin-right: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        #storedObjects {
+            margin-top: 20px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Memorizzare Oggetti nel Local Storage</h1>
+    
+    <div class="container">
+        <h2>Salva un oggetto JSON nel Local Storage</h2>
+        <div class="controls">
+            <input type="text" id="keyInput" placeholder="Chiave" style="padding: 8px; width: 100%; margin-bottom: 10px;">
+            <textarea id="jsonInput" placeholder="Inserisci un oggetto JSON valido, ad esempio:\n{\n  \"nome\": \"Mario\",\n  \"età\": 30,\n  \"email\": \"mario@example.com\",\n  \"interessi\": [\"sport\", \"musica\", \"tecnologia\"]\n}"></textarea>
+            <button id="saveButton">Salva Oggetto</button>
+            <button id="getButton">Recupera Oggetto</button>
+            <button id="removeButton">Rimuovi Oggetto</button>
+            <button id="clearButton">Cancella Tutto</button>
+        </div>
+        <div id="status"></div>
+    </div>
+
+    <div class="container">
+        <h2>Oggetti memorizzati nel Local Storage</h2>
+        <div id="storedObjects">Nessun oggetto memorizzato.</div>
+    </div>
+
+    <div class="container">
+        <h2>Codice JavaScript per memorizzare oggetti</h2>
+        <pre><code>// Memorizzare un oggetto nel localStorage
+const utente = {
+  nome: 'Mario',
+  età: 30,
+  email: 'mario@example.com',
+  interessi: ['sport', 'musica', 'tecnologia']
+};
+
+// Conversione dell'oggetto in stringa JSON
+const utenteJSON = JSON.stringify(utente);
+
+// Memorizzazione nel localStorage
+localStorage.setItem('utente', utenteJSON);
+
+// Recupero dal localStorage
+const utenteRecuperato = JSON.parse(localStorage.getItem('utente'));
+
+// Utilizzo dell'oggetto recuperato
+console.log(utenteRecuperato.nome); // 'Mario'
+console.log(utenteRecuperato.interessi[0]); // 'sport'</code></pre>
+    </div>
+
+    <script>
+        // Elementi DOM
+        const keyInput = document.getElementById('keyInput');
+        const jsonInput = document.getElementById('jsonInput');
+        const saveButton = document.getElementById('saveButton');
+        const getButton = document.getElementById('getButton');
+        const removeButton = document.getElementById('removeButton');
+        const clearButton = document.getElementById('clearButton');
+        const statusElement = document.getElementById('status');
+        const storedObjectsElement = document.getElementById('storedObjects');
+
+        // Funzione per aggiornare la visualizzazione degli oggetti memorizzati
+        function updateStoredObjectsDisplay() {
+            if (localStorage.length === 0) {
+                storedObjectsElement.innerHTML = 'Nessun oggetto memorizzato.';
+                return;
+            }
+
+            let html = '';
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                
+                try {
+                    // Tenta di analizzare il valore come JSON
+                    const parsedValue = JSON.parse(value);
+                    
+                    // Se è un oggetto o un array, mostralo formattato
+                    if (typeof parsedValue === 'object' && parsedValue !== null) {
+                        html += `<h3>${key}</h3>`;
+                        html += `<pre><code>${JSON.stringify(parsedValue, null, 2)}</code></pre>`;
+                    } else {
+                        // Altrimenti, mostra il valore semplice
+                        html += `<h3>${key}</h3>`;
+                        html += `<pre><code>${value}</code></pre>`;
+                    }
+                } catch (e) {
+                    // Se non è JSON valido, mostra il valore grezzo
+                    html += `<h3>${key}</h3>`;
+                    html += `<pre><code>${value}</code></pre>`;
+                }
+            }
+            
+            storedObjectsElement.innerHTML = html;
+        }
+
+        // Funzione per mostrare un messaggio di stato
+        function showStatus(message, isError = false) {
+            statusElement.textContent = message;
+            statusElement.className = isError ? 'error' : 'success';
+            
+            // Nascondi il messaggio dopo 3 secondi
+            setTimeout(() => {
+                statusElement.textContent = '';
+                statusElement.className = '';
+            }, 3000);
+        }
+
+        // Funzione per validare il JSON
+        function isValidJSON(json) {
+            try {
+                JSON.parse(json);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Event listener per il pulsante Salva
+        saveButton.addEventListener('click', () => {
+            const key = keyInput.value.trim();
+            const jsonValue = jsonInput.value.trim();
+            
+            if (!key) {
+                showStatus('Inserisci una chiave!', true);
+                return;
+            }
+            
+            if (!jsonValue) {
+                showStatus('Inserisci un valore JSON!', true);
+                return;
+            }
+            
+            if (!isValidJSON(jsonValue)) {
+                showStatus('Il JSON inserito non è valido!', true);
+                return;
+            }
+            
+            try {
+                localStorage.setItem(key, jsonValue);
+                showStatus(`Oggetto salvato con successo con chiave: ${key}`);
+                updateStoredObjectsDisplay();
+            } catch (e) {
+                showStatus(`Errore durante il salvataggio: ${e.message}`, true);
+            }
+        });
+
+        // Event listener per il pulsante Recupera
+        getButton.addEventListener('click', () => {
+            const key = keyInput.value.trim();
+            
+            if (!key) {
+                showStatus('Inserisci una chiave da recuperare!', true);
+                return;
+            }
+            
+            const value = localStorage.getItem(key);
+            
+            if (value === null) {
+                showStatus(`Nessun dato trovato per la chiave: ${key}`, true);
+            } else {
+                jsonInput.value = isValidJSON(value) ? JSON.stringify(JSON.parse(value), null, 2) : value;
+                showStatus(`Oggetto recuperato con chiave: ${key}`);
+            }
+        });
+
+        // Event listener per il pulsante Rimuovi
+        removeButton.addEventListener('click', () => {
+            const key = keyInput.value.trim();
+            
+            if (!key) {
+                showStatus('Inserisci una chiave da rimuovere!', true);
+                return;
+            }
+            
+            if (localStorage.getItem(key) === null) {
+                showStatus(`Nessun dato trovato per la chiave: ${key}`, true);
+                return;
+            }
+            
+            localStorage.removeItem(key);
+            showStatus(`Oggetto rimosso con chiave: ${key}`);
+            updateStoredObjectsDisplay();
+        });
+
+        // Event listener per il pulsante Cancella tutto
+        clearButton.addEventListener('click', () => {
+            if (localStorage.length === 0) {
+                showStatus('Il localStorage è già vuoto!');
+                return;
+            }
+            
+            if (confirm('Sei sicuro di voler cancellare tutti i dati nel localStorage?')) {
+                localStorage.clear();
+                showStatus('Tutti gli oggetti sono stati cancellati!');
+                updateStoredObjectsDisplay();
+            }
+        });
+
+        // Esempi predefiniti
+        const exampleButton = document.createElement('button');
+        exampleButton.textContent = 'Inserisci Esempio';
+        exampleButton.style.backgroundColor = '#2196F3';
+        document.querySelector('.controls').appendChild(exampleButton);
+        
+        exampleButton.addEventListener('click', () => {
+            keyInput.value = 'utente';
+            jsonInput.value = JSON.stringify({
+                nome: 'Mario',
+                età: 30,
+                email: 'mario@example.com',
+                interessi: ['sport', 'musica', 'tecnologia'],
+                indirizzo: {
+                    via: 'Via Roma 123',
+                    città: 'Milano',
+                    cap: '20100'
+                }
+            }, null, 2);
+        });
+
+        // Inizializza la visualizzazione degli oggetti memorizzati
+        updateStoredObjectsDisplay();
+    </script>
+</body>
+</html>

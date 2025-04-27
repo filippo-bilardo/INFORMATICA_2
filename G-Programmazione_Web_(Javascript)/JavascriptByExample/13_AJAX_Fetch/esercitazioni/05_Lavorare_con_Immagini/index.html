@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercitazione 5: Lavorare con Immagini (Blob)</title>
+    <link rel="stylesheet" href="style.css"> <!-- Opzionale -->
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        #image-container {
+            margin-top: 20px;
+            min-height: 300px; /* Altezza minima per vedere il caricamento */
+            width: 100%;
+            max-width: 400px; /* Larghezza massima per l'immagine */
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        #image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+        #message-area {
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Visualizza Immagine Casuale (da Picsum)</h1>
+
+    <button id="load-image">Carica Immagine</button>
+
+    <div id="image-container">
+        <!-- L'immagine verrà inserita qui -->
+    </div>
+
+    <div id="message-area">
+        <!-- Messaggi di caricamento o errore verranno inseriti qui -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

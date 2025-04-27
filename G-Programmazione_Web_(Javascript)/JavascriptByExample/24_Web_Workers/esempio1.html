@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esempio 1: Worker di Base per Calcoli Matematici</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #risultato, #risultatoWorker {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            min-height: 20px;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.3);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Esempio 1: Worker di Base per Calcoli Matematici</h1>
+    
+    <p>
+        Questo esempio dimostra come utilizzare un Web Worker per eseguire calcoli matematici intensivi
+        senza bloccare l'interfaccia utente. Prova a calcolare i numeri primi sia nel thread principale
+        che utilizzando un worker e osserva la differenza nella reattività dell'interfaccia.
+    </p>
+
+    <div class="container">
+        <div class="panel">
+            <h2>Thread Principale</h2>
+            <p>Calcola i numeri primi fino a:</p>
+            <input type="number" id="maxPrimo" value="100000" min="1000" max="10000000">
+            <button id="btnCalcola">Calcola nel Thread Principale</button>
+            <div>
+                <span>Stato UI: </span>
+                <button id="btnTestUI">Clicca per testare la reattività</button>
+            </div>
+            <div>
+                <p>Risultato:</p>
+                <div id="risultato"></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Web Worker</h2>
+            <p>Calcola i numeri primi fino a:</p>
+            <input type="number" id="maxPrimoWorker" value="100000" min="1000" max="10000000">
+            <button id="btnCalcolaWorker">Calcola con Web Worker</button>
+            <div>
+                <span>Stato UI: </span>
+                <button id="btnTestUIWorker">Clicca per testare la reattività</button>
+            </div>
+            <div>
+                <p>Risultato:</p>
+                <div id="risultatoWorker"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funzione per trovare numeri primi fino a max
+        function trovaPrimi(max) {
+            const inizio = performance.now();
+            const numeriPrimi = [];
+            
+            // Implementazione del Crivello di Eratostene
+            const isPrimo = new Array(max + 1).fill(true);
+            isPrimo[0] = isPrimo[1] = false;
+            
+            for (let i = 2; i <= max; i++) {
+                if (isPrimo[i]) {
+                    numeriPrimi.push(i);
+                    for (let j = i * i; j <= max; j += i) {
+                        isPrimo[j] = false;
+                    }
+                }
+            }
+            
+            const fine = performance.now();
+            return {
+                numeriPrimi: numeriPrimi,
+                tempo: (fine - inizio).toFixed(2)
+            };
+        }
+
+        // Gestione calcolo nel thread principale
+        document.getElementById('btnCalcola').addEventListener('click', function() {
+            const max = parseInt(document.getElementById('maxPrimo').value);
+            const risultatoDiv = document.getElementById('risultato');
+            
+            risultatoDiv.innerHTML = '<div class="loading"></div> Calcolo in corso...';
+            
+            // Utilizziamo setTimeout per dare tempo al browser di aggiornare l'UI
+            setTimeout(() => {
+                const risultato = trovaPrimi(max);
+                risultatoDiv.innerHTML = `
+                    <p>Trovati ${risultato.numeriPrimi.length} numeri primi in ${risultato.tempo} ms</p>
+                    <p>Primi 10 numeri: ${risultato.numeriPrimi.slice(0, 10).join(', ')}...</p>
+                    <p>Ultimi 10 numeri: ${risultato.numeriPrimi.slice(-10).join(', ')}</p>
+                `;
+            }, 10);
+        });
+
+        // Gestione calcolo con Web Worker
+        const worker = new Worker('esempio1.js');
+        
+        document.getElementById('btnCalcolaWorker').addEventListener('click', function() {
+            const max = parseInt(document.getElementById('maxPrimoWorker').value);
+            const risultatoDiv = document.getElementById('risultatoWorker');
+            
+            risultatoDiv.innerHTML = '<div class="loading"></div> Calcolo in corso...';
+            
+            worker.postMessage(max);
+        });
+        
+        worker.onmessage = function(event) {
+            const risultato = event.data;
+            const risultatoDiv = document.getElementById('risultatoWorker');
+            
+            risultatoDiv.innerHTML = `
+                <p>Trovati ${risultato.numeriPrimi.length} numeri primi in ${risultato.tempo} ms</p>
+                <p>Primi 10 numeri: ${risultato.numeriPrimi.slice(0, 10).join(', ')}...</p>
+                <p>Ultimi 10 numeri: ${risultato.numeriPrimi.slice(-10).join(', ')}</p>
+            `;
+        };
+
+        // Test della reattività dell'interfaccia
+        document.getElementById('btnTestUI').addEventListener('click', function() {
+            this.textContent = 'UI Reattiva! (' + new Date().toLocaleTimeString() + ')';
+        });
+        
+        document.getElementById('btnTestUIWorker').addEventListener('click', function() {
+            this.textContent = 'UI Reattiva! (' + new Date().toLocaleTimeString() + ')';
+        });
+    </script>
+</body>
+</html>

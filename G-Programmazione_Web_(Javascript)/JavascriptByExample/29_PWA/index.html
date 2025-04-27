@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progressive Web Apps (PWA) - Esercitazione</title>
+  
+  <!-- Collegamenti per PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2196f3">
+  
+  <!-- Meta tag per iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="PWA Demo">
+  <link rel="apple-touch-icon" href="images/icon-192.png">
+  
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #2196f3;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2196f3;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    a {
+      color: #2196f3;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .example-link {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    .example-link:hover {
+      background-color: #e0e0e0;
+      text-decoration: none;
+    }
+    .theory-link {
+      display: block;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Progressive Web Apps (PWA)</h1>
+    <p>Esercitazione sulle Progressive Web Apps in JavaScript</p>
+  </header>
+  
+  <div class="card">
+    <h2>Introduzione</h2>
+    <p>Le Progressive Web Apps (PWA) combinano il meglio delle applicazioni web e delle app native, offrendo un'esperienza utente superiore con funzionalità offline, installabilità e prestazioni migliorate.</p>
+    <p>In questa esercitazione, esploreremo i concetti fondamentali delle PWA e impareremo a implementarle utilizzando JavaScript.</p>
+  </div>
+  
+  <div class="card">
+    <h2>Esempi Pratici</h2>
+    <a href="esempio1.html" class="example-link">
+      <strong>Esempio 1:</strong> PWA Base con Manifest e Service Worker
+    </a>
+    <a href="esempio2.html" class="example-link">
+      <strong>Esempio 2:</strong> Strategie di Caching e Installazione
+    </a>
+  </div>
+  
+  <div class="card">
+    <h2>Materiale Teorico</h2>
+    <a href="teoria/01_Introduzione_PWA.md" class="theory-link">1. Introduzione alle PWA</a>
+    <a href="teoria/02_Web_App_Manifest.md" class="theory-link">2. Web App Manifest</a>
+    <a href="teoria/03_Service_Workers_PWA.md" class="theory-link">3. Service Workers per PWA</a>
+    <a href="teoria/04_Strategie_Caching.md" class="theory-link">4. Strategie di Caching</a>
+    <a href="teoria/05_Esperienza_Installazione.md" class="theory-link">5. Esperienza di Installazione</a>
+    <a href="teoria/06_Lighthouse_Audit.md" class="theory-link">6. Lighthouse e Audit</a>
+  </div>
+  
+  <div class="card">
+    <h2>Esercizi</h2>
+    <ol>
+      <li>Crea un Web App Manifest per un'applicazione web esistente</li>
+      <li>Implementa un Service Worker che memorizza nella cache le risorse essenziali</li>
+      <li>Aggiungi l'esperienza di installazione a una PWA</li>
+      <li>Crea una PWA completa con funzionalità offline, manifesto e icone</li>
+      <li>Esegui un audit con Lighthouse e ottimizza il punteggio PWA</li>
+    </ol>
+  </div>
+  
+  <script>
+    // Registra il Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(registration => {
+            console.log('Service Worker registrato con successo:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Errore durante la registrazione del Service Worker:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

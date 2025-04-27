@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gioco Multiplayer con WebSockets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        #game-container {
+            margin-top: 30px;
+            display: none;
+        }
+        #waiting-screen {
+            margin-top: 30px;
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            margin: 0 auto;
+            width: 310px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            font-size: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .cell:hover {
+            background-color: #e0e0e0;
+        }
+        .cell.x {
+            color: #2196F3;
+        }
+        .cell.o {
+            color: #f44336;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #player-info {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        #connection-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .connected {
+            background-color: #4CAF50;
+        }
+        .disconnected {
+            background-color: #f44336;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #player-name-container {
+            margin-bottom: 20px;
+        }
+        #player-name {
+            padding: 8px;
+            font-size: 16px;
+            width: 200px;
+        }
+        #players-list {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .player-item {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .current-player {
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .opponent-player {
+            font-weight: bold;
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe Multiplayer</h1>
+    
+    <div id="connection-status">
+        <div class="status-indicator disconnected" id="status-dot"></div>
+        <span id="status-text">Disconnesso</span>
+    </div>
+    
+    <div id="player-name-container">
+        <input type="text" id="player-name" placeholder="Inserisci il tuo nome">
+        <button id="join-btn">Entra nel gioco</button>
+    </div>
+    
+    <div id="waiting-screen" style="display: none;">
+        <h2>In attesa di un altro giocatore...</h2>
+        <div id="players-list">
+            <h3>Giocatori online:</h3>
+            <div id="players-list-items"></div>
+        </div>
+    </div>
+    
+    <div id="game-container">
+        <div id="player-info">Tu sei: <span id="player-symbol"></span></div>
+        <div id="status">In attesa dell'avversario...</div>
+        
+        <div id="game-board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        
+        <button id="restart-btn" style="display: none;">Nuova Partita</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementi DOM
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const playerNameInput = document.getElementById('player-name');
+            const joinBtn = document.getElementById('join-btn');
+            const waitingScreen = document.getElementById('waiting-screen');
+            const gameContainer = document.getElementById('game-container');
+            const playerSymbolEl = document.getElementById('player-symbol');
+            const statusEl = document.getElementById('status');
+            const cells = document.querySelectorAll('.cell');
+            const restartBtn = document.getElementById('restart-btn');
+            const playersListItems = document.getElementById('players-list-items');
+            
+            // Variabili di gioco
+            let ws;
+            let playerName = '';
+            let playerSymbol = '';
+            let currentPlayer = '';
+            let gameActive = false;
+            let gameState = ['', '', '', '', '', '', '', '', ''];
+            let players = [];
+            let opponentName = '';
+            
+            // Combinazioni vincenti
+            const winningCombinations = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // righe
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // colonne
+                [0, 4, 8], [2, 4, 6]             // diagonali
+            ];
+            
+            // Funzione per connettersi al server WebSocket
+            function connectWebSocket() {
+                ws = new WebSocket('ws://localhost:8083');
+                
+                ws.addEventListener('open', () => {
+                    console.log('Connessione WebSocket stabilita');
+                    updateConnectionStatus(true);
+                });
+                
+                ws.addEventListener('message', (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('Messaggio ricevuto:', data);
+                        
+                        handleServerMessage(data);
+                    } catch (error) {
+                        console.error('Errore nel parsing del messaggio:', error);
+                    }
+                });
+                
+                ws.addEventListener('close', () => {
+                    console.log('Connessione WebSocket chiusa');
+                    updateConnectionStatus(false);
+                    resetGame();
+                });
+                
+                ws.addEventListener('error', (error) => {
+                    console.error('Errore WebSocket:', error);
+                });
+            }
+            
+            // Gestione dei messaggi dal server
+            function handleServerMessage(data) {
+                switch (data.type) {
+                    case 'player_joined':
+                        // Aggiorna la lista dei giocatori
+                        players = data.players;
+                        updatePlayersList();
+                        break;
+                        
+                    case 'player_left':
+                        // Aggiorna la lista dei giocatori
+                        players = data.players;
+                        updatePlayersList();
+                        
+                        // Se l'avversario ha lasciato durante una partita
+                        if (gameActive && data.player === opponentName) {
+                            statusEl.textContent = `${opponentName} ha abbandonato la partita.`;
+                            gameActive = false;
+                            restartBtn.style.display = 'inline-block';
+                        }
+                        break;
+                        
+                    case 'game_start':
+                        // Inizia una nuova partita
+                        startGame(data);
+                        break;
+                        
+                    case 'game_update':
+                        // Aggiorna lo stato del gioco
+                        updateGame(data);
+                        break;
+                        
+                    case 'game_over':
+                        // Termina la partita
+                        endGame(data);
+                        break;
+                }
+            }
+            
+            // Funzione per aggiornare la lista dei giocatori
+            function updatePlayersList() {
+                playersListItems.innerHTML = '';
+                
+                players.forEach(player => {
+                    const playerItem = document.createElement('div');
+                    playerItem.className = 'player-item';
+                    
+                    if (player === playerName) {
+                        playerItem.classList.add('current-player');
+                        playerItem.textContent = `${player} (tu)`;
+                    } else if (player === opponentName) {
+                        playerItem.classList.add('opponent-player');
+                        playerItem.textContent = `${player} (avversario)`;
+                    } else {
+                        playerItem.textContent = player;
+                    }
+                    
+                    playersListItems.appendChild(playerItem);
+                });
+            }
+            
+            // Funzione per iniziare una nuova partita
+            function startGame(data) {
+                gameActive = true;
+                gameState = ['', '', '', '', '', '', '', '', ''];
+                currentPlayer = data.currentPlayer;
+                playerSymbol = data.symbol;
+                opponentName = data.opponent;
+                
+                // Aggiorna l'interfaccia
+                waitingScreen.style.display = 'none';
+                gameContainer.style.display = 'block';
+                playerSymbolEl.textContent = playerSymbol;
+                
+                // Resetta la board
+                cells.forEach(cell => {
+                    cell.textContent = '';
+                    cell.classList.remove('x', 'o');
+                });
+                
+                // Aggiorna lo stato
+                updateStatus();
+                
+                // Aggiorna la lista dei giocatori
+                updatePlayersList();
+            }
+            
+            // Funzione per aggiornare lo stato del gioco
+            function updateGame(data) {
+                gameState = data.gameState;
+                currentPlayer = data.currentPlayer;
+                
+                // Aggiorna la board
+                cells.forEach((cell, index) => {
+                    cell.textContent = gameState[index];
+                    cell.classList.remove('x', 'o');
+                    if (gameState[index] === 'X') {
+                        cell.classList.add('x');
+                    } else if (gameState[index] === 'O') {
+                        cell.classList.add('o');
+                    }
+                });
+                
+                // Aggiorna lo stato
+                updateStatus();
+            }
+            
+            // Funzione per terminare la partita
+            function endGame(data) {
+                gameActive = false;
+                gameState = data.gameState;
+                
+                // Aggiorna la board
+                cells.forEach((cell, index) => {
+                    cell.textContent = gameState[index];
+                    cell.classList.remove('x', 'o');
+                    if (gameState[index] === 'X') {
+                        cell.classList.add('x');
+                    } else if (gameState[index] === 'O') {
+                        cell.classList.add('o');
+                    }
+                });
+                
+                // Aggiorna lo stato
+                if (data.result === 'win') {
+                    if (data.winner === playerName) {
+                        statusEl.textContent = 'Hai vinto!';
+                    } else {
+                        statusEl.textContent = `${opponentName} ha vinto!`;
+                    }
+                } else if (data.result === 'draw') {
+                    statusEl.textContent = 'Pareggio!';
+                }
+                
+                // Mostra il pulsante per ricominciare
+                restartBtn.style.display = 'inline-block';
+            }
+            
+            // Funzione per aggiornare lo stato della partita
+            function updateStatus() {
+                if (currentPlayer === playerName) {
+                    statusEl.textContent = 'È il tuo turno';
+                } else {
+                    statusEl.textContent = `Turno di ${opponentName}`;
+                }
+            }
+            
+            // Funzione per aggiornare lo stato della connessione nell'UI
+            function updateConnectionStatus(connected) {
+                if (connected) {
+                    statusDot.classList.remove('disconnected');
+                    statusDot.classList.add('connected');
+                    statusText.textContent = 'Connesso';
+                } else {
+                    statusDot.classList.remove('connected');
+                    statusDot.classList.add('disconnected');
+                    statusText.textContent = 'Disconnesso';
+                }
+            }
+            
+            // Funzione per resettare il gioco
+            function resetGame() {
+                gameActive = false;
+                gameState = ['', '', '', '', '', '', '', '', ''];
+                playerSymbol = '';
+                currentPlayer = '';
+                opponentName = '';
+                
+                // Resetta l'interfaccia
+                waitingScreen.style.display = playerName ? 'block' : 'none';
+                gameContainer.style.display = 'none';
+                playerNameInput.disabled = !playerName;
+                joinBtn.disabled = !playerName;
+                
+                // Resetta la board
+                cells.forEach(cell => {
+                    cell.textContent = '';
+                    cell.classList.remove('x', 'o');
+                });
+                
+                // Nascondi il pulsante per ricominciare
+                restartBtn.style.display = 'none';
+            }
+            
+            // Gestione del click sul pulsante di ingresso
+            joinBtn.addEventListener('click', () => {
+                const name = playerNameInput.value.trim();
+                if (name && ws && ws.readyState === WebSocket.OPEN) {
+                    playerName = name;
+                    playerNameInput.disabled = true;
+                    joinBtn.disabled = true;
+                    
+                    // Invia il nome al server
+                    ws.send(JSON.stringify({
+                        type: 'join',
+                        name: playerName
+                    }));
+                    
+                    // Mostra la schermata di attesa
+                    waitingScreen.style.display = 'block';
+                }
+            });
+            
+            // Gestione del click sulle celle
+            cells.forEach(cell => {
+                cell.addEventListener('click', () => {
+                    const index = parseInt(cell.getAttribute('data-index'));
+                    
+                    // Verifica se la mossa è valida
+                    if (gameActive && currentPlayer === playerName && gameState[index] === '') {
+                        // Invia la mossa al server
+                        ws.send(JSON.stringify({
+                            type: 'move',
+                            index: index
+                        }));
+                    }
+                });
+            });
+            
+            // Gestione del click sul pulsante di riavvio
+            restartBtn.addEventListener('click', () => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    // Invia la richiesta di riavvio al server
+                    ws.send(JSON.stringify({
+                        type: 'restart'
+                    }));
+                    
+                    // Nascondi il pulsante
+                    restartBtn.style.display = 'none';
+                }
+            });
+            
+            // Connetti al server WebSocket all'avvio
+            connectWebSocket();
+        });
+    </script>
+</body>
+</html>
