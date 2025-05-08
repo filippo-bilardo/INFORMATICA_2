@@ -16,17 +16,17 @@ La combinazione di JavaScript e robotica offre un modo divertente e interattivo 
 
 Il corso è diviso in moduli, ciascuno focalizzato su specifici concetti di JavaScript e funzionalità del robot EV3:
 
-1. [🚀 Introduzione a JavaScript e MakeCode](/01-IntroduzioneJS-MakeCode/README.md)
-2. [🔍 Variabili, Tipi di Dati e Operatori](/02-Variabili-TipiDati-Operatori/README.md)
-3. [🔄 Strutture di Controllo e Condizioni](/03-StruttureControllo-Condizioni/README.md)
-4. [🔁 Cicli e Iterazioni](/04-Cicli-Iterazioni/README.md)
-5. [📦 Funzioni e Modularità](/05-Funzioni-Modularita/README.md)
-6. [🤖 Controllo Motori EV3](/06-ControlloMotori/README.md)
-7. [📡 Sensori e Input](/07-Sensori-Input/README.md)
-8. [🎮 Interazione Utente e Interfacce](/08-InterazioneUtente/README.md)
-9. [📊 Gestione Dati e Strutture Dati](/09-GestioneDati/README.md)
-10. [🏗️ Programmazione Avanzata](/10-ProgrammazioneAvanzata/README.md)
-11. [🎭 Progetto Finale](/11-ProgettoFinale/README.md)
+1. [🚀 Introduzione a JavaScript e MakeCode](01-IntroduzioneJS-MakeCode/README.md)
+2. [🔍 Variabili, Tipi di Dati e Operatori](02-Variabili-TipiDati-Operatori/README.md)
+3. [🔄 Strutture di Controllo e Condizioni](03-StruttureControllo-Condizioni/README.md)
+4. [🔁 Cicli e Iterazioni](04-Cicli-Iterazioni/README.md)
+5. [📦 Funzioni e Modularità](05-Funzioni-Modularita/README.md)
+6. [🤖 Controllo Motori EV3](06-ControlloMotori/README.md)
+7. [📡 Sensori e Input](07-Sensori-Input/README.md)
+8. [🎮 Interazione Utente e Interfacce](08-InterazioneUtente/README.md)
+9. [📊 Gestione Dati e Strutture Dati](09-GestioneDati/README.md)
+10. [🏗️ Programmazione Avanzata](10-ProgrammazioneAvanzata/README.md)
+11. [🎭 Progetto Finale](11-ProgettoFinale/README.md)
 
 ## Come Utilizzare questo Corso
 
