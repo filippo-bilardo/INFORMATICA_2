@@ -1,0 +1,22 @@
+# Esempi: Gestione Dati e Strutture Dati
+
+In questa sezione troverai esempi pratici che illustrano come gestire dati e utilizzare strutture dati comuni in JavaScript per programmare il tuo robot EV3.
+
+## Elenco Esempi
+
+1.  **Gestione di Array**: `01_GestioneArray.js`
+    *   Descrizione: Come creare, popolare e manipolare array per memorizzare collezioni di dati (es. sequenze di movimenti, letture di sensori).
+2.  **Utilizzo di Oggetti**: `02_UtilizzoOggetti.js`
+    *   Descrizione: Come usare oggetti JavaScript per rappresentare entità complesse con proprietà (es. configurazione del robot, stato dei sensori).
+3.  **Memorizzazione Dati Semplice**: `03_MemorizzazioneDati.js`
+    *   Descrizione: Tecniche base per "memorizzare" dati tra diverse esecuzioni o parti del programma (simulato, dato che EV3 MakeCode non ha persistenza reale dei dati su file system).
+4.  **Filtraggio e Elaborazione Dati da Sensori**: `04_FiltraggioSensori.js`
+    *   Descrizione: Esempi di come elaborare i dati grezzi provenienti dai sensori, ad esempio calcolando medie mobili o filtrando valori anomali.
+5.  **Logging Avanzato**: `05_LoggingAvanzato.js`
+    *   Descrizione: Come utilizzare `console.log` in modo più strutturato per il debugging, magari formattando l'output o loggando oggetti complessi.
+
+---
+
+[Torna al Modulo 09](../README.md)
+
+[Torna alla Home del Corso](../../README.md)

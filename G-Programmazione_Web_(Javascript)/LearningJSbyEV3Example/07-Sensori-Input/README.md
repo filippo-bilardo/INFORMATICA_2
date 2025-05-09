@@ -1,67 +1,40 @@
-# Modulo 7: Sensori e Input
+# Modulo 7: 📡 Sensori e Input
 
-## Introduzione
+Benvenuto al Modulo 7! In questa sezione imparerai tutto sui sensori del Lego EV3 e su come utilizzarli per raccogliere input dall'ambiente. I sensori sono gli "occhi" e le "orecchie" del tuo robot, permettendogli di percepire il mondo circostante e reagire di conseguenza.
 
-Benvenuto al modulo dedicato ai sensori e agli input del robot LEGO EV3! In questa parte del corso imparerai come utilizzare i diversi tipi di sensori disponibili per il tuo robot, permettendogli di percepire e interagire con l'ambiente circostante.
+## Obiettivi del Modulo
 
-I sensori sono fondamentali per creare robot intelligenti e reattivi: attraverso di essi, il tuo robot può "vedere", "sentire" e "toccare" il mondo attorno a sé, reagendo in modo appropriato.
+*   Conoscere i **diversi tipi di sensori** disponibili per EV3 (Ultrasuoni, Colore, Giroscopio, Infrarossi, Tocco).
+*   Imparare a **leggere i dati** da ciascun sensore utilizzando JavaScript in MakeCode.
+*   Comprendere come **interpretare i valori** restituiti dai sensori.
+*   Utilizzare i dati dei sensori per implementare **comportamenti reattivi** nel robot.
+*   Introdurre la **programmazione guidata dagli eventi** basata sugli input dei sensori.
 
-## Contenuti del Modulo
+## Struttura del Modulo
 
-### Guide Teoriche
+1.  **Guide Teoriche**:
+    *   [Guida 1: Panoramica dei Sensori EV3](./01-PanoramicaSensori.md)
+    *   [Guida 2: Il Sensore a Ultrasuoni](./02-SensoreUltrasuoni.md)
+    *   [Guida 3: Il Sensore di Colore](./03-SensoreColore.md)
+    *   [Guida 4: Il Sensore Giroscopio](./04-SensoreGiroscopio.md)
+    *   [Guida 5: Il Sensore a Infrarossi e Beacon](./05-SensoreInfrarossi.md)
+    *   [Guida 6: Il Sensore di Contatto (Touch Sensor)](./06-SensoreTouch.md)
+    *   [Guida 7: Programmazione Reattiva e Gestione Input](./07-ProgrammazioneReattiva.md)
+2.  **[Esempi Pratici](./esempi/README.md)**:
+    *   Codice JavaScript che dimostra come leggere e utilizzare ciascun sensore.
+3.  **[Esercizi](./esercizi/README.md)**:
+    *   Sfide per applicare le tue conoscenze sui sensori per creare robot interattivi.
 
-1. [Panoramica dei Sensori EV3](01-PanoramicaSensori.md) - Introduzione ai tipi di sensori disponibili
-2. [Sensore a Ultrasuoni](02-SensoreUltrasuoni.md) - Misurazione delle distanze
-3. [Sensore di Colore](03-SensoreColore.md) - Rilevamento colori e intensità luminosa
-4. [Sensore Giroscopico](04-SensoreGiroscopio.md) - Misurazione di angoli e rotazioni
-5. [Sensore Infrarossi](05-SensoreInfrarossi.md) - Rilevamento oggetti e telecomando
-6. [Sensore Touch](06-SensoreTouch.md) - Rilevamento contatto e pressione
-7. [Programmazione Reattiva](07-ProgrammazioneReattiva.md) - Creare comportamenti basati su eventi
+## Concetti Chiave
 
-### Esempi Pratici
+*   **Polling vs. Eventi**: Due approcci principali per leggere i dati dei sensori.
+*   **Calibrazione**: Importanza della calibrazione di alcuni sensori (es. colore) per letture accurate.
+*   **Soglie (Thresholds)**: Utilizzare valori soglia per prendere decisioni basate sui dati dei sensori.
+*   **Filtraggio del Rumore**: Tecniche base per gestire letture instabili o rumorose (cenni).
+*   **Logica Condizionale**: Utilizzare `if/else` e `switch` per reagire ai diversi input dei sensori.
 
-Nella cartella `esempi` troverai:
-
-- [01_LetturaDistanza.js](esempi/01_LetturaDistanza.js) - Utilizzo del sensore ultrasuoni
-- [02_RilevamentoColori.js](esempi/02_RilevamentoColori.js) - Utilizzo del sensore di colore
-- [03_ControlloMovimento.js](esempi/03_ControlloMovimento.js) - Utilizzo del giroscopio
-- [04_InputUtenteIR.js](esempi/04_InputUtenteIR.js) - Utilizzo del sensore infrarossi
-- [05_RilevatoreOstacoli.js](esempi/05_RilevatoreOstacoli.js) - Combinazione di sensori
-
-### Esercizi
-
-Nella cartella `esercizi` troverai sfide pratiche per mettere alla prova le tue competenze:
-
-- Esercizio 1: Robot che evita ostacoli
-- Esercizio 2: Segui-linea con il sensore di colore
-- Esercizio 3: Robot controllato da telecomando IR
-- Esercizio 4: Misurazione e visualizzazione dell'ambiente
-- Progetto: Robot esploratore
-
-## Obiettivi di Apprendimento
-
-Alla fine di questo modulo sarai in grado di:
-
-- Utilizzare tutti i principali sensori della piattaforma EV3
-- Interpretare correttamente i dati provenienti dai sensori
-- Implementare logiche di decisione basate sugli input dei sensori
-- Combinare più sensori per creare comportamenti complessi
-- Creare programmi reattivi che rispondono a eventi ambientali
-
-## Progetti Pratici Suggeriti
-
-- **Robot Esploratore**: Un robot che mappa l'ambiente circostante usando i sensori
-- **Robot Segui-linea**: Un robot che segue una linea sul pavimento
-- **Robot Evita-ostacoli**: Un robot che naviga autonomamente evitando ostacoli
-- **Robot Sorter**: Un robot che identifica e ordina oggetti di colori diversi
-- **Robot Controllato da Remoto**: Un robot telecomandato tramite il sensore infrarossi
-
-## Risorse Aggiuntive
-
-- [Documentazione MakeCode per EV3 sui Sensori](https://makecode.mindstorms.com/reference/sensors)
-- [Guida Tecnica ai Sensori LEGO](https://education.lego.com/en-us/product-resources/mindstorms-ev3)
-- [Video Tutorial sui Sensori EV3](https://education.lego.com/en-us/lessons?rows=100)
+Al termine di questo modulo, sarai in grado di dotare i tuoi robot EV3 di "sensi" e di programmarli per interagire in modo intelligente con l'ambiente.
 
 ---
 
-[⬅️ Torna all'indice principale](../README.md) | [⬅️ Modulo precedente: Controllo Motori](../06-ControlloMotori/README.md) | [➡️ Vai al modulo successivo: Interazione Utente](../08-InterazioneUtente/README.md)
+[Torna alla Home del Corso](../README.md)
