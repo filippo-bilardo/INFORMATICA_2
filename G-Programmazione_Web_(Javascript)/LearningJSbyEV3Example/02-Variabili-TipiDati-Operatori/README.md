@@ -18,6 +18,10 @@ Nella cartella [esempi](./esempi/) troverai diversi codici di esempio che illust
 3. [03_Operatori.js](./esempi/03_Operatori.js) - Utilizzare operatori per calcoli e controllo del robot
 4. [04_Espressioni.js](./esempi/04_Espressioni.js) - Combinare espressioni per creare logiche di controllo complesse
 
+## Esercitazioni
+
+Consulta la sezione [esercizi](./esercizi/README.md) per mettere in pratica quanto appreso in questo modulo.
+
 ## Obiettivi di Apprendimento
 
 Alla fine di questo modulo, sarai in grado di:

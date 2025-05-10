@@ -18,6 +18,10 @@ Nella cartella [esempi](./esempi/) troverai diversi codici di esempio che illust
 3. [03_ModalitaInterattiva.js](./esempi/03_ModalitaInterattiva.js) - Utilizzo della modalità interattiva di MakeCode
 4. [04_DebuggingEsempio.js](./esempi/04_DebuggingEsempio.js) - Come utilizzare gli strumenti di debugging
 
+## Esercitazioni
+
+Consulta la sezione [esercizi](./esercizi/README.md) per mettere in pratica quanto appreso in questo modulo.
+
 ## Obiettivi di Apprendimento
 
 Alla fine di questo modulo, sarai in grado di:
