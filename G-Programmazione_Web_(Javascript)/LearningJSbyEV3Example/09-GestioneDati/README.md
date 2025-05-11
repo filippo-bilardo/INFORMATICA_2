@@ -16,12 +16,12 @@ Una buona gestione dei dati è cruciale per creare robot che possono prendere de
 ## Struttura del Modulo
 
 1.  **Guide Teoriche**:
-    *   [Guida 1: Array e Collezioni](./01-ArrayCollezioni.md)
-    *   [Guida 2: Oggetti e Proprietà](./02-OggettiProprietà.md)
-    *   [Guida 3: Memorizzazione Dati (Simulata)](./03-MemorizzazioneDati.md)
-    *   [Guida 4: Elaborazione Dati da Sensori](./04-ElaborazioneDatiSensori.md)
-    *   [Guida 5: Logging e Debug Avanzato](./05-LoggingDebug.md)
-    *   [Guida 6: Cenni su Strutture Dati Avanzate](./06-StruttureDatiAvanzate.md)
+    *   [Guida 1: Array e Collezioni](./guide/01-ArrayCollezioni.md)
+    *   [Guida 2: Oggetti e Proprietà](./guide/02-OggettiProprietà.md)
+    *   [Guida 3: Memorizzazione Dati (Simulata)](./guide/03-MemorizzazioneDati.md)
+    *   [Guida 4: Elaborazione Dati da Sensori](./guide/04-ElaborazioneDatiSensori.md)
+    *   [Guida 5: Logging e Debug Avanzato](./guide/05-LoggingDebug.md)
+    *   [Guida 6: Cenni su Strutture Dati Avanzate](./guide/06-StruttureDatiAvanzate.md)
 2.  **[Esempi Pratici](./esempi/README.md)**:
     *   Codice JavaScript che dimostra l'uso di array, oggetti, e l'elaborazione dei dati dei sensori.
 3.  **[Esercizi](./esercizi/README.md)**:

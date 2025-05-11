@@ -12,6 +12,10 @@ In questo modulo esploreremo le funzioni in JavaScript, un concetto fondamentale
 4. [Arrow Functions](04-ArrowFunctions.md)
 5. [Funzioni di Callback](05-FunzioniCallback.md)
 
+### Guide
+
+Consulta la sezione [guide](./guide/README.md) per approfondimenti sui concetti di questo modulo.
+
 ### Esempi Pratici
 Nella cartella `esempi` troverai:
 - `01_FunzioniBase.js`: Esempi di base sull'uso delle funzioni

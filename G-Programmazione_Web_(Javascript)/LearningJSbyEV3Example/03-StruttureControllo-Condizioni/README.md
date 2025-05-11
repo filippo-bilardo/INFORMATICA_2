@@ -12,6 +12,10 @@ In questo modulo esploreremo le strutture di controllo e le condizioni in JavaSc
 4. [Espressioni Condizionali (Operatore Ternario)](04-EspressioniCondizionali.md)
 5. [Truth and Falsy Values](05-TruthFalsyValues.md)
 
+### Guide
+
+Consulta la sezione [guide](./guide/README.md) per approfondimenti sui concetti di questo modulo.
+
 ### Esempi Pratici
 Nella cartella `esempi` troverai:
 - `01_IfElse.js`: Utilizzo di if/else per controllare il comportamento del robot

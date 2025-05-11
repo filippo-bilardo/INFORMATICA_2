@@ -12,6 +12,10 @@ In questo modulo esploreremo i cicli e le strutture iterative in JavaScript, ele
 4. [Istruzioni break e continue](04-Break-Continue.md)
 5. [La funzione forever e il polling](05-Forever-Polling.md)
 
+### Guide
+
+Consulta la sezione [guide](./guide/README.md) per approfondimenti sui concetti di questo modulo.
+
 ### Esempi Pratici
 Nella cartella `esempi` troverai:
 - `01_While.js`: Utilizzo del ciclo while per il controllo continuo del robot

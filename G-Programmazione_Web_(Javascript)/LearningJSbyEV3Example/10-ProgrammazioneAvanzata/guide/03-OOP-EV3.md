@@ -1,242 +1,242 @@
-# Guida 3: Principi OOP in JavaScript per EV3
+# Guida 3: Programmazione Orientata agli Oggetti (OOP) con EV3
 
-## Introduzione
+## Introduzione alla OOP
 
-La Programmazione Orientata agli Oggetti (Object-Oriented Programming - OOP) è un paradigma di programmazione che utilizza "oggetti" – strutture dati consistenti in campi dati e metodi – e le loro interazioni per progettare applicazioni e programmi per computer. Sebbene JavaScript sia un linguaggio multi-paradigma e il suo supporto OOP sia basato sui prototipi piuttosto che sulle classi classiche (almeno prima di ES6), i principi OOP possono essere applicati efficacemente anche nella programmazione di LEGO EV3 con MakeCode per organizzare meglio il codice, renderlo più modulare e riutilizzabile.
+La Programmazione Orientata agli Oggetti (Object-Oriented Programming - OOP) è un paradigma di programmazione che utilizza "oggetti" – istanze di classi – per progettare applicazioni e programmi informatici. La OOP si basa su diversi concetti chiave:
 
-Questa guida esplorerà i concetti base dell'OOP e come possono essere adattati all'ambiente MakeCode/JavaScript per EV3.
+1.  **Classi (Classes)**: Modelli o " progetti" per creare oggetti. Una classe definisce le proprietà (attributi) e i comportamenti (metodi) che tutti gli oggetti creati da essa avranno.
+2.  **Oggetti (Objects)**: Istanze di una classe. Ogni oggetto ha il proprio stato (i valori dei suoi attributi) ma condivide i comportamenti definiti dalla sua classe.
+3.  **Incapsulamento (Encapsulation)**: Raggruppare i dati (attributi) e i metodi che operano su quei dati all'interno di un'unica unità (un oggetto). Nasconde i dettagli interni di un oggetto e protegge i dati da accessi esterni non autorizzati.
+4.  **Ereditarietà (Inheritance)**: Permette a una classe (sottoclasse o classe derivata) di ereditare attributi e metodi da un'altra classe (superclasse o classe base). Questo promuove il riutilizzo del codice e la creazione di gerarchie di classi.
+5.  **Polimorfismo (Polymorphism)**: Letteralmente "molte forme". Permette a oggetti di classi diverse di rispondere allo stesso messaggio (chiamata di metodo) in modi specifici per la loro classe. Spesso si realizza tramite l'override di metodi.
 
-## Concetti Fondamentali dell'OOP
+JavaScript, pur essendo un linguaggio basato su prototipi, supporta i concetti della OOP, specialmente con le sintassi introdotte in ES6 (ECMAScript 2015) che rendono più familiare la definizione di classi e l'ereditarietà.
 
-1.  **Oggetti (Objects):** Un'istanza che contiene dati (proprietà o attributi) e comportamenti (metodi). In robotica, un oggetto potrebbe rappresentare un componente fisico del robot (es. un motore, un sensore) o un concetto logico (es. un controller PID, un gestore di stato).
+## Perché Usare la OOP con EV3?
 
-2.  **Classi (Classes) (o Costruttori/Prototipi in JavaScript):** Un modello o un progetto per creare oggetti. Definisce le proprietà e i metodi che tutti gli oggetti creati da quella classe avranno. In JavaScript ES5 e versioni precedenti, questo si ottiene spesso tramite funzioni costruttore e prototipi. ES6 ha introdotto la sintassi `class` che è zucchero sintattico sopra i prototipi.
+Anche se MakeCode per EV3 è fortemente basato su blocchi e un approccio funzionale/procedurale, l'applicazione dei principi OOP può portare benefici significativi, specialmente in progetti più grandi e complessi:
 
-3.  **Incapsulamento (Encapsulation):** Legare insieme i dati (proprietà) e i metodi che operano su quei dati all'interno di un oggetto, e nascondere lo stato interno dell'oggetto al mondo esterno. L'accesso allo stato dell'oggetto avviene tramite un'interfaccia pubblica (i suoi metodi).
-    *   **Vantaggio:** Protegge i dati da modifiche accidentali e semplifica la gestione della complessità.
+*   **Organizzazione del Codice**: Raggruppare la logica relativa a componenti specifici del robot (es. un braccio meccanico, un sistema di navigazione) in classi dedicate.
+*   **Modularità e Riusabilità**: Creare classi per sensori o attuatori personalizzati che possono essere riutilizzate in diversi progetti o parti dello stesso progetto.
+*   **Astrazione**: Nascondere la complessità di basso livello dell'hardware EV3 dietro interfacce di classe più semplici.
+*   **Gestione della Complessità**: Suddividere un problema complesso in oggetti più piccoli e gestibili che interagiscono tra loro.
 
-4.  **Astrazione (Abstraction):** Nascondere i dettagli complessi dell'implementazione e mostrare solo le funzionalità essenziali dell'oggetto. L'utente di un oggetto interagisce con esso a un livello superiore, senza doversi preoccupare di come funziona internamente.
-    *   **Vantaggio:** Semplifica l'uso degli oggetti e riduce l'impatto delle modifiche interne.
+## Definire Classi in JavaScript (ES6+) per MakeCode
 
-5.  **Ereditarietà (Inheritance) (tramite Prototipi in JS):** Un meccanismo per cui un oggetto (o classe) può ereditare proprietà e metodi da un altro oggetto (o classe) genitore. Permette di creare gerarchie di oggetti e di riutilizzare il codice.
-    *   **Vantaggio:** Promuove il riutilizzo del codice e la creazione di specializzazioni.
+MakeCode supporta la sintassi delle classi ES6. Vediamo come definire una classe semplice.
 
-6.  **Polimorfismo (Polymorphism):** La capacità di oggetti di classi diverse di rispondere allo stesso messaggio (chiamata di metodo) in modi diversi, specifici per la loro classe. "Molte forme".
-    *   **Vantaggio:** Permette di scrivere codice più generico e flessibile.
+### Esempio: Una Classe `MotoreControllato`
 
-## Applicare OOP in MakeCode/JavaScript per EV3
-
-L'ambiente MakeCode per EV3 potrebbe non supportare tutte le funzionalità avanzate di JavaScript ES6+ relative alle classi in modo completo o ottimizzato come un browser moderno o Node.js. Tuttavia, possiamo applicare i principi usando funzioni costruttore e prototipi, o la sintassi `class` se supportata e appropriata per la complessità.
-
-### Esempio 1: Funzione Costruttore per un Motore Personalizzato
-
-Supponiamo di voler creare un oggetto che rappresenti un motore con funzionalità aggiuntive o una configurazione specifica.
+Supponiamo di voler creare una classe che gestisca un motore EV3 con funzionalità aggiuntive, come il controllo della velocità con rampe o il conteggio delle rotazioni.
 
 ```javascript
-// Funzione Costruttore per un Motore Personalizzato
-function MotoreControllato(motorPorts, defaultSpeed) {
-  // Proprietà (dati)
-  this.ports = motorPorts; // es. motors.largeA o motors.largeBC
-  this.velocitaDefault = defaultSpeed || 50; // Velocità di default se non specificata
-  this.inFunzione = false;
+class MotoreControllato {
+    // Costruttore della classe
+    constructor(portaMotore, velocitaDefault) {
+        this.porta = portaMotore; // es. motors.largeA
+        this.velocita = velocitaDefault;
+        this.rotazioniTotali = 0;
 
-  // Metodi (comportamenti)
-  this.avvia = function(velocita) {
-    let vel = velocita || this.velocitaDefault;
-    this.ports.run(vel);
-    this.inFunzione = true;
-    brick.showString("Motore avv: " + vel + "%", 2);
-  };
-
-  this.ferma = function() {
-    this.ports.stop();
-    this.inFunzione = false;
-    brick.showString("Motore fermo", 2);
-  };
-
-  this.invertiDirezione = function() {
-    // Questa logica è semplificata; una vera inversione potrebbe richiedere
-    // di fermare, cambiare la velocità a negativa e riavviare.
-    // Per semplicità, assumiamo che run con velocità negativa funzioni.
-    if (this.inFunzione) {
-        let currentSpeed = this.ports.speed(); // Potrebbe non esistere un metodo diretto per ottenere la velocità corrente
-                                            // in questo modo in MakeCode. Questo è concettuale.
-                                            // Spesso si memorizza l'ultima velocità impostata.
-        this.avvia(-this.velocitaDefault); // Esempio: riparte con velocità negativa
-        brick.showString("Motore invertito", 3);
-    } else {
-        brick.showString("Motore non in funzione", 3);
+        // Inizializza il motore (esempio)
+        this.porta.setRegulated(true);
+        this.porta.setSpeedRegulation(true);
+        brick.showString(`Motore ${this.porta.port()} init`, 5);
     }
-  };
 
-  this.stato = function() {
-    return this.inFunzione ? "In funzione" : "Fermo";
-  };
+    // Metodo per avviare il motore
+    avvia(velocita) {
+        if (velocita !== undefined) {
+            this.velocita = velocita;
+        }
+        this.porta.run(this.velocita);
+        brick.showString(`Motore ${this.porta.port()} ON V:${this.velocita}`, 6);
+    }
+
+    // Metodo per fermare il motore
+    ferma() {
+        this.porta.stop();
+        // Potremmo voler leggere le rotazioni qui se il motore le traccia
+        // this.rotazioniTotali += this.porta.angle() / 360; // Esempio approssimativo
+        brick.showString(`Motore ${this.porta.port()} OFF`, 6);
+    }
+
+    // Metodo per impostare una nuova velocità
+    setVelocita(nuovaVelocita) {
+        this.velocita = nuovaVelocita;
+        if (this.porta.isRunning()) {
+            this.porta.run(this.velocita); // Applica subito se in movimento
+        }
+    }
+
+    // Metodo per ottenere le rotazioni (semplificato)
+    getRotazioni() {
+        // Questo è un esempio, la lettura precisa delle rotazioni
+        // richiede di resettare l'angolo o di tracciarlo continuamente.
+        return this.porta.angle() / 360;
+    }
+
+    // Metodo per muovere per un certo numero di gradi
+    muoviGradi(gradi, velocita) {
+        let vel = velocita !== undefined ? velocita : this.velocita;
+        brick.showString(`Muovo ${gradi} deg`, 7);
+        this.porta.run(vel, gradi, MoveUnit.Degrees);
+        // Il blocco run con gradi è sincrono, attende il completamento
+        // this.rotazioniTotali += gradi / 360;
+    }
 }
 
-// Creazione di istanze (oggetti) di MotoreControllato
-let motoreSinistro = new MotoreControllato(motors.largeB, 60);
-let motoreDestro = new MotoreControllato(motors.largeC, 60);
+// --- Utilizzo della Classe ---
 
-// Utilizzo degli oggetti motore
-brick.showString("Test Motore OOP", 1);
+// Creazione di istanze (oggetti) della classe MotoreControllato
+let motoreSinistro = new MotoreControllato(motors.largeB, 50);
+let motoreDestro = new MotoreControllato(motors.largeC, 50);
 
-motoreSinistro.avvia();
-pause(1000);
-motoreDestro.avvia(75);
-pause(1000);
+pause(2000); // Pausa per vedere i messaggi di init
 
-brick.showString("Stato SX: " + motoreSinistro.stato(), 4);
-brick.showString("Stato DX: " + motoreDestro.stato(), 5);
+// Utilizzo dei metodi degli oggetti
+motoreSinistro.avvia(60);
+motoreDestro.avvia(60);
+
+pause(3000); // Lascia i motori accesi per 3 secondi
+
+motoreSinistro.setVelocita(30);
+// motoreDestro rimane a 60
+
 pause(2000);
 
 motoreSinistro.ferma();
 motoreDestro.ferma();
+
 pause(1000);
 
-// motoreSinistro.invertiDirezione(); // Esempio di chiamata metodo
+motoreDestro.muoviGradi(720, 40); // Fai 2 rotazioni
+brick.showString(`Rot DX: ${motoreDestro.getRotazioni().toFixed(2)}`, 8);
+
 ```
 
-**Spiegazione:**
-*   `MotoreControllato` è una funzione costruttore. Quando chiamata con `new`, crea un nuovo oggetto.
-*   `this` all'interno del costruttore si riferisce all'oggetto che viene creato.
-*   Proprietà come `this.ports`, `this.velocitaDefault` memorizzano lo stato del motore.
-*   Funzioni assegnate a `this.nomeMetodo` diventano metodi dell'oggetto.
-*   **Incapsulamento:** I dettagli su come il motore viene avviato o fermato sono nascosti all'interno dei metodi `avvia` e `ferma`. L'utente dell'oggetto non ha bisogno di conoscere i comandi specifici di `motors.largeBC.run()`.
-*   **Astrazione:** L'oggetto `MotoreControllato` fornisce un'interfaccia semplice (`avvia`, `ferma`) per controllare un motore.
+### Spiegazione dell'Esempio:
 
-### Esempio 2: Utilizzo di Prototipi per Metodi Condivisi
+1.  **`class MotoreControllato { ... }`**: Definisce la classe.
+2.  **`constructor(portaMotore, velocitaDefault)`**: Il costruttore viene chiamato quando si crea un nuovo oggetto con `new MotoreControllato(...)`. Inizializza le proprietà dell'oggetto (`this.porta`, `this.velocita`, ecc.).
+    *   `this` si riferisce all'istanza corrente dell'oggetto.
+3.  **Metodi (`avvia`, `ferma`, `setVelocita`, `getRotazioni`, `muoviGradi`)**: Funzioni definite all'interno della classe che operano sui dati dell'oggetto. Possono accedere alle proprietà dell'oggetto usando `this`.
+4.  **Creazione di Oggetti**: `let motoreSinistro = new MotoreControllato(motors.largeB, 50);` crea una nuova istanza della classe `MotoreControllato`, passando `motors.largeB` e `50` al costruttore. `motoreSinistro` è ora un oggetto.
+5.  **Utilizzo dei Metodi**: `motoreSinistro.avvia(60);` chiama il metodo `avvia` sull'oggetto `motoreSinistro`.
 
-Per risparmiare memoria, i metodi che non dipendono dallo stato specifico di ogni istanza (o che possono accedere allo stato tramite `this`) possono essere definiti sul prototipo della funzione costruttore. Tutte le istanze condivideranno quindi la stessa copia del metodo.
+## Ereditarietà in JavaScript per EV3
 
-```javascript
-function SensoreWrapper(sensorPort, nome) {
-  this.port = sensorPort;
-  this.nome = nome || "SensoreSconosciuto";
-  this.ultimoValore = null;
-}
+L'ereditarietà permette di creare una nuova classe che è una versione specializzata di una classe esistente.
 
-// Aggiunta di metodi al prototipo
-SensoreWrapper.prototype.leggiValore = function() {
-  // Logica specifica per tipo di sensore (questo è generico)
-  // In un caso reale, si avrebbe una logica diversa per ColorSensor, Ultrasonic, etc.
-  if (this.port && typeof this.port.value === 'function') { // Esempio ipotetico
-      this.ultimoValore = this.port.value();
-  } else if (this.port && typeof this.port.distance === 'function') { // Per sensore ultrasuoni
-      this.ultimoValore = this.port.distance();
-  } else if (this.port && typeof this.port.light === 'function') { // Per sensore luce
-      this.ultimoValore = this.port.light(LightIntensityMode.Reflected);
-  } else {
-      this.ultimoValore = "N/D";
-  }
-  return this.ultimoValore;
-};
+### Esempio: Classe `MotoreConSensore` che Eredita da `MotoreControllato`
 
-SensoreWrapper.prototype.mostraUltimoValore = function(rigaDisplay) {
-  this.leggiValore(); // Assicura che il valore sia aggiornato
-  brick.showString(this.nome + ": " + this.ultimoValore, rigaDisplay);
-};
-
-// Creazione istanze
-let mioSensoreLuce = new SensoreWrapper(sensors.color1, "Luce");
-let mioSensoreUltrasuoni = new SensoreWrapper(sensors.ultrasonic1, "Dist");
-
-// Utilizzo
-brick.showString("Test Sensori OOP", 1);
-
-forever(function() {
-    mioSensoreLuce.mostraUltimoValore(3);
-    mioSensoreUltrasuoni.mostraUltimoValore(4);
-    pause(500);
-});
-```
-
-### Sintassi `class` (ES6) - Se Supportata
-
-Se l'ambiente MakeCode EV3 ha un buon supporto per la sintassi `class` di ES6, l'esempio del motore potrebbe essere scritto così:
+Supponiamo di voler un motore che si ferma automaticamente se un sensore (es. di tocco) viene attivato.
 
 ```javascript
-/* // Esempio con sintassi class (verificare supporto in MakeCode)
-class RobotComponente {
-    constructor(nome) {
-        this.nomeComponente = nome;
+// Assumendo che la classe MotoreControllato sia definita come sopra
+
+class MotoreConSensore extends MotoreControllato {
+    constructor(portaMotore, velocitaDefault, sensoreDiStop, portaSensore) {
+        // Chiama il costruttore della classe base (MotoreControllato)
+        super(portaMotore, velocitaDefault);
+
+        this.sensore = sensoreDiStop; // es. sensors.touch1
+        this.portaSensoreNumero = portaSensore; // es. 1, per messaggi
+
+        // Registra un evento per fermare il motore se il sensore è premuto
+        // Nota: la gestione degli eventi deve essere fatta con attenzione al contesto di 'this'
+        // Usiamo una arrow function per mantenere il 'this' della classe MotoreConSensore
+        this.sensore.onEvent(ButtonEvent.Pressed, () => {
+            if (this.porta.isRunning()) {
+                brick.showString(`Sens ${this.portaSensoreNumero} STOP MOT ${this.porta.port()}`, 4);
+                this.ferma(); // Chiama il metodo ferma() ereditato (o sovrascritto)
+                brick.sound(Sound.PlayStop);
+            }
+        });
+        brick.showString(`Motore ${this.porta.port()} con Sens ${this.portaSensoreNumero}`, 5);
     }
 
-    getNome() {
-        return this.nomeComponente;
-    }
-
-    diagnostica() {
-        log("Diagnostica per: " + this.nomeComponente);
-        // Logica di diagnostica comune
-    }
-}
-
-class MotoreEsteso extends RobotComponente { // Ereditarietà
-    constructor(nome, motorPorts, defaultSpeed) {
-        super(nome); // Chiama il costruttore della classe genitore
-        this.ports = motorPorts;
-        this.velocitaDefault = defaultSpeed || 50;
-        this.inFunzione = false;
-    }
-
+    // Possiamo sovrascrivere metodi della classe base (Polimorfismo)
     avvia(velocita) {
-        let vel = velocita || this.velocitaDefault;
-        this.ports.run(vel);
-        this.inFunzione = true;
-        log(this.getNome() + " avviato a " + vel + "%");
+        brick.showString(`Avvio MotoreSens ${this.porta.port()}`, 6);
+        super.avvia(velocita); // Chiama il metodo avvia() della classe base
+        // Aggiungi logica specifica per MotoreConSensore, se necessario
     }
 
-    ferma() {
-        this.ports.stop();
-        this.inFunzione = false;
-        log(this.getNome() + " fermato.");
-    }
-
-    // Override del metodo diagnostica (Polimorfismo)
-    diagnostica() {
-        super.diagnostica(); // Chiama il metodo della classe base
-        log("Stato motore " + this.nomeComponente + ": " + (this.inFunzione ? "ON" : "OFF"));
+    // Aggiungere nuovi metodi specifici per questa sottoclasse
+    controllaSensoreManualmente() {
+        if (this.sensore.isPressed()) {
+            brick.showString("Sensore premuto manualmente!", 7);
+            return true;
+        }
+        return false;
     }
 }
 
-function log(messaggio) { // Semplice funzione di log per l'esempio
-    brick.showString(messaggio, नेक्स्टLogRiga());
+// --- Utilizzo della Classe Derivata ---
+
+// Assicurati che la classe MotoreControllato sia definita prima
+
+let motoreSpeciale = new MotoreConSensore(motors.largeA, 40, sensors.touch1, 1);
+
+pause(2000);
+
+motoreSpeciale.avvia(50);
+
+// Il motore si fermerà automaticamente se premi il sensore di tocco sulla porta 1
+// Lasciamo il programma in esecuzione per testare
+brick.showString("Premi Touch1 per fermare A", 8);
+
+// Dopo un po', possiamo fermarlo anche programmaticamente
+loops.pause(10000); // Attendi 10 secondi o la pressione del sensore
+if (motoreSpeciale.porta.isRunning()) {
+    motoreSpeciale.ferma();
+    brick.showString("Fermato da programma", 8);
 }
 
-let logLine = 2;
-function nextLogLine() { if (logLine > 8) logLine = 2; return logLine++; }
-
-let motoreAvanzato = new MotoreEsteso("Motore Principale", motors.largeA, 70);
-motoreAvanzato.avvia();
-pause(1000);
-motoreAvanzato.diagnostica();
-pause(1000);
-motoreAvanzato.ferma();
-*/
 ```
-**Nota sulla sintassi `class`:** La sua disponibilità e il comportamento esatto (specialmente per funzionalità avanzate come `super()` in contesti complessi o getter/setter) dovrebbero essere verificati specificamente per l'ambiente MakeCode EV3 che si sta utilizzando. Per progetti più semplici o per garantire massima compatibilità, le funzioni costruttore e i prototipi sono un approccio più sicuro.
 
-## Vantaggi dell'OOP per Progetti EV3
+### Spiegazione dell'Ereditarietà:
 
-*   **Organizzazione del Codice:** Raggruppare la logica relativa a un componente specifico (es. un braccio robotico con i suoi motori e sensori) in un unico oggetto o classe.
-*   **Riusabilità:** Una classe `SensoreGenerico` o `MotorePID` può essere riutilizzata in diversi progetti o per controllare più istanze dello stesso tipo di componente.
-*   **Manutenibilità:** Le modifiche a un componente sono localizzate all'interno della sua classe/oggetto, riducendo il rischio di rompere altre parti del codice.
-*   **Astrazione:** Si può interagire con un `RobotArm` tramite metodi come `prendiOggetto()` o `posizionaA(x, y)` senza preoccuparsi dei singoli movimenti dei motori.
+1.  **`class MotoreConSensore extends MotoreControllato`**: Dichiara che `MotoreConSensore` è una sottoclasse di `MotoreControllato`.
+2.  **`super(portaMotore, velocitaDefault)`**: Nel costruttore della sottoclasse, `super()` chiama il costruttore della superclasse (`MotoreControllato`). È necessario farlo prima di usare `this`.
+3.  **Ereditarietà dei Metodi**: `MotoreConSensore` eredita tutti i metodi di `MotoreControllato` (come `ferma`, `setVelocita`).
+4.  **Sovrascrittura (Override)**: Il metodo `avvia` è stato ridefinito in `MotoreConSensore`. La chiamata `super.avvia(velocita)` permette di eseguire l'implementazione originale del metodo `avvia` della superclasse.
+5.  **Nuovi Metodi**: `controllaSensoreManualmente` è un nuovo metodo aggiunto specificamente a `MotoreConSensore`.
+6.  **Gestione Eventi e `this`**: Nell' `onEvent` del sensore, `() => { ... }` (arrow function) è usata per assicurare che `this` all'interno del gestore dell'evento si riferisca all'istanza di `MotoreConSensore`, e non all'oggetto evento o a un contesto globale.
 
-## Limitazioni e Considerazioni
+## Incapsulamento e Polimorfismo
 
-*   **Overhead:** Per compiti molto semplici, l'introduzione di OOP potrebbe aggiungere un overhead non necessario. Valuta la complessità del tuo progetto.
-*   **Complessità di JavaScript OOP:** L'OOP basata sui prototipi di JavaScript può essere meno intuitiva per chi proviene da linguaggi basati su classi classiche (come Java o C#), sebbene la sintassi `class` di ES6 mitighi questo aspetto.
-*   **Debug:** Il debug di catene di prototipi o di `this` binding può talvolta essere più complesso.
-*   **Prestazioni:** In ambienti con risorse molto limitate, la creazione di molti oggetti potrebbe avere un impatto sulle prestazioni, ma per la maggior parte degli scenari EV3 con MakeCode, questo non è un problema primario se l'OOP è usata giudiziosamente.
+*   **Incapsulamento**: Nell'esempio `MotoreControllato`, le proprietà come `this.porta` e `this.velocita` sono direttamente accessibili. In JavaScript puro, l'incapsulamento si ottiene spesso per convenzione (es. prefisso `_` per indicare proprietà private) o usando costrutti più avanzati come le chiusure (closures) o i campi privati delle classi (con `#`, supportati nelle versioni più recenti di JS, da verificare la compatibilità con l'ambiente MakeCode).
+    L'idea è che l'utente della classe dovrebbe interagire con l'oggetto principalmente attraverso i suoi metodi pubblici (`avvia`, `ferma`), non manipolando direttamente le sue proprietà interne, se non necessario.
+
+*   **Polimorfismo**: Se avessimo un array di oggetti `MotoreControllato` e `MotoreConSensore`, potremmo chiamare `oggettoMotore.avvia()` su ciascuno. Ogni oggetto eseguirebbe la sua versione specifica del metodo `avvia`.
+
+    ```javascript
+    // let motori = [new MotoreControllato(motors.largeD, 30), new MotoreConSensore(motors.largeA, 40, sensors.touch1, 1)];
+    // motori.forEach(m => m.avvia()); // Ogni motore usa la sua implementazione di avvia()
+    ```
+
+## Quando e Come Usare OOP in Progetti EV3
+
+*   **Componenti Complessi**: Se hai un sottosistema del robot con molti stati e comportamenti (es. un braccio articolato, un sistema di pinze, un modulo di scansione ambientale), una classe può aiutare a organizzarlo.
+*   **Astrazione Hardware**: Se vuoi fornire un'interfaccia più semplice o di più alto livello per un sensore o un attuatore standard.
+*   **Comportamenti Riutilizzabili**: Se hai comportamenti che si ripetono per diversi motori o sensori, una classe base e sottoclassi possono ridurre la duplicazione del codice.
+*   **Non Esagerare**: Per script semplici o comportamenti lineari, la OOP potrebbe essere un eccesso di complessità. Valuta se i benefici superano i costi di implementazione.
+
+## Limitazioni e Considerazioni in MakeCode
+
+*   **Ambiente Basato su Blocchi**: MakeCode è primariamente orientato ai blocchi. Mentre il codice JavaScript sottostante supporta la OOP, l'integrazione visuale potrebbe non essere sempre diretta per concetti OOP avanzati.
+*   **Performance**: La creazione di molti oggetti o gerarchie di classi complesse potrebbe avere un impatto sulle performance su un hardware limitato come l'EV3, sebbene per la maggior parte degli usi tipici questo non sia un problema significativo.
+*   **Debugging**: Il debugging di codice OOP può richiedere una comprensione del flusso di chiamate tra oggetti e metodi.
 
 ## Conclusione
 
-Applicare i principi della Programmazione Orientata agli Oggetti, anche in forma semplificata usando funzioni costruttore e prototipi, può migliorare significativamente la struttura, la leggibilità e la manutenibilità dei tuoi programmi JavaScript per LEGO EV3. Inizia con oggetti semplici per rappresentare componenti o concetti chiave del tuo robot e gradualmente introduci più struttura OOP man mano che la complessità del progetto cresce.
+La Programmazione Orientata agli Oggetti offre strumenti potenti per strutturare e gestire la complessità nei progetti di robotica con EV3, anche all'interno dell'ambiente MakeCode/JavaScript. Utilizzando classi, ereditarietà e polimorfismo, puoi scrivere codice più modulare, riutilizzabile e facile da mantenere. Inizia con classi semplici per rappresentare componenti del tuo robot e gradualmente esplora concetti più avanzati man mano che i tuoi progetti crescono in complessità.
 
 ---
 
-[Torna al README del Modulo 10](../README.md)
+[Torna all'elenco delle Guide](./README.md)
 
-[Torna all'indice del corso](../../README.md)
+[Torna al Modulo 10](../README.md)
+
+[Torna alla Home del Corso](../../README.md)

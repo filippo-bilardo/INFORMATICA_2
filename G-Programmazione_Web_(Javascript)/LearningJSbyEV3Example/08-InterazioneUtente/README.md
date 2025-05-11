@@ -16,12 +16,12 @@ L'interazione utente è fondamentale per creare robot che non solo eseguono comp
 ## Struttura del Modulo
 
 1.  **Guide Teoriche**:
-    *   [1. Il Display EV3](./01-DisplayEV3.md)
-    *   [2. I Pulsanti del Brick](./02-PulsantiBrick.md)
-    *   [3. Feedback Sonoro](./03-FeedbackSonoro.md)
-    *   [4. Indicatori LED](./04-IndicatoriLED.md)
-    *   [5. Creare Menu di Navigazione](./05-MenuNavigazione.md)
-    *   [6. Interfacce Utente Multimodali](./06-InterfacceMultimodali.md)
+    *   [1. Il Display EV3](./guide/01-DisplayEV3.md)
+    *   [2. I Pulsanti del Brick](./guide/02-PulsantiBrick.md)
+    *   [3. Feedback Sonoro](./guide/03-FeedbackSonoro.md)
+    *   [4. Indicatori LED](./guide/04-IndicatoriLED.md)
+    *   [5. Creare Menu di Navigazione](./guide/05-MenuNavigazione.md)
+    *   [6. Interfacce Utente Multimodali](./guide/06-InterfacceMultimodali.md)
 2.  **[Esempi Pratici](./esempi/README.md)**:
     *   Codice JavaScript che mostra come utilizzare display, pulsanti, suoni e LED.
 3.  **[Esercizi](./esercizi/README.md)**:

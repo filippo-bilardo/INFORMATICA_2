@@ -4,29 +4,26 @@ Questi esercizi ti aiuteranno a mettere in pratica la creazione di interfacce ut
 
 ## Elenco Esercizi
 
-1.  **Esercizio 1: Semaforo Controllato da Pulsanti**
-    *   **Obiettivo**: Simulare un semaforo utilizzando i LED del brick EV3 (o luci esterne se disponibili) e controllarlo tramite i pulsanti.
+1.  **Esercizio 1: Quiz Interattivo**
+    *   **Obiettivo**: Sviluppare un quiz interattivo dove l'EV3 pone domande e l'utente risponde tramite i pulsanti.
     *   **Dettagli**:
-        *   Usa i pulsanti Su, Giù, Sinistra, Destra per rappresentare diversi stati o comandi.
-        *   Pulsante Su: Attiva la luce Verde.
-        *   Pulsante Giù: Attiva la luce Rossa.
-        *   Pulsante Sinistra: Attiva la luce Gialla.
-        *   Pulsante Destra: Ciclo automatico (Rosso -> Giallo -> Verde -> Giallo -> Rosso).
-        *   Visualizza lo stato corrente del semaforo sul display EV3.
-    *   **Concetti da Applicare**: Gestione eventi dei pulsanti, controllo LED, display, logica condizionale.
-    *   **File Suggerito**: `Esercizio_SemaforoPulsanti.js`
+        *   Visualizzare domande sul display dell'EV3.
+        *   Utilizzare i pulsanti per selezionare le risposte (es. Vero/Falso, A/B/C).
+        *   Fornire feedback immediato (corretto/errato) e tenere traccia del punteggio.
+    *   **Concetti da Applicare**: Gestione del display, gestione eventi dei pulsanti, logica condizionale, variabili.
+    *   **File**: [`01_QuizInterattivo.js`](./01_QuizInterattivo.js)
 
-2.  **Esercizio 2: Robot Parlante Semplice**
-    *   **Obiettivo**: Far "parlare" il robot EV3 emettendo diverse sequenze di suoni o toni in risposta a input dai sensori o pulsanti.
+2.  **Esercizio 2: Robot Telecomandato**
+    *   **Obiettivo**: Programmare l'EV3 per essere controllato a distanza tramite i pulsanti del brick.
     *   **Dettagli**:
-        *   Definisci diverse "frasi" o "emozioni" come sequenze di toni (es. un suono allegro, un suono triste, un suono di conferma).
-        *   Associa queste "frasi" a eventi specifici:
-            *   Pressione del sensore di contatto: Suono di "Ahi!".
-            *   Rilevamento di un oggetto vicino (sensore ultrasuoni): Suono di "Attenzione!".
-            *   Pressione di un pulsante del brick: Suono di "Ciao!".
-        *   Visualizza un messaggio corrispondente sul display.
-    *   **Concetti da Applicare**: Controllo suoni, gestione eventi (pulsanti, sensori), display.
-    *   **File Suggerito**: `Esercizio_RobotParlante.js`
+        *   Pulsante Su: Movimento in avanti.
+        *   Pulsante Giù: Movimento all'indietro.
+        *   Pulsante Sinistra: Rotazione a sinistra.
+        *   Pulsante Destra: Rotazione a destra.
+        *   Pulsante Centrale (Enter): Arresto del robot.
+        *   Visualizzare lo stato del movimento sul display.
+    *   **Concetti da Applicare**: Controllo dei motori, gestione eventi dei pulsanti, feedback sul display.
+    *   **File**: [`02_RobotTelecomandato.js`](./02_RobotTelecomandato.js)
 
 3.  **Esercizio 3: Menu di Navigazione Avanzato**
     *   **Obiettivo**: Creare un menu più complesso sul display EV3, navigabile con i pulsanti, che permetta di selezionare diverse modalità di funzionamento del robot (es. "Modalità Esplorazione", "Modalità Segui Linea", "Modalità Danza").
@@ -36,23 +33,33 @@ Questi esercizi ti aiuteranno a mettere in pratica la creazione di interfacce ut
         *   Una volta selezionata un'opzione, il robot dovrebbe entrare nella modalità corrispondente (puoi simulare le modalità con semplici azioni o messaggi sul display per ora).
         *   Prevedi un'opzione "Indietro" o "Esci" per tornare al menu principale o uscire.
     *   **Concetti da Applicare**: Gestione avanzata del display, gestione eventi pulsanti, logica di menu, (opzionale) macchine a stati per le modalità.
-    *   **File Suggerito**: `Esercizio_MenuAvanzato.js`
+    *   **File**: [`03_MenuNavigazioneAvanzato.js`](./03_MenuNavigazioneAvanzato.js)
 
-4.  **Esercizio 4: Feedback Visivo con LED e Display per Movimenti**
-    *   **Obiettivo**: Fornire un feedback visivo chiaro sullo stato e sulle azioni del robot durante il movimento.
+4.  **Esercizio 4: Feedback Multimodale Complesso**
+    *   **Obiettivo**: Fornire un feedback visivo (LED, display) e sonoro chiaro sullo stato e sulle azioni del robot.
     *   **Dettagli**:
-        *   Quando il robot si muove in avanti, accendi i LED del brick di verde.
-        *   Quando il robot gira, fai lampeggiare i LED del lato verso cui sta girando (es. LED sinistro per girare a sinistra).
-        *   Quando il robot è fermo, i LED sono spenti o di un colore neutro (es. arancione).
-        *   Visualizza sul display la direzione corrente del movimento (es. "AVANTI", "DESTRA", "FERMO").
-    *   **Concetti da Applicare**: Controllo motori, controllo LED, display, sincronizzazione feedback con azioni.
-    *   **File Suggerito**: `Esercizio_FeedbackMovimento.js`
+        *   Quando il robot si muove in avanti, accendi i LED del brick di verde e visualizza "AVANTI".
+        *   Quando il robot gira, fai lampeggiare i LED del lato verso cui sta girando e visualizza "GIRA SINISTRA/DESTRA".
+        *   Quando il robot è fermo, i LED sono spenti o di un colore neutro (es. arancione) e visualizza "FERMO".
+        *   In caso di eventi specifici (es. ostacolo rilevato), fornire feedback sonoro e visivo appropriato.
+    *   **Concetti da Applicare**: Controllo motori, controllo LED, display, suoni, (opzionale) gestione sensori, sincronizzazione feedback.
+    *   **File**: [`04_FeedbackMultimodaleComplesso.js`](./04_FeedbackMultimodaleComplesso.js)
+
+5.  **Esercizio 5: Progetto Allarme Domestico Semplice**
+    *   **Obiettivo**: Implementare la logica per un semplice sistema di allarme domestico utilizzando l'EV3.
+    *   **Dettagli**:
+        *   L'allarme si attiva/disattiva tramite un codice inserito con i pulsanti.
+        *   Un "sensore" (es. pulsante Enter o un sensore reale) fa scattare l'allarme se attivo.
+        *   All'attivazione dell'allarme: suono, luci rosse lampeggianti, messaggio "INTRUSIONE!" sul display.
+    *   **Concetti da Applicare**: Gestione input utente, logica di stato (allarme attivo/disattivo), gestione eventi, feedback multimodale (suoni, luci, display).
+    *   **File**: [`05_ProgettoAllarmeDomestico.js`](./05_ProgettoAllarmeDomestico.js)
 
 ## Come Svolgere gli Esercizi
 
-1.  Crea un nuovo file `.js` per ogni esercizio in MakeCode.
-2.  Pianifica l'interfaccia utente e la logica di interazione.
-3.  Implementa e testa frequentemente sul tuo robot EV3.
+1.  Scegli un esercizio dall'elenco.
+2.  Apri il file `.js` corrispondente in MakeCode o crea un nuovo progetto se preferisci partire da zero basandoti sulla descrizione.
+3.  Pianifica l'interfaccia utente e la logica di interazione.
+4.  Implementa e testa frequentemente sul tuo robot EV3.
 
 Sperimenta con diverse combinazioni di input e output per creare interazioni utente intuitive e utili!
 

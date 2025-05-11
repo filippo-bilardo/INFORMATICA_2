@@ -9,6 +9,10 @@ Benvenuti al primo modulo del corso "Learning JavaScript by Lego EV3 Example"! I
 3. [Primo Programma](03-PrimoProgramma.md)
 4. [Debugging e Testing](04-DebuggingTesting.md)
 
+## Guide
+
+Consulta la sezione [guide](./guide/README.md) per approfondimenti sui concetti di questo modulo.
+
 ## Esempi Pratici
 
 Nella cartella [esempi](./esempi/) troverai diversi codici di esempio che illustrano i concetti introdotti in questo modulo:

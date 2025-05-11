@@ -13,13 +13,13 @@ Benvenuto al Modulo 7! In questa sezione imparerai tutto sui sensori del Lego EV
 ## Struttura del Modulo
 
 1.  **Guide Teoriche**:
-    *   [Guida 1: Panoramica dei Sensori EV3](./01-PanoramicaSensori.md)
-    *   [Guida 2: Il Sensore a Ultrasuoni](./02-SensoreUltrasuoni.md)
-    *   [Guida 3: Il Sensore di Colore](./03-SensoreColore.md)
-    *   [Guida 4: Il Sensore Giroscopio](./04-SensoreGiroscopio.md)
-    *   [Guida 5: Il Sensore a Infrarossi e Beacon](./05-SensoreInfrarossi.md)
-    *   [Guida 6: Il Sensore di Contatto (Touch Sensor)](./06-SensoreTouch.md)
-    *   [Guida 7: Programmazione Reattiva e Gestione Input](./07-ProgrammazioneReattiva.md)
+    *   [Guida 1: Panoramica dei Sensori EV3](./guide/01-PanoramicaSensori.md)
+    *   [Guida 2: Il Sensore a Ultrasuoni](./guide/02-SensoreUltrasuoni.md)
+    *   [Guida 3: Il Sensore di Colore](./guide/03-SensoreColore.md)
+    *   [Guida 4: Il Sensore Giroscopio](./guide/04-SensoreGiroscopio.md)
+    *   [Guida 5: Il Sensore a Infrarossi e Beacon](./guide/05-SensoreInfrarossi.md)
+    *   [Guida 6: Il Sensore di Contatto (Touch Sensor)](./guide/06-SensoreTouch.md)
+    *   [Guida 7: Programmazione Reattiva e Gestione Input](./guide/07-ProgrammazioneReattiva.md)
 2.  **[Esempi Pratici](./esempi/README.md)**:
     *   Codice JavaScript che dimostra come leggere e utilizzare ciascun sensore.
 3.  **[Esercizi](./esercizi/README.md)**:

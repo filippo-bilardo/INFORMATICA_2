@@ -16,6 +16,10 @@ Il movimento è l'abilità fondamentale di qualsiasi robot, e padroneggiare il c
 4. [Controllo di Precisione](04-ControlloPrecisione.md) - Metodi avanzati per movimenti accurati
 5. [Gestione dell'Inerzia e Calibrazione](05-InerziaCalibrazione.md) - Tecniche per ottimizzare le prestazioni
 
+### Guide
+
+Consulta la sezione [guide](./guide/README.md) per approfondimenti sui concetti di questo modulo.
+
 ### Esempi Pratici
 
 Nella cartella `esempi` troverai:

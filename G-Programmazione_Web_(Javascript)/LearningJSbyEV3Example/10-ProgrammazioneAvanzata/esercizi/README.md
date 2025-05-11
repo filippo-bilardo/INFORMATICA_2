@@ -4,36 +4,20 @@ In questa sezione troverai esercizi progettati per aiutarti a mettere in pratica
 
 ## Elenco Esercizi
 
-1.  **Esercizio 1: Robot Sentinella con Macchina a Stati**
-    *   **Obiettivo**: Implementare un robot che pattuglia un'area e reagisce a un "intruso" (rilevato dal sensore a ultrasuoni) cambiando stato.
-    *   **Stati Suggeriti**:
-        *   `PATTUGLIAMENTO`: Il robot si muove avanti e indietro o in un percorso definito.
-        *   `ALLARME`: Se rileva un oggetto troppo vicino, il robot si ferma, emette un suono e accende i LED del brick.
-        *   `ATTESA`: Dopo l'allarme, attende un breve periodo prima di tornare a `PATTUGLIAMENTO`.
-    *   **Concetti da Applicare**: Macchine a Stati Finite (FSM), programmazione guidata dagli eventi (per il sensore), controllo motori, feedback utente (suoni, luci).
-    *   **File Suggerito**: `Esercizio_RobotSentinella.js`
-
-2.  **Esercizio 2: Classe `RobotComponent` (OOP)**
-    *   **Obiettivo**: Creare una classe base `RobotComponent` in JavaScript e poi derivare classi specifiche per i sensori (es. `UltrasonicSensor`, `ColorSensor`) e i motori (es. `MotorPair`).
-    *   **Funzionalità della Classe Base**: Potrebbe includere proprietà come `port` e metodi generici come `getStatus()`.
-    *   **Funzionalità delle Classi Derivate**:
-        *   `UltrasonicSensor`: Metodo `getDistanceCm()`.
-        *   `ColorSensor`: Metodo `getColor()`.
-        *   `MotorPair`: Metodi `drive(speed, steering)`, `stop()`.
-    *   **Scopo**: Sperimentare con l'organizzazione del codice tramite OOP, anche se MakeCode non supporta pienamente le classi come in altri ambienti JS.
-    *   **File Suggerito**: `Esercizio_OOPComponents.js`
-
-3.  **Esercizio 3: Navigatore Semplice con Gestione Errori**
-    *   **Obiettivo**: Programmare il robot per seguire un percorso predefinito (es. muoversi in un quadrato) e implementare una gestione base degli errori se un sensore (es. di contatto) rileva un ostacolo imprevisto.
-    *   **Comportamento**: Il robot tenta di seguire il percorso. Se tocca un ostacolo, si ferma, fa un piccolo passo indietro, si gira leggermente e tenta di riprendere il percorso o segnala l'impossibilità di proseguire.
-    *   **Concetti da Applicare**: Controllo motori di precisione, gestione eventi (sensore di contatto), gestione errori (try-catch concettuale o logica if-else per gestire l'ostacolo).
-    *   **File Suggerito**: `Esercizio_NavigatoreErrori.js`
+1.  **Semaforo Intelligente**: [`01_Esercizio_SemaforoIntelligente.js`](./01_Esercizio_SemaforoIntelligente.js)
+    *   Descrizione: Simula un semaforo che cambia colore in base a eventi o temporizzazioni, utilizzando una macchina a stati per gestire i cicli di luce.
+2.  **Robot Labirinto con OOP**: [`02_Esercizio_RobotLabirintoOOP.js`](./02_Esercizio_RobotLabirintoOOP.js)
+    *   Descrizione: Progetta un robot in grado di navigare in un semplice labirinto. Utilizza la programmazione orientata agli oggetti per definire il comportamento del robot, i sensori e l'ambiente del labirinto.
+3.  **Allarme Domotico**: [`03_Esercizio_AllarmeDomotico.js`](./03_Esercizio_AllarmeDomotico.js)
+    *   Descrizione: Crea un sistema di allarme simulato per una casa. Il sistema deve reagire a diversi sensori (es. un pulsante per simulare l'apertura di una porta, un sensore di distanza per rilevare movimenti) attivando un allarme.
+4.  **Robot Ordinatore di Colori**: [`04_Esercizio_RobotOrdinatoreColori.js`](./04_Esercizio_RobotOrdinatoreColori.js)
+    *   Descrizione: Sviluppa un robot che utilizza il sensore di colore per identificare oggetti di colori diversi (es. rosso, blu, verde). Il robot deve "raccogliere" (simulato) e "spostare" gli oggetti in aree designate in base al loro colore, implementando una macchina a stati per gestire il processo.
 
 ## Come Svolgere gli Esercizi
 
 1.  Leggi attentamente la descrizione di ciascun esercizio.
 2.  Pianifica la logica del tuo programma prima di iniziare a scrivere codice.
-3.  Crea un nuovo file JavaScript in MakeCode per ogni esercizio.
+3.  Crea un nuovo file JavaScript in MakeCode per ogni esercizio (i file base sono già forniti).
 4.  Implementa la soluzione, testandola frequentemente sul tuo robot EV3.
 5.  Non aver paura di sperimentare e di consultare le guide e gli esempi del modulo se necessario.
 
@@ -42,5 +26,4 @@ Buon lavoro!
 ---
 
 [Torna al Modulo 10](../README.md)
-
 [Torna alla Home del Corso](../../README.md)

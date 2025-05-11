@@ -9,6 +9,10 @@ Benvenuti al secondo modulo del corso "Learning JavaScript by Lego EV3 Example"!
 3. [Operatori](03-Operatori.md)
 4. [Espressioni e Valutazioni](04-Espressioni.md)
 
+## Guide
+
+Consulta la sezione [guide](./guide/README.md) per approfondimenti sui concetti di questo modulo.
+
 ## Esempi Pratici
 
 Nella cartella [esempi](./esempi/) troverai diversi codici di esempio che illustrano i concetti introdotti in questo modulo:
