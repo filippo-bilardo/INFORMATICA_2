@@ -4,7 +4,7 @@ In questa sezione troverai guide dettagliate per approfondire i concetti trattat
 
 ## Elenco Guide
 
-Al momento non ci sono guide specifiche. Verranno aggiunte in futuro.
+1.  [Guida 5: Struttura di Base di un Progetto MakeCode per EV3](./05-StrutturaBaseProgettoMakeCode.md)
 
 ---
 
