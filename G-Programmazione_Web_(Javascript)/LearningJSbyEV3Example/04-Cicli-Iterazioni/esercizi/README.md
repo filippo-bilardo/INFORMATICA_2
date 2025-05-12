@@ -7,7 +7,16 @@ Benvenuti alla sezione esercizi del modulo "Cicli e Iterazioni". Qui troverete u
 - [`01_ControlloMotoreRotazioni.js`](./01_ControlloMotoreRotazioni.js): Controllare un Motore per un Numero Fisso di Rotazioni
 - [`02_MovimentoAvantiIndietro.js`](./02_MovimentoAvantiIndietro.js): Muovere il Robot Avanti e Indietro Ripetutamente
 - [`03_TerminaCicloConSensore.js`](./03_TerminaCicloConSensore.js): Utilizzare un Sensore per Terminare un Ciclo
-- *(Altri esercizi verranno aggiunti qui)*
+- [`04_CicloAnnidato.js`](./04_CicloAnnidato.js): Utilizzare Cicli Annidati per Sequenze Complesse
+- [`05_IterazioneArray.js`](./05_IterazioneArray.js): Iterare su una Collezione di Dati dei Sensori
+- [Sfida Extra: Programma di Pattugliamento](./06_SfidaPattugliamento.js)
+
+---
+
+### 💡 Tips
+- Prova a combinare diversi tipi di cicli nello stesso esercizio.
+- Utilizza variabili di controllo per rendere i cicli più flessibili.
+- Sperimenta con condizioni di uscita diverse per i cicli.
 
 ---
 

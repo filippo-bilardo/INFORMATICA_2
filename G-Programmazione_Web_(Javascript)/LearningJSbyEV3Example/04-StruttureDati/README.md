@@ -9,23 +9,24 @@ In questo modulo, esploreremo le strutture dati più comuni in JavaScript, come 
 ## Contenuti del Modulo
 
 ### Guide Teoriche
+Consulta le [Guide Teoriche dettagliate](./guide/README.md) che coprono:
 
 1.  **Introduzione alle Variabili e Tipi di Dati**: Revisione dei tipi di dati primitivi.
-2.  **Array**: Come creare, accedere e manipolare liste di dati (es. letture multiple da un sensore).
-3.  **Oggetti**: Come rappresentare entità complesse con proprietà e valori (es. configurazione del robot, stati).
-4.  **Iterazione**: Tecniche per ciclare su array e proprietà di oggetti (cicli `for`, `for...of`, `for...in`).
-5.  **JSON (JavaScript Object Notation)**: Introduzione al formato JSON per lo scambio e la memorizzazione di dati.
+2.  **Array**: Come creare, accedere e manipolare liste di dati.
+3.  **Oggetti**: Come rappresentare entità complesse.
+4.  **Iterazione**: Tecniche per ciclare su array e oggetti.
+5.  **JSON (JavaScript Object Notation)**: Formato per lo scambio e la memorizzazione di dati.
 
 ### Esempi Pratici
+Esplora gli [Esempi Pratici](./esempi/README.md) nella cartella `esempi` per vedere:
 
-Nella cartella `esempi` troverai:
-
--   Esempi sull'uso di array per memorizzare sequenze di movimenti.
--   Esempi sull'uso di oggetti per configurare parametri del robot.
+-   **Array per Sequenze di Movimento**: Utilizzo di array per memorizzare ed eseguire sequenze di comandi.
+-   **Oggetti per Configurazione Robot**: Definizione di parametri di configurazione del robot tramite oggetti.
+-   **Registrazione Dati da Sensori**: Raccolta di letture da sensori in un array.
+-   **Gestione di Stati Complessi**: Rappresentazione dello stato del robot con oggetti.
 
 ### Esercizi
-
-Nella cartella `esercizi` troverai sfide pratiche per:
+Mettiti alla prova con gli [Esercizi](./esercizi/README.md) nella cartella `esercizi` per:
 
 -   Implementare la memorizzazione e riproduzione di percorsi.
 -   Gestire configurazioni multiple per il comportamento del robot.

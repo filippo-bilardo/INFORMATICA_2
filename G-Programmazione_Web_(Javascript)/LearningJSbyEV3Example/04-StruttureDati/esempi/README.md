@@ -12,6 +12,8 @@ In questa sezione troverai esempi pratici che illustrano come utilizzare le stru
     *   Descrizione: Come raccogliere letture multiple da un sensore (es. sensore di colore o ultrasuoni) e memorizzarle in un array per analisi successive.
 4.  **Gestione di Stati Complessi con Oggetti**: `04_OggettiStatiRobot.js`
     *   Descrizione: Esempio di come un oggetto può rappresentare lo stato corrente del robot (es. { `mode: 'exploring'`, `speed: 50`, `obstacleDetected: false` }).
+5.  **Gestione Avanzata Missioni Robot con JSON**: `gestione_missioni_robot.js`
+    *   Descrizione: Un esempio completo che dimostra come definire una sequenza di missioni per un robot EV3 utilizzando array di oggetti complessi, e come serializzare/deserializzare questa struttura dati in formato JSON per il salvataggio o la trasmissione.
 
 ---
 

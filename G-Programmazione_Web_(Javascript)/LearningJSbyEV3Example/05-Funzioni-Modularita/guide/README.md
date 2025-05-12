@@ -4,7 +4,11 @@ In questa sezione troverai guide dettagliate per approfondire i concetti trattat
 
 ## Elenco Guide
 
-Al momento non ci sono guide specifiche. Verranno aggiunte in futuro.
+1.  [Introduzione alle Funzioni](./01-IntroduzioneFunzioni.md)
+2.  [Parametri e Valori di Ritorno](./02-ParametriReturn.md)
+3.  [Scope e Visibilità delle Variabili](./03-ScopeVisibilita.md)
+4.  [Arrow Functions](./04-ArrowFunctions.md)
+5.  [Funzioni di Callback](./05-FunzioniCallback.md)
 
 ---
 

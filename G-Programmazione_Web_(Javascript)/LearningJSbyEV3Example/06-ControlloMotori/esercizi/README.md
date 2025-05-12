@@ -37,3 +37,8 @@ Buon divertimento a far muovere il tuo robot!
 [Torna al Modulo 06](../README.md)
 
 [Torna alla Home del Corso](../../README.md)
+
+## Esercizio 2: Sincronizzazione Motori
+* **Obiettivo:** Programmare il robot per andare dritto usando due motori sincronizzati.
+* **Concetti:** Cicli, funzioni, controllo motori multipli.
+* **File:** [02_Esercizio_SincronizzazioneMotori.js](./02_Esercizio_SincronizzazioneMotori.js)

@@ -9,6 +9,15 @@ In questa sezione troverai esercizi per mettere in pratica i concetti di funzion
 - [Esercizio 3: Utilizzare Valori di Ritorno per Decisioni](./esercizio_funzione_ritorno_decisione.js)
 - [Esercizio 4: Scomporre un Compito Complesso in Funzioni](./esercizio_scomposizione_funzioni.js)
 - [Esercizio 5: Implementare una Funzione Callback per un Sensore](./esercizio_funzione_callback_sensore.js)
+- [Esercizio 6: Funzioni Annidate e Modularità Avanzata](./esercizio_funzioni_annidate.js)
+- [Sfida Extra: Programma Modulare per una Missione Robotica](./sfida_modularita_missione.js)
+
+---
+
+### 💡 Tips
+- Scrivi funzioni riutilizzabili e ben commentate.
+- Prova a suddividere i problemi complessi in funzioni più semplici.
+- Sperimenta con funzioni che restituiscono valori diversi a seconda delle condizioni.
 
 ---
 
