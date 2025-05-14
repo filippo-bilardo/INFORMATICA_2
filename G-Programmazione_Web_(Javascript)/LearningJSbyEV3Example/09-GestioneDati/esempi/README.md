@@ -14,6 +14,14 @@ In questa sezione troverai esempi pratici che illustrano come gestire dati e uti
     *   Descrizione: Esempi di come elaborare i dati grezzi provenienti dai sensori, ad esempio calcolando medie mobili o filtrando valori anomali.
 5.  **Logging Avanzato**: [`05_LoggingAvanzato.js`](./05_LoggingAvanzato.js)
     *   Descrizione: Come utilizzare `console.log` in modo più strutturato per il debugging, magari formattando l'output o loggando oggetti complessi.
+6.  **Sequenze di Movimento con Array**: [`06_SequenzeMovimento.js`](./06_SequenzeMovimento.js)
+    *   Descrizione: Come utilizzare array per memorizzare e riprodurre sequenze predefinite di movimenti del robot.
+7.  **Configurazione Robot con Oggetti**: [`07_ConfigurazioneRobot.js`](./07_ConfigurazioneRobot.js)
+    *   Descrizione: Come utilizzare oggetti JavaScript per gestire diverse configurazioni del robot.
+8.  **Raccolta Dati Sensori**: [`08_RaccoltaDatiSensori.js`](./08_RaccoltaDatiSensori.js)
+    *   Descrizione: Come raccogliere, memorizzare e analizzare dati provenienti dai sensori utilizzando array.
+9.  **Stati del Robot con Oggetti**: [`09_StatiRobot.js`](./09_StatiRobot.js)
+    *   Descrizione: Come implementare un sistema di gestione degli stati del robot utilizzando oggetti.
 
 ---
 

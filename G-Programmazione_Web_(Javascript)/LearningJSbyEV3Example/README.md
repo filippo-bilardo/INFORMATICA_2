@@ -16,6 +16,7 @@ La combinazione di JavaScript e robotica offre un modo divertente e interattivo 
 
 Il corso è diviso in moduli, ciascuno focalizzato su specifici concetti di JavaScript e funzionalità del robot EV3:
 
+0. [⚙️ Setup e Installazione](00-Setup_e_Installazione/README.md)
 1. [🚀 Introduzione a JavaScript e MakeCode](01-IntroduzioneJS-MakeCode/README.md)
 2. [🔍 Variabili, Tipi di Dati e Operatori](02-Variabili-TipiDati-Operatori/README.md)
 3. [🔄 Strutture di Controllo e Condizioni](03-StruttureControllo-Condizioni/README.md)
