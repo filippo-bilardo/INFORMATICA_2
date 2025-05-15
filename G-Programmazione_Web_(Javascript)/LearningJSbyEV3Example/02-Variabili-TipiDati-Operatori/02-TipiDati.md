@@ -2,21 +2,91 @@
 
 In JavaScript, comprendere i diversi tipi di dati è fondamentale per scrivere programmi efficaci. Questo capitolo esplorerà i vari tipi di dati disponibili in JavaScript e come utilizzarli nella programmazione del robot EV3.
 
-## I Tipi di Dati Principali in JavaScript
+## Introduzione ai Tipi di Dati in JavaScript
+
+In JavaScript, tutti i valori sono categorizzati in due grandi famiglie: **tipi primitivi** e **tipi di riferimento**. Questa distinzione è fondamentale perché influenza profondamente il modo in cui i dati vengono memorizzati, copiati e confrontati durante l'esecuzione di un programma.
+
+### Tipi Primitivi
+
+I tipi primitivi sono valori semplici che vengono memorizzati direttamente nello stack di memoria. Quando assegni un valore primitivo a una variabile o lo passi a una funzione, JavaScript crea una copia del valore stesso (non un riferimento ad esso).
+
+Caratteristiche principali dei tipi primitivi:
+- **Immutabilità**: Una volta creati, non possono essere modificati.
+- **Confronto per valore**: Due valori primitivi sono uguali se hanno lo stesso valore.
+- **Memorizzazione nello stack**: Accesso rapido e gestione diretta in memoria.
+- **Passaggio per valore**: Quando li assegni a una variabile o li passi a una funzione, viene creata una copia indipendente.
+
+JavaScript include sette tipi primitivi:
+1. **Number**: Rappresenta sia numeri interi che decimali (es. `42`, `3.14`)
+2. **String**: Sequenze di caratteri racchiuse tra apici (es. `"Ciao"`, `'EV3'`)
+3. **Boolean**: Rappresenta un valore logico, `true` o `false`
+4. **Undefined**: Indica una variabile dichiarata ma non inizializzata 
+5. **Null**: Rappresenta intenzionalmente l'assenza di un valore
+6. **Symbol**: Valore univoco e immutabile, utilizzato come identificatore (ES6+)
+7. **BigInt**: Permette di lavorare con numeri interi di dimensioni arbitrarie (ES2020+)
+
+### Tipi di Riferimento
+
+I tipi di riferimento sono strutture di dati complesse che vengono memorizzate nell'heap di memoria. Quando lavori con tipi di riferimento, la variabile contiene un riferimento (puntatore) alla posizione di memoria dove l'oggetto è memorizzato, non l'oggetto stesso.
+
+Caratteristiche principali dei tipi di riferimento:
+- **Mutabilità**: Possono essere modificati dopo la creazione.
+- **Confronto per riferimento**: Due oggetti sono considerati uguali solo se puntano esattamente alla stessa istanza in memoria.
+- **Memorizzazione nell'heap**: Permette strutture dati complesse e dimensioni variabili.
+- **Passaggio per riferimento**: Quando li assegni o li passi a una funzione, viene passato il riferimento, non una copia del valore.
+
+In JavaScript, i tipi di riferimento includono:
+1. **Object**: La base di tutti i tipi di riferimento. Un oggetto è una collezione di proprietà (coppie chiave-valore).
+2. **Array**: Collezioni ordinate di valori, accessibili tramite indici numerici (tecnicamente sono oggetti speciali).
+3. **Function**: Le funzioni in JavaScript sono oggetti di prima classe, possono avere proprietà e metodi.
+4. **Date**: Rappresentazioni di date e orari.
+5. **RegExp**: Espressioni regolari per pattern matching.
+6. **Map** e **Set**: Strutture dati più avanzate introdotte in ES6.
+7. **Promise**, **Generator**, **AsyncFunction**: Oggetti per gestire operazioni asincrone.
+8. **TypedArray**: Array con tipo per gestire dati binari.
+9. **Oggetti wrapper** come `Number`, `String`, `Boolean`: Versioni oggetto dei tipi primitivi.
+
+### Differenze Pratiche tra Tipi Primitivi e di Riferimento
+
+Per capire meglio la differenza, consideriamo alcuni esempi:
+
+```javascript
+// Tipi primitivi - passaggio per valore
+let a = 5;
+let b = a;  // 'b' ottiene una copia del valore di 'a'
+a = 10;     // Modificare 'a' non influisce su 'b'
+console.log(b);  // Output: 5
+
+// Tipi di riferimento - passaggio per riferimento
+let objA = { nome: "EV3" };
+let objB = objA;  // 'objB' ottiene un riferimento allo stesso oggetto
+objA.nome = "Robot";  // Modificare objA modifica anche objB
+console.log(objB.nome);  // Output: "Robot"
+```
+
+## I Tipi di Dati in JavaScript
 
 JavaScript ha otto tipi di dati fondamentali, suddivisi in due categorie:
 
 ### Tipi Primitivi:
-1. Number (numeri)
-2. String (stringhe di testo)
-3. Boolean (vero/falso)
-4. Undefined (valore non definito)
-5. Null (valore nullo intenzionale)
-6. Symbol (simbolo univoco)
-7. BigInt (numeri interi molto grandi)
+1. **Number** (numeri): rappresenta sia numeri interi che decimali, basati sul formato IEEE 754 a 64 bit. Può memorizzare valori da -(2^53 - 1) a (2^53 - 1).
+2. **String** (stringhe di testo): sequenze di caratteri Unicode racchiuse tra apici singoli, doppi o backtick. Utili per rappresentare testo e dati non numerici.
+3. **Boolean** (vero/falso): può avere solo due valori, `true` o `false`. Utilizzato per rappresentare stati binari e per controlli condizionali.
+4. **Undefined** (valore non definito): indica che una variabile è stata dichiarata ma non le è stato assegnato alcun valore. È anche il valore restituito quando si accede a proprietà inesistenti.
+5. **Null** (valore nullo intenzionale): rappresenta un valore vuoto o inesistente assegnato deliberatamente. A differenza di `undefined`, `null` è un valore che indica l'assenza intenzionale di un oggetto.
+6. **Symbol** (simbolo univoco): tipo introdotto in ES6, rappresenta un identificatore unico e immutabile. Utile per evitare collisioni di nomi di proprietà negli oggetti.
+7. **BigInt** (numeri interi molto grandi): tipo introdotto in ES2020, permette di rappresentare e operare su numeri interi di lunghezza arbitraria, superando i limiti del tipo Number.
 
 ### Tipi di Riferimento:
-8. Object (oggetti, array, funzioni, date, ecc.)
+8. **Object** (oggetti): strutture di dati complesse che raccolgono dati correlati e funzionalità. Tutti i tipi non primitivi (array, funzioni, date, RegExp, ecc.) sono istanze di Object e memorizzati come riferimenti. Gli oggetti includono:
+   - **Object standard**: collezioni di proprietà (coppie chiave-valore).
+   - **Array**: collezioni ordinate di elementi accessibili tramite indice.
+   - **Function**: blocchi di codice riutilizzabili trattati come oggetti di prima classe.
+   - **Date**: rappresentazione di date e orari con metodi per manipolazione e formattazione.
+   - **RegExp**: pattern di ricerca nelle stringhe tramite espressioni regolari.
+   - **Map e Set**: strutture dati moderne per gestire collezioni con funzionalità avanzate.
+   - **Promise**: oggetti per gestire operazioni asincrone e loro risultati.
+   - **Error**: oggetti specializzati per rappresentare errori durante l'esecuzione.
 
 Nell'ambito della programmazione EV3 con MakeCode, ci concentreremo principalmente su Number, String, Boolean e Object (inclusi gli Array).
 
@@ -364,6 +434,316 @@ for (let i = 0; i < sequenzaMovimenti.length; i++) {
     pause(movimento.durata);
     motors.largeBC.stop();
 }
+```
+
+## 7. Symbol
+
+I Symbol sono un tipo di dato primitivo introdotto in ES6 (ECMAScript 2015) che rappresenta un identificatore unico e immutabile.
+
+### Creazione di un Symbol:
+
+```javascript
+// Creazione di un Symbol
+let id = Symbol();
+let id2 = Symbol('descrizione');  // Con una descrizione opzionale per il debug
+
+// Due Symbol sono sempre diversi, anche con la stessa descrizione
+let id3 = Symbol('id');
+let id4 = Symbol('id');
+console.log(id3 === id4);  // false
+
+// Utilizzo come chiavi di proprietà di oggetti
+let oggetto = {};
+oggetto[id] = 'Valore con chiave Symbol';
+```
+
+### Casi d'uso comuni:
+
+```javascript
+// 1. Proprietà "private" negli oggetti (pre-classi private)
+const chiavePrivata = Symbol('proprietàPrivata');
+let obj = {
+    [chiavePrivata]: 'Questo valore non è facilmente accessibile'
+};
+
+// 2. Evitare collisioni di nomi in proprietà
+const CONFIGURAZIONE = Symbol('config');
+class Robot {
+    constructor(nome) {
+        this.nome = nome;
+        this[CONFIGURAZIONE] = {
+            // Configurazioni interne
+        };
+    }
+}
+
+// 3. Costanti univoche
+const DIREZIONE = {
+    SU: Symbol('su'),
+    GIU: Symbol('giù'),
+    SINISTRA: Symbol('sinistra'),
+    DESTRA: Symbol('destra')
+};
+```
+
+### Utilizzo nella Programmazione EV3:
+
+Nell'ambiente MakeCode per EV3, i Symbol non vengono utilizzati frequentemente, ma possono essere utili in progetti più complessi per garantire l'unicità delle chiavi di configurazione o per definire stati interni del robot.
+
+```javascript
+// Definizione di stati univoci del robot
+const STATO_ROBOT = {
+    INATTIVO: Symbol('inattivo'),
+    ESPLORAZIONE: Symbol('esplorazione'),
+    SEGUIMENTO_LINEA: Symbol('seguimentoLinea'),
+    EVITAMENTO_OSTACOLI: Symbol('evitamentoOstacoli')
+};
+
+// Utilizzo
+let statoCorrente = STATO_ROBOT.INATTIVO;
+
+function cambiaStato(nuovoStato) {
+    brick.showString(`Cambio stato: ${String(nuovoStato.description)}`, 1);
+    statoCorrente = nuovoStato;
+}
+
+// Cambio stato
+cambiaStato(STATO_ROBOT.ESPLORAZIONE);
+```
+
+## 9. Altri Tipi di Oggetti Importanti
+
+Oltre agli oggetti standard, array, symbol e bigint, JavaScript fornisce altri tipi di oggetti specializzati che sono utili in contesti specifici.
+
+### 9.1 Function
+
+Le funzioni in JavaScript sono oggetti di prima classe, il che significa che possono essere assegnate a variabili, passate come argomenti e restituite da altre funzioni.
+
+```javascript
+// Definizione di una funzione
+function calcolaVelocita(distanza, tempo) {
+    return distanza / tempo;
+}
+
+// Funzione come valore
+let calcolo = calcolaVelocita;
+let risultato = calcolo(100, 5);  // 20
+
+// Funzioni anonime
+let fermaRobot = function() {
+    motors.largeBC.stop();
+};
+
+// Arrow functions (ES6)
+let avanza = () => {
+    motors.largeBC.tank(50, 50);
+};
+
+// Funzioni come parametri
+function eseguiDopoPausa(funzione, millisecondi) {
+    pause(millisecondi);
+    funzione();
+}
+
+eseguiDopoPausa(() => {
+    brick.showString("Azione completata", 1);
+}, 2000);
+```
+
+### 9.2 Date
+
+L'oggetto `Date` permette di lavorare con date e orari.
+
+```javascript
+// Data corrente
+let adesso = new Date();
+
+// Data specifica
+let dataInizio = new Date(2023, 8, 15);  // 15 settembre 2023 (i mesi partono da 0)
+
+// Estrarre componenti della data
+let anno = adesso.getFullYear();
+let mese = adesso.getMonth() + 1;  // +1 perché i mesi partono da 0
+let giorno = adesso.getDate();
+let ore = adesso.getHours();
+let minuti = adesso.getMinutes();
+
+// Calcolare durate
+let inizio = new Date();
+// ... esegui operazioni ...
+let fine = new Date();
+let durata = fine - inizio;  // Durata in millisecondi
+
+// Utilizzo nella programmazione EV3
+function registraTempiEsecuzione() {
+    let inizio = new Date();
+    // Esegui operazioni robot
+    let fine = new Date();
+    let durata = fine - inizio;
+    brick.showString(`Durata: ${durata}ms`, 1);
+}
+```
+
+### 9.3 RegExp (Espressioni Regolari)
+
+Le espressioni regolari sono pattern utilizzati per trovare corrispondenze in stringhe.
+
+```javascript
+// Creazione di un'espressione regolare
+let pattern = /^\d{3}-\d{2}$/;  // Formato: 123-45
+
+// Test di una stringa contro un pattern
+let codiceValido = pattern.test("123-45");  // true
+let codiceNonValido = pattern.test("1234-5");  // false
+
+// Ricerca in una stringa
+let testo = "Il sensore 1 è attivo e il sensore 2 è inattivo";
+let numeri = testo.match(/\d+/g);  // ["1", "2"]
+
+// Sostituzione basata su pattern
+let comando = "motore-sinistra-avanti";
+let comandoFormattato = comando.replace(/-/g, " ");  // "motore sinistra avanti"
+```
+
+### 9.4 Map e Set
+
+`Map` e `Set` sono strutture dati introdotte in ES6 che offrono funzionalità aggiuntive rispetto agli oggetti e agli array.
+
+#### Map
+
+```javascript
+// Creazione di una Map
+let configSensori = new Map();
+
+// Aggiunta di elementi (chiave-valore)
+configSensori.set("ultrasuono", 4);
+configSensori.set("tocco", 1);
+configSensori.set("colore", 3);
+
+// Accesso ai valori
+let portaUltrasuono = configSensori.get("ultrasuono");  // 4
+
+// Verifica esistenza chiave
+let haColore = configSensori.has("colore");  // true
+
+// Dimensione e cancellazione
+let numeroSensori = configSensori.size;  // 3
+configSensori.delete("tocco");  // Rimuove l'elemento
+```
+
+#### Set
+
+```javascript
+// Creazione di un Set (valori unici)
+let comandiDisponibili = new Set(["avanti", "indietro", "sinistra", "destra", "stop"]);
+
+// Aggiunta di elementi
+comandiDisponibili.add("rotazione");
+
+// Verifica esistenza
+let puoRuotare = comandiDisponibili.has("rotazione");  // true
+
+// Dimensione e cancellazione
+let numeroComandi = comandiDisponibili.size;  // 6
+comandiDisponibili.delete("rotazione");  // Rimuove l'elemento
+```
+
+### 9.5 Promise
+
+Le `Promise` sono oggetti utilizzati per gestire operazioni asincrone.
+
+```javascript
+// Creazione di una Promise
+let operazioneAsincrona = new Promise((resolve, reject) => {
+    // Operazione che richiede tempo...
+    let successo = true;
+    
+    if (successo) {
+        resolve("Operazione completata!");
+    } else {
+        reject("Si è verificato un errore");
+    }
+});
+
+// Utilizzo di una Promise
+operazioneAsincrona
+    .then(risultato => {
+        console.log(risultato);  // "Operazione completata!"
+    })
+    .catch(errore => {
+        console.error(errore);
+    });
+
+// Esempio pratico nella programmazione EV3
+function misuraDistanzaConRitardo(millisecondi) {
+    return new Promise((resolve, reject) => {
+        pause(millisecondi);
+        let distanza = sensors.ultrasonic4.distance();
+        
+        if (distanza < 0) {
+            reject("Errore di lettura del sensore");
+        } else {
+            resolve(distanza);
+        }
+    });
+}
+
+// Utilizzo
+misuraDistanzaConRitardo(500)
+    .then(distanza => {
+        brick.showString(`Distanza: ${distanza} cm`, 1);
+    })
+    .catch(errore => {
+        brick.showString(`Errore: ${errore}`, 1);
+    });
+```
+
+### 9.6 Error
+
+Gli oggetti `Error` rappresentano errori durante l'esecuzione del programma.
+
+```javascript
+// Creazione di un oggetto Error
+let errore = new Error("Sensore non connesso");
+
+// Utilizzo in try-catch
+try {
+    // Operazione che potrebbe generare un errore
+    if (sensors.ultrasonic4.distance() < 0) {
+        throw new Error("Lettura sensore non valida");
+    }
+} catch (e) {
+    brick.showString(`Errore: ${e.message}`, 1);
+}
+
+// Tipi specializzati di errori
+let sintassi = new SyntaxError("Errore di sintassi");
+let tipi = new TypeError("Tipo non valido");
+let riferimento = new ReferenceError("Variabile non definita");
+```
+
+### 9.7 Oggetti Wrapper (String, Number, Boolean)
+
+JavaScript fornisce oggetti wrapper per i tipi primitivi, che consentono di accedere a metodi e proprietà utili.
+
+```javascript
+// Primitive vs Wrapper
+let testoPrimitivo = "ciao";
+let testoOggetto = new String("ciao");
+
+typeof testoPrimitivo;  // "string"
+typeof testoOggetto;    // "object"
+
+// JavaScript converte automaticamente tra primitive e wrapper quando necessario
+let lunghezza = "ciao".length;  // 4 (conversione implicita a oggetto String)
+
+// Metodi degli oggetti wrapper
+let num = 42.56789;
+num.toFixed(2);         // "42.57" (arrotondamento a 2 decimali)
+num.toString(2);        // "101010" (conversione in base 2)
+
+let bool = true;
+bool.toString();        // "true"
 ```
 
 ## Conversione tra Tipi di Dati
