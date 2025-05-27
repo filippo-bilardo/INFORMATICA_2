@@ -9,6 +9,7 @@ In questa sezione troverai guide dettagliate per approfondire i concetti trattat
 3.  [Scope e Visibilità delle Variabili](./03-ScopeVisibilita.md)
 4.  [Arrow Functions](./04-ArrowFunctions.md)
 5.  [Funzioni di Callback](./05-FunzioniCallback.md)
+6.  [Modularità Avanzata](./06-ModularitaAvanzata.md)
 
 ---
 

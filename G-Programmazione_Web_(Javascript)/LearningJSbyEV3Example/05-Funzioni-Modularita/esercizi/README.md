@@ -11,6 +11,7 @@ In questa sezione troverai esercizi per mettere in pratica i concetti di funzion
 - [Esercizio 5: Implementare una Funzione Callback per un Sensore](./esercizio_funzione_callback_sensore.js)
 - [Esercizio 6: Funzioni Annidate e Modularità Avanzata](./esercizio_funzioni_annidate.js)
 - [Sfida Extra: Programma Modulare per una Missione Robotica](./sfida_modularita_missione.js)
+- [**Progetto Avanzato: Sistema Robot Modulare**](./Esercizio_Avanzato_SistemaModulare.md)
 
 ---
 
