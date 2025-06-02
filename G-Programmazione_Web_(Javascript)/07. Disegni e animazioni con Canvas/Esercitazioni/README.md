@@ -12,31 +12,31 @@ Ogni esercitazione include:
 
 ## Progetti disponibili
 
-1. [**Orologio Analogico**](orologio-analogico.md)
+1. [**Orologio Analogico**](01_orologio-analogico.md)
    - **Livello**: Principiante/Intermedio
    - **Concetti**: Trasformazioni, animazioni con requestAnimationFrame, gestione del tempo
    - **Tecniche**: Rotazioni, salvataggio dello stato del contesto, disegno di forme primitive
    - **Capitoli collegati**: [Trasformazioni](../07.07%20Trasformazioni.md), [Animazioni con Canvas](../07.12%20Animazioni%20con%20Canvas.md)
 
-2. [**Gioco Breakout**](breakout-game.md)
+2. [**Gioco Breakout**](02_gioco-breakout.md)
    - **Livello**: Intermedio
    - **Concetti**: Movimento, collisioni, interazione utente
    - **Tecniche**: Loop di gioco, gestione eventi, fisica semplice
    - **Capitoli collegati**: [Gestione degli eventi - Click e movimento del mouse](../07.10%20Gestione%20degli%20eventi%20-%20Click%20e%20movimento%20del%20mouse.md), [Gestione degli eventi - Gestione del touch](../07.11%20Gestione%20degli%20eventi%20-%20Gestione%20del%20touch.md)
 
-3. [**Editor di Disegno**](editor-disegno.md)
+3. [**Editor di Disegno**](03_editor-disegno.md)
    - **Livello**: Intermedio
    - **Concetti**: Strumenti di disegno, stato dell'applicazione
    - **Tecniche**: Eventi mouse e touch, manipolazione immagini
    - **Capitoli collegati**: [Disegno di forme semplici](../07.03%20Disegno%20di%20forme%20semplici.md), [Gestione delle immagini](../07.09%20Gestione%20delle%20immagini.md)
 
-4. [**Dashboard Interattiva**](dashboard-interattiva.md)
+4. [**Dashboard Interattiva**](04_dashboard-interattiva.md)
    - **Livello**: Avanzato
    - **Concetti**: Visualizzazione dati, interazione utente
    - **Tecniche**: Grafici personalizzati, gestione responsive
    - **Capitoli collegati**: [Lavorare con il testo](../07.05%20Lavorare%20con%20il%20testo.md), [Ottimizzazione delle prestazioni](../07.13%20Ottimizzazione%20delle%20prestazioni.md)
 
-5. [**Gioco della Dama**](gioco-dama.md)
+5. [**Gioco della Dama**](05_gioco-dama.md)
    - **Livello**: Intermedio/Avanzato
    - **Concetti**: Griglia interattiva, gestione dello stato di gioco, drag and drop
    - **Tecniche**: Sviluppo incrementale, gestione eventi, implementazione regole di gioco
