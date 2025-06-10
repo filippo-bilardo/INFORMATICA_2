@@ -18,3 +18,7 @@ Appunti ed esempi per gli studenti del corso **INFORMATICA2** del 4° anno
 - [INFORMATICA_2](https://github.com/filippo-bilardo/INFORMATICA_2)
 - [INFORMATICA_3](https://github.com/filippo-bilardo/INFORMATICA_3_PHP)
 - [C++ By Example](https://github.com/filippo-bilardo/Cpp-by-example/blob/main/README.md)
+- [Javascript by Example](https://github.com/filippo-bilardo/Javascript-by-example/blob/main/README.md)
+- [Learning TypeScript by Example](https://github.com/filippo-bilardo/Learning-TypeScript-with-Lego-EV3/blob/main/README.md)
+- [Imparare JS e Canvas con il gioco Frogger](https://github.com/filippo-bilardo/Imparare-JS-e-Canvas-con-il-gioco-Frogger/blob/main/README.md)
+- [Imparare JS e Canvas con il gioco Dama](https://github.com/filippo-bilardo/Imparare-JS-e-Canvas-con-il-gioco-Dama/blob/main/guida-dama-step1.md)
